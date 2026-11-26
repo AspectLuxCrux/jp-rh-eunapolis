@@ -1,5 +1,8 @@
 import {
   auth,
+  db,
+  doc,
+  updateDoc,
   WHATSAPP_JPRH,
   getPasswordResetActionSettings,
   onAuthStateChanged,
@@ -246,6 +249,10 @@ window.handlePageLoggedChangePassword = async function (e) {
   try {
     await reauthenticateWithCredential(currentUser, EmailAuthProvider.credential(currentUser.email, currentPass));
     await updatePassword(currentUser, newPass);
+    try { await updateDoc(doc(db, "empresas", currentUser.uid), { exigirTrocaSenha: false, updatedAt: Date.now() }); } catch (_) {}
+    if (currentUser.email) {
+      try { await updateDoc(doc(db, "funcionarios", currentUser.email.toLowerCase()), { exigirTrocaSenha: false }); } catch (_) {}
+    }
     document.getElementById("form-page-logged-change").reset();
     document.getElementById("logged-strength")?.classList.add("hidden");
     document.getElementById("logged-code-box")?.classList.add("hidden");

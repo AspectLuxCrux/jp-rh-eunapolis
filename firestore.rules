@@ -55,6 +55,12 @@ rules_version = '2';
 //      - vendedorEmail: string | null (optional, 0..150 chars)
 //      - vendedorNome: string | null (optional, 0..120 chars)
 //      - premiumAte: null | int (> 0) | timestamp | string (8..40 chars) (required key, immutable for owner)
+//      - emTeste: bool | null (optional, immutable for owner; false/null/absent on owner create)
+//      - testeDias: number | null (optional, 0..365, immutable for owner; null/absent on owner create)
+//      - testeInicio: null | int (> 0) | timestamp (optional, immutable for owner; null/absent on owner create)
+//      - testeObs: string | null (optional, 0..300 chars, immutable for owner; null/absent on owner create)
+//      - exigirTrocaSenha: bool | null (optional; false/null/absent on owner create; owner may only clear to false)
+//      - ultimoResetEnviadoEm: null | int (> 0) | timestamp (optional, immutable for owner; null/absent on owner create)
 //      - createdAt: int (> 0) | timestamp (required, immutable)
 //      - updatedAt: null | int (> 0) | timestamp (optional)
 //
@@ -71,6 +77,8 @@ rules_version = '2';
 //      - fotoUrl: string | null (optional, 0..300000 chars)
 //      - comissaoPercent: number | null (optional, 0..100)
 //      - metaMensal: number | null (optional, 0..1000000)
+//      - exigirTrocaSenha: bool | null (optional; staff may only clear own flag to false)
+//      - ultimoResetEnviadoEm: null | int (> 0) | timestamp (optional)
 //      - createdAt: int (> 0) | timestamp (required, immutable)
 //      - createdBy: string (required, 2..150 chars, immutable)
 //
@@ -390,6 +398,8 @@ service cloud.firestore {
         'uid', 'email', 'razaoSocial', 'nomeFantasia', 'cnpj',
         'responsavel', 'whatsapp', 'plano', 'planoTier', 'planoSolicitado',
         'planoValor', 'vendedorEmail', 'vendedorNome', 'premiumAte',
+        'emTeste', 'testeDias', 'testeInicio', 'testeObs',
+        'exigirTrocaSenha', 'ultimoResetEnviadoEm',
         'createdAt', 'updatedAt'
       ];
       let requiredFields = [
@@ -413,6 +423,12 @@ service cloud.firestore {
              isOptionalString(data, 'vendedorEmail', 0, 150) &&
              isOptionalString(data, 'vendedorNome', 0, 120) &&
              (data.premiumAte == null || isValidTimestampOrMillis(data.premiumAte) || isValidString(data.premiumAte, 8, 40)) &&
+             (!('emTeste' in data) || data.emTeste == null || data.emTeste is bool) &&
+             isOptionalNumber(data, 'testeDias', 0, 365) &&
+             isOptionalTimestampOrMillis(data, 'testeInicio') &&
+             isOptionalString(data, 'testeObs', 0, 300) &&
+             (!('exigirTrocaSenha' in data) || data.exigirTrocaSenha == null || data.exigirTrocaSenha is bool) &&
+             isOptionalTimestampOrMillis(data, 'ultimoResetEnviadoEm') &&
              isValidTimestampOrMillis(data.createdAt) &&
              isOptionalTimestampOrMillis(data, 'updatedAt');
     }
@@ -421,6 +437,7 @@ service cloud.firestore {
       let allowedFields = [
         'email', 'nome', 'cargo', 'ativo', 'nivel',
         'telefone', 'fotoUrl', 'comissaoPercent', 'metaMensal',
+        'exigirTrocaSenha', 'ultimoResetEnviadoEm',
         'createdAt', 'createdBy'
       ];
       let requiredFields = ['email', 'nome', 'cargo', 'ativo', 'createdAt', 'createdBy'];
@@ -436,6 +453,8 @@ service cloud.firestore {
              isOptionalString(data, 'fotoUrl', 0, 300000) &&
              isOptionalNumber(data, 'comissaoPercent', 0, 100) &&
              isOptionalNumber(data, 'metaMensal', 0, 1000000) &&
+             (!('exigirTrocaSenha' in data) || data.exigirTrocaSenha == null || data.exigirTrocaSenha is bool) &&
+             isOptionalTimestampOrMillis(data, 'ultimoResetEnviadoEm') &&
              isValidTimestampOrMillis(data.createdAt) &&
              isValidString(data.createdBy, 2, 150);
     }
@@ -707,7 +726,13 @@ service cloud.firestore {
                            request.resource.data.email.lower() == request.auth.token.email.lower() &&
                            request.resource.data.plano == 'gratuito' &&
                            (!('planoTier' in request.resource.data) || request.resource.data.planoTier == null || request.resource.data.planoTier == 'gratuito') &&
-                           request.resource.data.premiumAte == null
+                           request.resource.data.premiumAte == null &&
+                           (!('emTeste' in request.resource.data) || request.resource.data.emTeste == null || request.resource.data.emTeste == false) &&
+                           (!('testeDias' in request.resource.data) || request.resource.data.testeDias == null) &&
+                           (!('testeInicio' in request.resource.data) || request.resource.data.testeInicio == null) &&
+                           (!('testeObs' in request.resource.data) || request.resource.data.testeObs == null) &&
+                           (!('exigirTrocaSenha' in request.resource.data) || request.resource.data.exigirTrocaSenha == null || request.resource.data.exigirTrocaSenha == false) &&
+                           (!('ultimoResetEnviadoEm' in request.resource.data) || request.resource.data.ultimoResetEnviadoEm == null)
                          )
                        );
 
@@ -719,14 +744,31 @@ service cloud.firestore {
                            areImmutableFieldsUnchanged(['uid', 'createdAt'])
                          ) ||
                          (
+                           isDirector() &&
+                           request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                             'plano', 'planoTier', 'planoValor', 'premiumAte',
+                             'emTeste', 'testeDias', 'testeInicio', 'testeObs',
+                             'exigirTrocaSenha', 'ultimoResetEnviadoEm', 'updatedAt'
+                           ]) &&
+                           areImmutableFieldsUnchanged(['uid', 'email', 'cnpj', 'createdAt'])
+                         ) ||
+                         (
                            isOwner(uid) &&
                            request.resource.data.diff(resource.data).affectedKeys().hasOnly([
                              'razaoSocial', 'nomeFantasia', 'responsavel',
                              'whatsapp', 'updatedAt', 'plano',
                              'planoSolicitado', 'planoValor',
-                             'vendedorEmail', 'vendedorNome'
+                             'vendedorEmail', 'vendedorNome',
+                             'exigirTrocaSenha'
                            ]) &&
-                           areImmutableFieldsUnchanged(['uid', 'email', 'cnpj', 'premiumAte', 'planoTier', 'createdAt']) &&
+                           areImmutableFieldsUnchanged([
+                             'uid', 'email', 'cnpj', 'premiumAte', 'planoTier', 'createdAt',
+                             'emTeste', 'testeDias', 'testeInicio', 'testeObs', 'ultimoResetEnviadoEm'
+                           ]) &&
+                           (
+                             !request.resource.data.diff(resource.data).affectedKeys().hasAny(['exigirTrocaSenha']) ||
+                             ('exigirTrocaSenha' in request.resource.data && request.resource.data.exigirTrocaSenha == false)
+                           ) &&
                            (
                              request.resource.data.plano == resource.data.plano ||
                              (resource.data.plano == 'gratuito' && request.resource.data.plano == 'pendente')
@@ -752,15 +794,26 @@ service cloud.firestore {
                          )
                        );
 
-      allow update: if isDirector() &&
-                       isValidFuncionario(request.resource.data, emailLower) &&
+      allow update: if isValidFuncionario(request.resource.data, emailLower) &&
                        areImmutableFieldsUnchanged(['email', 'createdAt', 'createdBy']) &&
                        (
-                         isAdmin() ||
                          (
-                           emailLower != 'pedroleitejoao398@gmail.com' &&
-                           (!('nivel' in request.resource.data) || request.resource.data.nivel == null || request.resource.data.nivel == 'funcionario') &&
-                           (!('nivel' in resource.data) || resource.data.nivel != 'diretor')
+                           isDirector() &&
+                           (
+                             isAdmin() ||
+                             (
+                               emailLower != 'pedroleitejoao398@gmail.com' &&
+                               (!('nivel' in request.resource.data) || request.resource.data.nivel == null || request.resource.data.nivel == 'funcionario') &&
+                               (!('nivel' in resource.data) || resource.data.nivel != 'diretor')
+                             )
+                           )
+                         ) ||
+                         (
+                           hasAuthEmail() &&
+                           request.auth.token.email.lower() == emailLower &&
+                           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['exigirTrocaSenha']) &&
+                           'exigirTrocaSenha' in request.resource.data &&
+                           request.resource.data.exigirTrocaSenha == false
                          )
                        );
 

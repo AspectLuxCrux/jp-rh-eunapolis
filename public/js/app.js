@@ -167,12 +167,19 @@ function getCompanyRegularity(emp) {
   }
   if (emp.plano === "premium") {
     if (!emp.premiumAte) {
-      return { code: "regular", label: "Regular / Ativo", detail: "Sem vencimento definido", badge: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" };
+      return emp.emTeste
+        ? { code: "regular", label: "Teste Experimental", detail: "Período experimental ativo", badge: "bg-purple-500/20 text-purple-300 border-purple-500/40" }
+        : { code: "regular", label: "Regular / Ativo", detail: "Sem vencimento definido", badge: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" };
     }
     const diff = Number(emp.premiumAte) - now;
     const days = Math.ceil(diff / (24 * 60 * 60 * 1000));
     if (diff < 0) {
-      return { code: "irregular", label: "Irregular / Vencido", detail: `Vencido há ${Math.abs(days)} dia(s)`, badge: "bg-red-500/20 text-red-400 border-red-500/40" };
+      return emp.emTeste
+        ? { code: "irregular", label: "Teste Expirado", detail: `Teste encerrado há ${Math.abs(days)} dia(s)`, badge: "bg-red-500/20 text-red-400 border-red-500/40" }
+        : { code: "irregular", label: "Irregular / Vencido", detail: `Vencido há ${Math.abs(days)} dia(s)`, badge: "bg-red-500/20 text-red-400 border-red-500/40" };
+    }
+    if (emp.emTeste) {
+      return { code: diff <= fiveDaysMs ? "vencendo" : "regular", label: "Teste Experimental", detail: `${days} dia(s) restante(s)`, badge: "bg-purple-500/20 text-purple-300 border-purple-500/40" };
     }
     if (diff <= fiveDaysMs) {
       return { code: "vencendo", label: "Vence em Breve", detail: `Vence em ${days} dia(s)`, badge: "bg-yellow-500/20 text-brand-yellow border-brand-yellow/40" };
@@ -508,6 +515,13 @@ window.handleLoggedInChangePassword = async function (e) {
   try {
     await reauthenticateWithCredential(state.user, EmailAuthProvider.credential(state.user.email, currentPass));
     await updatePassword(state.user, newPass);
+    if (state.role === "staff" && state.user.email) {
+      try { await updateDoc(doc(db, "funcionarios", state.user.email.toLowerCase()), { exigirTrocaSenha: false }); } catch (_) {}
+      document.getElementById("team-force-pass-banner")?.classList.add("hidden");
+    } else if (state.role === "company" && state.user.uid) {
+      try { await updateDoc(doc(db, "empresas", state.user.uid), { exigirTrocaSenha: false, updatedAt: Date.now() }); } catch (_) {}
+      document.getElementById("comp-force-pass-banner")?.classList.add("hidden");
+    }
     document.getElementById("form-sec-change-pass").reset();
     state.securityCode = { code: null, expiresAt: 0, channel: null };
     document.getElementById("sec-code-confirm-box")?.classList.add("hidden");
@@ -933,6 +947,10 @@ function subscribeCommonTeamListeners() {
       populatePedroxSelectors();
       populateSaleCompanySelect();
       renderRegularidadeDashboard();
+      if (isDirectorRole()) {
+        renderTrialsAndPlansTab();
+        renderSecurityAccountsManager();
+      }
       if (state.role === "admin") {
         renderAdminCompaniesTable();
         renderAdminFinanceDashboard();
@@ -976,6 +994,7 @@ function subscribeStaffListeners(emailLower, isDir) {
       onSnapshot(collection(db, "funcionarios"), (snap) => {
         state.funcionarios = snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         renderDirectorAccessPanel();
+        renderSecurityAccountsManager();
       })
     );
   }
@@ -988,6 +1007,7 @@ function subscribeAdminListeners() {
     onSnapshot(collection(db, "funcionarios"), (snap) => {
       state.funcionarios = snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
       renderDirectorAccessPanel();
+      renderSecurityAccountsManager();
       populateAdminSaleSellerSelect();
       renderSalesDashboard();
     })
@@ -1563,8 +1583,14 @@ function renderCompanyDashboard() {
   document.getElementById("comp-dash-name").textContent = emp.nomeFantasia || emp.razaoSocial;
   document.getElementById("comp-dash-cnpj").textContent = `CNPJ: ${emp.cnpj} • ${emp.email}`;
 
+  document.getElementById("comp-force-pass-banner")?.classList.toggle("hidden", emp.exigirTrocaSenha !== true);
+
   const badge = document.getElementById("comp-dash-plan-badge");
-  if (isPrem) {
+  const daysLeft = emp.premiumAte ? Math.max(0, Math.ceil((Number(emp.premiumAte) - Date.now()) / (24 * 60 * 60 * 1000))) : 0;
+  if (isPrem && emp.emTeste) {
+    badge.className = "inline-flex items-center gap-1.5 text-xs font-extrabold px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/40";
+    badge.innerHTML = `<i class="fa-solid fa-flask-vial"></i> Período Experimental • ${esc(currentTier.nome)} • ${daysLeft} dia(s) restante(s) (até ${formatDate(emp.premiumAte)})`;
+  } else if (isPrem) {
     badge.className = "inline-flex items-center gap-1.5 text-xs font-extrabold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
     badge.innerHTML = `<i class="fa-solid fa-crown"></i> ${esc(currentTier.nome)} (R$ ${currentTier.valor}/mês) • Ativo até ${formatDate(emp.premiumAte)}`;
   } else if (isPend) {
@@ -1580,7 +1606,9 @@ function renderCompanyDashboard() {
   document.getElementById("comp-active-box").classList.toggle("hidden", !isPrem);
 
   if (isPrem) {
-    document.getElementById("comp-active-plan-label").textContent = `${currentTier.nome} (${formatMoney(currentTier.valor)}/mês)`;
+    document.getElementById("comp-active-plan-label").textContent = emp.emTeste
+      ? `${currentTier.nome} — Período Experimental (${daysLeft} dia(s) restante(s))`
+      : `${currentTier.nome} (${formatMoney(currentTier.valor)}/mês)`;
     document.getElementById("comp-active-until").textContent = formatDate(emp.premiumAte);
     document.getElementById("comp-active-benefits").innerHTML = currentTier.beneficios.map((b) => `<li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i><span>${esc(b)}</span></li>`).join("");
   }
@@ -2157,6 +2185,8 @@ function renderTeamModalView() {
     if (!allowedTabs.includes(activeTeamTab)) activeTeamTab = "pedrox";
     window.switchTeamTab(activeTeamTab);
 
+    document.getElementById("team-force-pass-banner")?.classList.toggle("hidden", state.staffProfile?.exigirTrocaSenha !== true);
+
     populatePedroxSelectors();
     populateSaleCompanySelect();
     renderAdminTalentsTable();
@@ -2165,7 +2195,11 @@ function renderTeamModalView() {
     renderRegularidadeDashboard();
     renderTeamSupportChatList();
     renderSalesDashboard();
-    if (isDir) renderDirectorAccessPanel();
+    if (isDir) {
+      renderDirectorAccessPanel();
+      renderTrialsAndPlansTab();
+      renderSecurityAccountsManager();
+    }
     if (isAdmin) {
       renderAdminCompaniesTable();
       renderAdminFinanceDashboard();
@@ -2226,10 +2260,10 @@ window.handleStaffFirstAccess = async function (e) {
 };
 
 window.switchTeamTab = function (tab) {
-  if (tab === "diretoria" && !isDirectorRole()) return window.showToast("Acesso exclusivo da Diretoria.", "error");
+  if (["diretoria", "testes"].includes(tab) && !isDirectorRole()) return window.showToast("Acesso exclusivo da Diretoria e Admin.", "error");
   if (["empresas", "financeiro"].includes(tab) && state.role !== "admin") return window.showToast("Acesso exclusivo do Administrador.", "error");
   activeTeamTab = tab;
-  ["pedrox", "curriculos", "regularidade", "suporte", "vendas", "empresas", "financeiro", "diretoria", "seguranca"].forEach((t) => {
+  ["pedrox", "curriculos", "regularidade", "suporte", "vendas", "testes", "empresas", "financeiro", "diretoria", "seguranca"].forEach((t) => {
     const btn = document.getElementById(`team-tab-btn-${t}`);
     const pane = document.getElementById(`team-tab-pane-${t}`);
     if (!btn || !pane) return;
@@ -2795,7 +2829,7 @@ window.adminActivateCompanyPremium = async function (empUid, recordFinance = tru
   const now = Date.now();
   const baseTime = emp.premiumAte && emp.premiumAte > now ? emp.premiumAte : now;
   const newExpiry = baseTime + 30 * 24 * 60 * 60 * 1000;
-  await updateDoc(doc(db, "empresas", empUid), { plano: "premium", planoTier: plan.id, planoValor: plan.valor, premiumAte: newExpiry, updatedAt: now });
+  await updateDoc(doc(db, "empresas", empUid), { plano: "premium", planoTier: plan.id, planoValor: plan.valor, premiumAte: newExpiry, emTeste: false, updatedAt: now });
   if (recordFinance) {
     const pendingTx = state.financeiro.find((t) => t.empresaUid === empUid && t.status === "pendente");
     if (pendingTx) await updateDoc(doc(db, "financeiro", pendingTx.id), { status: "pago", paidAt: now, planoTier: plan.id, valor: plan.valor });
@@ -3130,6 +3164,385 @@ function renderAdminVitrineTable() {
 window.deleteVitrineMember = async function (id) {
   await deleteDoc(doc(db, "equipe_vitrine", id));
   window.showToast("Foto removida da vitrine.");
+};
+
+// ============================================================================
+// CENTRAL DE SENHAS DE CLIENTES E FUNCIONÁRIOS (ADMIN & DIRETORIA)
+// ============================================================================
+let securityAccountsFilter = "todos";
+
+window.setSecurityAccountsFilter = function (filter) {
+  securityAccountsFilter = filter;
+  ["todos", "funcionarios", "clientes"].forEach((f) => {
+    const btn = document.getElementById(`sec-filter-${f}`);
+    if (!btn) return;
+    btn.className = f === filter
+      ? "px-3 py-2 rounded-xl text-xs font-extrabold bg-brand-yellow text-brand-black"
+      : "px-3 py-2 rounded-xl text-xs font-semibold bg-brand-card border border-brand-border text-neutral-300";
+  });
+  window.renderSecurityAccountsManager();
+};
+
+window.renderSecurityAccountsManager = function () {
+  const tbody = document.getElementById("sec-accounts-tbody");
+  if (!tbody || !isDirectorRole()) return;
+
+  const q = (document.getElementById("sec-accounts-search")?.value || "").trim().toLowerCase();
+  const rows = [];
+
+  if (securityAccountsFilter === "todos" || securityAccountsFilter === "funcionarios") {
+    state.funcionarios.forEach((f) => {
+      rows.push({
+        type: "funcionario",
+        docId: f.id,
+        nome: f.nome || "Funcionário",
+        sub: f.cargo || (f.nivel === "diretor" ? "Diretor" : "Equipe JP RH"),
+        email: f.email || f.id,
+        telefone: f.telefone || "",
+        exigirTroca: f.exigirTrocaSenha === true,
+        ultimoReset: f.ultimoResetEnviadoEm || null
+      });
+    });
+  }
+
+  if (securityAccountsFilter === "todos" || securityAccountsFilter === "clientes") {
+    state.empresas.forEach((emp) => {
+      rows.push({
+        type: "cliente",
+        docId: emp.id,
+        nome: emp.nomeFantasia || emp.razaoSocial || "Empresa",
+        sub: emp.cnpj || emp.responsavel || "Cliente",
+        email: emp.email || "",
+        telefone: emp.whatsapp || "",
+        exigirTroca: emp.exigirTrocaSenha === true,
+        ultimoReset: emp.ultimoResetEnviadoEm || null
+      });
+    });
+  }
+
+  const filtered = rows.filter((r) => {
+    if (!q) return true;
+    return `${r.nome} ${r.sub} ${r.email} ${r.telefone}`.toLowerCase().includes(q);
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-neutral-500 text-xs">Nenhuma conta encontrada com esse filtro.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered
+    .map((r) => {
+      const cleanPhone = String(r.telefone || "").replace(/\D/g, "");
+      const waTarget = cleanPhone ? (cleanPhone.startsWith("55") ? cleanPhone : `55${cleanPhone}`) : "";
+      const resetUrl = window.getResetPageUrl(r.email);
+      const waMsg = `Olá *${r.nome}*! A Diretoria da *JP RH Eunápolis* liberou o link oficial para você redefinir sua senha com segurança:\n\n${resetUrl}\n\nVocê também pode trocar direto na aba *Entrar → Trocar Senha* no site.`;
+      const waHref = waTarget
+        ? `https://wa.me/${waTarget}?text=${encodeURIComponent(waMsg)}`
+        : `https://wa.me/?text=${encodeURIComponent(waMsg)}`;
+      const typeBadge = r.type === "funcionario"
+        ? `<span class="px-2 py-0.5 rounded-full bg-brand-yellow/15 text-brand-yellow font-bold text-[10px]">Funcionário</span>`
+        : `<span class="px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 font-bold text-[10px]">Cliente</span>`;
+      const statusHtml = r.exigirTroca
+        ? `<span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold text-[10px] block w-fit">Troca Obrigatória Ativa</span>`
+        : `<span class="text-emerald-400 font-semibold text-[11px] block">Normal</span>`;
+      const lastResetHtml = r.ultimoReset
+        ? `<span class="text-[10px] text-neutral-500 block mt-0.5">Último envio: ${formatDate(r.ultimoReset)}</span>`
+        : "";
+      return `
+        <tr class="hover:bg-brand-card/40">
+          <td class="py-3 px-3">${typeBadge}</td>
+          <td class="py-3 px-3"><strong class="text-white block">${esc(r.nome)}</strong><span class="text-[11px] text-neutral-400 font-mono">${esc(r.sub)}</span></td>
+          <td class="py-3 px-3"><span class="text-neutral-200 block">${esc(r.email)}</span><span class="text-[11px] text-neutral-500">${esc(r.telefone || "Sem telefone")}</span></td>
+          <td class="py-3 px-3">${statusHtml}${lastResetHtml}</td>
+          <td class="py-3 px-3 text-right">
+            <div class="inline-flex flex-wrap gap-1.5 justify-end">
+              <button type="button" onclick="adminSendResetToAccount('${esc(r.type)}', '${esc(r.docId)}', '${esc(r.email)}', '${esc(r.nome)}')" class="px-2.5 py-1.5 rounded-lg bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-[11px]">
+                <i class="fa-solid fa-envelope mr-1"></i>Enviar Link E-mail
+              </button>
+              <a href="${waHref}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px]">
+                <i class="fa-brands fa-whatsapp mr-1"></i>WhatsApp
+              </a>
+              <button type="button" onclick="adminToggleForcePasswordChange('${esc(r.type)}', '${esc(r.docId)}', ${!r.exigirTroca})" class="px-2.5 py-1.5 rounded-lg bg-brand-card border ${r.exigirTroca ? "border-emerald-500/40 text-emerald-300" : "border-amber-500/40 text-amber-300"} font-bold text-[11px]">
+                <i class="fa-solid ${r.exigirTroca ? "fa-check" : "fa-lock"} mr-1"></i>${r.exigirTroca ? "Liberar Aviso" : "Exigir Troca"}
+              </button>
+            </div>
+          </td>
+        </tr>`;
+    })
+    .join("");
+};
+
+window.handleAdminSendCustomResetEmail = async function (e) {
+  e.preventDefault();
+  if (!isDirectorRole()) return;
+  const input = document.getElementById("sec-custom-reset-email");
+  const btn = document.getElementById("btn-sec-custom-reset");
+  const email = (input?.value || "").trim().toLowerCase();
+  if (!email) return;
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Enviando...`;
+  try {
+    await sendPasswordResetEmail(auth, email, getPasswordResetActionSettings());
+    input.value = "";
+    window.showToast(`Link/código oficial de redefinição enviado para ${email}!`);
+  } catch (err) {
+    window.showToast(mapAuthError(err), "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1.5"></i>Enviar Redefinição Agora`;
+  }
+};
+
+window.adminSendResetToAccount = async function (type, docId, email, name) {
+  if (!isDirectorRole() || !email) return;
+  try {
+    await sendPasswordResetEmail(auth, email, getPasswordResetActionSettings());
+    const colName = type === "funcionario" ? "funcionarios" : "empresas";
+    const payload = type === "funcionario"
+      ? { ultimoResetEnviadoEm: Date.now() }
+      : { ultimoResetEnviadoEm: Date.now(), updatedAt: Date.now() };
+    try { await updateDoc(doc(db, colName, docId), payload); } catch (_) {}
+    window.showToast(`Link/código de troca de senha enviado para ${name} (${email})!`);
+  } catch (err) {
+    window.showToast(mapAuthError(err), "error");
+  }
+};
+
+window.adminToggleForcePasswordChange = async function (type, docId, nextState) {
+  if (!isDirectorRole()) return;
+  try {
+    const colName = type === "funcionario" ? "funcionarios" : "empresas";
+    const payload = type === "funcionario"
+      ? { exigirTrocaSenha: Boolean(nextState) }
+      : { exigirTrocaSenha: Boolean(nextState), updatedAt: Date.now() };
+    await updateDoc(doc(db, colName, docId), payload);
+    window.showToast(nextState ? "Aviso de troca obrigatória ativado para esta conta!" : "Aviso de troca obrigatória removido.");
+  } catch (err) {
+    window.showToast(err?.message || "Erro ao atualizar flag de segurança.", "error");
+  }
+};
+
+// ============================================================================
+// ABA TESTE EXPERIMENTAL & CONTROLE DE PLANOS DAS EMPRESAS (DIRETORIA & ADMIN)
+// ============================================================================
+window.setTrialDaysPreset = function (days) {
+  const input = document.getElementById("trial-days-input");
+  if (input) input.value = String(days);
+};
+
+window.prefillTrialForm = function (empUid) {
+  const emp = state.empresas.find((e) => e.id === empUid);
+  if (!emp) return;
+  const selComp = document.getElementById("trial-company-select");
+  const selPlan = document.getElementById("trial-plan-select");
+  const selMode = document.getElementById("trial-mode-select");
+  const daysIn = document.getElementById("trial-days-input");
+  const obsIn = document.getElementById("trial-obs-input");
+
+  if (selComp) selComp.value = emp.id;
+  if (selPlan) selPlan.value = emp.plano === "premium" ? (emp.planoTier || "start") : "vip";
+  if (selMode) selMode.value = emp.emTeste ? "teste" : "pago";
+  if (daysIn) daysIn.value = String(emp.testeDias || 7);
+  if (obsIn) obsIn.value = emp.testeObs || "";
+  selComp?.scrollIntoView({ behavior: "smooth", block: "center" });
+  window.showToast(`Empresa "${emp.nomeFantasia || emp.razaoSocial}" carregada no configurador.`, "info");
+};
+
+window.handleApplyCompanyTrialOrPlan = async function (e) {
+  e.preventDefault();
+  if (!isDirectorRole()) return window.showToast("Acesso exclusivo da Diretoria e Admin.", "error");
+
+  const empUid = document.getElementById("trial-company-select")?.value;
+  const planId = document.getElementById("trial-plan-select")?.value || "vip";
+  const mode = document.getElementById("trial-mode-select")?.value || "teste";
+  const days = Math.max(1, Math.min(365, parseInt(document.getElementById("trial-days-input")?.value || "7", 10) || 7));
+  const obs = (document.getElementById("trial-obs-input")?.value || "").trim().slice(0, 250);
+
+  if (!empUid) return window.showToast("Selecione uma empresa primeiro.", "error");
+  const emp = state.empresas.find((item) => item.id === empUid);
+  if (!emp) return window.showToast("Empresa não encontrada.", "error");
+
+  const btn = document.getElementById("btn-apply-trial");
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Aplicando...`;
+
+  try {
+    const now = Date.now();
+    if (planId === "gratuito") {
+      await updateDoc(doc(db, "empresas", empUid), {
+        plano: "gratuito",
+        planoTier: "gratuito",
+        planoValor: 0,
+        premiumAte: null,
+        emTeste: false,
+        testeDias: null,
+        testeInicio: null,
+        testeObs: obs || null,
+        updatedAt: now
+      });
+      window.showToast(`Plano removido: ${emp.nomeFantasia || emp.razaoSocial} voltou para Conta Gratuita.`);
+    } else {
+      const plan = getPlanById(planId);
+      const isTrial = mode === "teste";
+      const expiry = now + days * 24 * 60 * 60 * 1000;
+      await updateDoc(doc(db, "empresas", empUid), {
+        plano: "premium",
+        planoTier: plan.id,
+        planoValor: isTrial ? 0 : plan.valor,
+        premiumAte: expiry,
+        emTeste: isTrial,
+        testeDias: isTrial ? days : null,
+        testeInicio: isTrial ? now : null,
+        testeObs: obs || (isTrial ? `Teste experimental de ${days} dia(s) no ${plan.nome}` : `Plano ${plan.nome} liberado por ${days} dia(s)`),
+        updatedAt: now
+      });
+      window.showToast(
+        isTrial
+          ? `Período experimental de ${days} dia(s) no ${plan.nome} liberado para ${emp.nomeFantasia || emp.razaoSocial}!`
+          : `${plan.nome} ativado por ${days} dia(s) para ${emp.nomeFantasia || emp.razaoSocial}!`
+      );
+    }
+  } catch (err) {
+    window.showToast(err?.message || "Erro ao aplicar período experimental/plano.", "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-check mr-1.5"></i>Aplicar Período / Plano Agora`;
+  }
+};
+
+window.quickExtendTrial = async function (empUid, extraDays = 7) {
+  if (!isDirectorRole()) return;
+  const emp = state.empresas.find((e) => e.id === empUid);
+  if (!emp) return;
+  const now = Date.now();
+  const base = emp.premiumAte && Number(emp.premiumAte) > now ? Number(emp.premiumAte) : now;
+  const newExpiry = base + extraDays * 24 * 60 * 60 * 1000;
+  const plan = getPlanById(emp.planoTier || emp.planoSolicitado || "vip");
+  const totalDays = Math.min(365, (Number(emp.testeDias) || 0) + extraDays);
+  await updateDoc(doc(db, "empresas", empUid), {
+    plano: "premium",
+    planoTier: plan.id,
+    planoValor: 0,
+    premiumAte: newExpiry,
+    emTeste: true,
+    testeDias: totalDays,
+    testeInicio: emp.testeInicio || now,
+    updatedAt: now
+  });
+  window.showToast(`+${extraDays} dias de teste adicionados para ${emp.nomeFantasia || emp.razaoSocial}!`);
+};
+
+window.quickEndTrial = async function (empUid) {
+  if (!isDirectorRole()) return;
+  const emp = state.empresas.find((e) => e.id === empUid);
+  if (!emp) return;
+  await updateDoc(doc(db, "empresas", empUid), {
+    plano: "gratuito",
+    planoTier: "gratuito",
+    planoValor: 0,
+    premiumAte: null,
+    emTeste: false,
+    testeDias: null,
+    testeInicio: null,
+    updatedAt: Date.now()
+  });
+  window.showToast(`Período experimental encerrado para ${emp.nomeFantasia || emp.razaoSocial}.`);
+};
+
+window.renderTrialsAndPlansTab = function () {
+  const tbody = document.getElementById("trial-companies-tbody");
+  const select = document.getElementById("trial-company-select");
+  if (!tbody || !isDirectorRole()) return;
+
+  if (select) {
+    const prev = select.value;
+    select.innerHTML = state.empresas.length
+      ? `<option value="">Selecione uma empresa...</option>` +
+        state.empresas
+          .map((emp) => `<option value="${esc(emp.id)}">${esc(emp.nomeFantasia || emp.razaoSocial)} (${esc(emp.cnpj)})</option>`)
+          .join("")
+      : `<option value="">Nenhuma empresa cadastrada ainda</option>`;
+    if (prev && state.empresas.some((e) => e.id === prev)) select.value = prev;
+  }
+
+  const now = Date.now();
+  const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+  let kpiTrial = 0;
+  let kpiPaid = 0;
+  let kpiExpiring = 0;
+  let kpiFree = 0;
+
+  state.empresas.forEach((emp) => {
+    const active = isCompanyPremiumActive(emp);
+    if (active && emp.emTeste) {
+      kpiTrial++;
+      if (emp.premiumAte && Number(emp.premiumAte) - now <= threeDaysMs) kpiExpiring++;
+    } else if (active) {
+      kpiPaid++;
+    } else {
+      kpiFree++;
+    }
+  });
+
+  const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = String(v); };
+  setTxt("trial-kpi-ativos", kpiTrial);
+  setTxt("trial-kpi-pagos", kpiPaid);
+  setTxt("trial-kpi-expirando", kpiExpiring);
+  setTxt("trial-kpi-gratuito", kpiFree);
+
+  const q = (document.getElementById("trial-list-search")?.value || "").trim().toLowerCase();
+  const filtered = state.empresas.filter((emp) => {
+    if (!q) return true;
+    return `${emp.nomeFantasia || ""} ${emp.razaoSocial || ""} ${emp.cnpj || ""} ${emp.email || ""}`.toLowerCase().includes(q);
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-neutral-500 text-xs">Nenhuma empresa cadastrada para configurar período experimental.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered
+    .map((emp) => {
+      const active = isCompanyPremiumActive(emp);
+      const tier = getPlanById(emp.planoTier || emp.planoSolicitado || "start");
+      const diffMs = emp.premiumAte ? Number(emp.premiumAte) - now : null;
+      const daysLeft = diffMs !== null ? Math.ceil(diffMs / (24 * 60 * 60 * 1000)) : null;
+
+      let modeBadge = `<span class="px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-400 font-semibold text-[10px]">Gratuito</span>`;
+      if (active && emp.emTeste) {
+        modeBadge = `<span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 font-bold text-[10px]"><i class="fa-solid fa-flask-vial mr-1"></i>Experimental (${emp.testeDias || daysLeft || 0}d)</span>`;
+      } else if (active) {
+        modeBadge = `<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold text-[10px]"><i class="fa-solid fa-crown mr-1"></i>Plano Pago</span>`;
+      } else if (emp.plano === "premium" && diffMs !== null && diffMs < 0) {
+        modeBadge = `<span class="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/40 font-bold text-[10px]">${emp.emTeste ? "Teste Expirado" : "Vencido"}</span>`;
+      }
+
+      const validityHtml = emp.premiumAte
+        ? `<strong class="${daysLeft > 3 ? "text-white" : daysLeft >= 0 ? "text-brand-yellow" : "text-red-400"} block">${daysLeft >= 0 ? `${daysLeft} dia(s) restante(s)` : `Expirou há ${Math.abs(daysLeft)} dia(s)`}</strong><span class="text-[10px] text-neutral-400">Até ${formatDate(emp.premiumAte)}</span>`
+        : `<span class="text-neutral-500">—</span>`;
+
+      return `
+        <tr class="hover:bg-brand-card/40">
+          <td class="py-3 px-3">
+            <strong class="text-white block">${esc(emp.nomeFantasia || emp.razaoSocial)}</strong>
+            <span class="text-[11px] font-mono text-brand-yellow">${esc(emp.cnpj)}</span>
+            ${emp.testeObs ? `<span class="block text-[10px] text-neutral-400 mt-0.5">${esc(emp.testeObs)}</span>` : ""}
+          </td>
+          <td class="py-3 px-3">
+            ${active ? `<strong class="text-brand-yellow block">${esc(tier.nome)}</strong><span class="text-[10px] text-neutral-400">Ref. ${formatMoney(tier.valor)}/mês</span>` : `<span class="text-neutral-500">Sem plano ativo</span>`}
+          </td>
+          <td class="py-3 px-3">${modeBadge}</td>
+          <td class="py-3 px-3">${validityHtml}</td>
+          <td class="py-3 px-3 text-right">
+            <div class="inline-flex flex-wrap gap-1.5 justify-end">
+              <button type="button" onclick="prefillTrialForm('${esc(emp.id)}')" class="px-2.5 py-1.5 rounded-lg bg-brand-card border border-brand-border hover:border-brand-yellow text-neutral-200 font-bold text-[11px]"><i class="fa-solid fa-sliders mr-1"></i>Editar</button>
+              <button type="button" onclick="quickExtendTrial('${esc(emp.id)}', 7)" class="px-2.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-[11px]">+7d Teste</button>
+              ${active && emp.emTeste ? `<button type="button" onclick="quickEndTrial('${esc(emp.id)}')" class="px-2.5 py-1.5 rounded-lg bg-brand-card border border-red-500/40 text-red-400 hover:bg-red-500/10 font-bold text-[11px]">Encerrar</button>` : ""}
+            </div>
+          </td>
+        </tr>`;
+    })
+    .join("");
 };
 
 // ============================================================================

@@ -885,6 +885,18 @@
                     </div>
                 </div>
 
+                <!-- Alerta de Troca de Senha Solicitada pela JP RH -->
+                <div id="comp-force-pass-banner" class="hidden bg-amber-500/15 border border-amber-400/50 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-400 text-lg mt-0.5"></i>
+                        <div>
+                            <strong class="text-white text-sm block">A Diretoria JP RH solicitou a atualização da sua senha</strong>
+                            <p class="text-xs text-amber-100/90 mt-0.5">Por segurança, atualize sua senha agora mesmo para remover este aviso.</p>
+                        </div>
+                    </div>
+                    <a href="./redefinir-senha/?tab=logged" class="px-4 py-2 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs"><i class="fa-solid fa-key mr-1.5"></i>Trocar Senha Agora</a>
+                </div>
+
                 <div class="flex flex-wrap gap-2">
                     <button type="button" id="comp-dash-tab-plano" onclick="switchCompanyDashTab('plano')" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-yellow text-brand-black"><i class="fa-solid fa-crown mr-1.5"></i>Meu Plano</button>
                     <button type="button" id="comp-dash-tab-requisitos" onclick="switchCompanyDashTab('requisitos')" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-list-check mr-1.5"></i>Requisitos da Vaga</button>
@@ -1199,6 +1211,18 @@
                     </div>
                 </div>
 
+                <!-- Alerta de Troca de Senha Obrigatória (Funcionário) -->
+                <div id="team-force-pass-banner" class="hidden bg-amber-500/15 border border-amber-400/50 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-400 text-lg mt-0.5"></i>
+                        <div>
+                            <strong class="text-white text-sm block">A Diretoria solicitou a troca da sua senha</strong>
+                            <p class="text-xs text-amber-100/90 mt-0.5">Acesse a aba Segurança agora e atualize sua senha para continuar com acesso protegido.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="switchTeamTab('seguranca')" class="px-4 py-2 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs"><i class="fa-solid fa-key mr-1.5"></i>Ir para Trocar Senha</button>
+                </div>
+
                 <!-- Menu Organizado por Abas -->
                 <div class="flex flex-wrap gap-2">
                     <button type="button" id="team-tab-btn-pedrox" onclick="switchTeamTab('pedrox')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-yellow text-brand-black"><i class="fa-solid fa-robot mr-1.5"></i>Pedrox & Entrevistas</button>
@@ -1206,6 +1230,7 @@
                     <button type="button" id="team-tab-btn-regularidade" onclick="switchTeamTab('regularidade')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-clipboard-check mr-1.5"></i>Regularidade</button>
                     <button type="button" id="team-tab-btn-suporte" onclick="switchTeamTab('suporte')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border flex items-center gap-1.5"><i class="fa-solid fa-comments"></i><span>Suporte Clientes</span><span id="team-support-alert-badge" class="hidden px-1.5 py-0.5 rounded-full bg-amber-500 text-brand-black text-[10px] font-extrabold"></span></button>
                     <button type="button" id="team-tab-btn-vendas" onclick="switchTeamTab('vendas')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-trophy mr-1.5"></i>Vendas</button>
+                    <button type="button" id="team-tab-btn-testes" onclick="switchTeamTab('testes')" class="director-only-el hidden px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-flask-vial mr-1.5 text-purple-400"></i>Teste & Planos</button>
                     <button type="button" id="team-tab-btn-empresas" onclick="switchTeamTab('empresas')" class="admin-only-el hidden px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-building mr-1.5"></i>Empresas</button>
                     <button type="button" id="team-tab-btn-financeiro" onclick="switchTeamTab('financeiro')" class="admin-only-el hidden px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-sack-dollar mr-1.5"></i>Financeiro</button>
                     <button type="button" id="team-tab-btn-diretoria" onclick="switchTeamTab('diretoria')" class="director-only-el hidden px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-user-shield mr-1.5"></i>Diretoria (Acessos)</button>
@@ -1619,6 +1644,159 @@
                                 <i class="fa-solid fa-key mr-2"></i>Atualizar Minha Senha Agora
                             </button>
                         </form>
+                    </div>
+
+                    <!-- CENTRAL DE ALTERAÇÃO DE SENHAS DE CLIENTES E FUNCIONÁRIOS (ADMIN & DIRETORIA) -->
+                    <div class="director-only-el hidden bg-brand-black border-2 border-brand-yellow/30 rounded-2xl p-5 space-y-5">
+                        <div class="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-brand-yellow"><i class="fa-solid fa-shield-halved mr-1"></i>Controle Direto da Diretoria / Admin</span>
+                                <h4 class="font-display font-extrabold text-lg text-white mt-1">Alterar Senha de Clientes e Funcionários</h4>
+                                <p class="text-xs text-neutral-400 mt-1 max-w-2xl">Envie o código/link oficial de redefinição em 1 clique direto para o e-mail ou WhatsApp de qualquer <strong class="text-white">Cliente (Empresa)</strong> ou <strong class="text-white">Funcionário</strong>, e ative a exigência de troca imediata no próximo login.</p>
+                            </div>
+                            <a href="https://console.firebase.google.com/project/jp-rh-eunapolis/authentication/users" target="_blank" rel="noopener noreferrer" class="shrink-0 px-3.5 py-2 rounded-xl bg-brand-card border border-brand-border hover:border-brand-yellow text-neutral-300 hover:text-brand-yellow text-xs font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i><span>Firebase Auth Console</span>
+                            </a>
+                        </div>
+
+                        <!-- Filtros e Busca -->
+                        <div class="flex flex-col sm:flex-row gap-2.5">
+                            <input type="text" id="sec-accounts-search" oninput="renderSecurityAccountsManager()" placeholder="Buscar por nome, e-mail ou CNPJ..." class="flex-1 px-4 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white focus:outline-none focus:border-brand-yellow">
+                            <div class="flex gap-1.5">
+                                <button type="button" id="sec-filter-todos" onclick="setSecurityAccountsFilter('todos')" class="px-3 py-2 rounded-xl text-xs font-extrabold bg-brand-yellow text-brand-black">Todos</button>
+                                <button type="button" id="sec-filter-funcionarios" onclick="setSecurityAccountsFilter('funcionarios')" class="px-3 py-2 rounded-xl text-xs font-semibold bg-brand-card border border-brand-border text-neutral-300">Funcionários</button>
+                                <button type="button" id="sec-filter-clientes" onclick="setSecurityAccountsFilter('clientes')" class="px-3 py-2 rounded-xl text-xs font-semibold bg-brand-card border border-brand-border text-neutral-300">Clientes / Empresas</button>
+                            </div>
+                        </div>
+
+                        <!-- Disparo rápido por e-mail avulso -->
+                        <form onsubmit="handleAdminSendCustomResetEmail(event)" class="bg-brand-card/70 border border-brand-border rounded-xl p-3.5 flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
+                            <input type="email" id="sec-custom-reset-email" required placeholder="Ou digite qualquer e-mail de cliente/funcionário para enviar link de redefinição..." class="flex-1 px-3.5 py-2.5 rounded-xl bg-brand-black border border-brand-border text-xs text-white focus:outline-none focus:border-brand-yellow">
+                            <button type="submit" id="btn-sec-custom-reset" class="px-4 py-2.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs shrink-0">
+                                <i class="fa-solid fa-paper-plane mr-1.5"></i>Enviar Redefinição Agora
+                            </button>
+                        </form>
+
+                        <!-- Tabela de Contas (Funcionários + Clientes) -->
+                        <div class="overflow-x-auto border border-brand-border rounded-2xl">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-brand-card/90 text-[10px] uppercase tracking-wider text-neutral-400 border-b border-brand-border">
+                                        <th class="py-3 px-3">Tipo</th>
+                                        <th class="py-3 px-3">Nome / Empresa</th>
+                                        <th class="py-3 px-3">E-mail & Contato</th>
+                                        <th class="py-3 px-3">Status de Senha</th>
+                                        <th class="py-3 px-3 text-right">Ações Diretas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sec-accounts-tbody" class="divide-y divide-brand-border/60 text-xs"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA 8: PERÍODO DE TESTE EXPERIMENTAL & CONTROLE DE PLANOS (DIRETORIA & ADMIN) -->
+                <div id="team-tab-pane-testes" class="hidden space-y-6">
+                    <!-- KPIs -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="bg-brand-black border border-purple-500/40 rounded-2xl p-4">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-purple-300">Em Teste Experimental</span>
+                            <div id="trial-kpi-ativos" class="font-display font-extrabold text-2xl text-white mt-1">0</div>
+                        </div>
+                        <div class="bg-brand-black border border-emerald-500/40 rounded-2xl p-4">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">Planos Pagos Ativos</span>
+                            <div id="trial-kpi-pagos" class="font-display font-extrabold text-2xl text-white mt-1">0</div>
+                        </div>
+                        <div class="bg-brand-black border border-brand-yellow/40 rounded-2xl p-4">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-brand-yellow">Testes Expirando (≤3d)</span>
+                            <div id="trial-kpi-expirando" class="font-display font-extrabold text-2xl text-white mt-1">0</div>
+                        </div>
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-4">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Sem Plano / Expirado</span>
+                            <div id="trial-kpi-gratuito" class="font-display font-extrabold text-2xl text-white mt-1">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Configurador de Período de Teste Experimental e Planos -->
+                    <form id="form-trial-config" onsubmit="handleApplyCompanyTrialOrPlan(event)" class="bg-brand-black border-2 border-purple-500/40 rounded-2xl p-5 space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-purple-300"><i class="fa-solid fa-flask-vial mr-1"></i>Controle Experimental & Planos</span>
+                                <h4 class="font-display font-extrabold text-lg text-white mt-0.5">Definir Período de Teste ou Plano da Empresa</h4>
+                                <p class="text-xs text-neutral-400 mt-0.5">Escolha a empresa, qual dos <strong class="text-brand-yellow">4 planos</strong> ela vai usar (Start, Impulso, Líder ou VIP 360°) e exatamente <strong class="text-white">quantos dias</strong> o acesso ficará liberado.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">1. Empresa *</label>
+                                <select id="trial-company-select" required class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white focus:outline-none focus:border-brand-yellow"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">2. Plano Liberado *</label>
+                                <select id="trial-plan-select" required class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white focus:outline-none focus:border-brand-yellow">
+                                    <option value="start">Plano Start (R$ 50/mês)</option>
+                                    <option value="impulso">Plano Impulso (R$ 149/mês)</option>
+                                    <option value="lider">Plano Líder (R$ 269/mês)</option>
+                                    <option value="vip" selected>Plano VIP 360° (R$ 400/mês)</option>
+                                    <option value="gratuito">Remover Plano (Voltar p/ Gratuito)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">3. Modalidade *</label>
+                                <select id="trial-mode-select" required class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white focus:outline-none focus:border-brand-yellow">
+                                    <option value="teste">Período de Teste Experimental (Grátis)</option>
+                                    <option value="pago">Plano Definitivo / Assinatura Paga</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">4. Duração (Dias: 1 a 365) *</label>
+                                <input type="number" id="trial-days-input" min="1" max="365" value="7" required class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white font-bold focus:outline-none focus:border-brand-yellow">
+                            </div>
+                        </div>
+
+                        <!-- Atalhos rápidos de tempo -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-[11px] font-bold text-neutral-400">Tempo rápido:</span>
+                            <button type="button" onclick="setTrialDaysPreset(3)" class="px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border hover:border-purple-400 text-neutral-200 text-[11px] font-bold">3 dias</button>
+                            <button type="button" onclick="setTrialDaysPreset(7)" class="px-2.5 py-1 rounded-lg bg-purple-500/20 border border-purple-400/50 text-purple-200 text-[11px] font-bold">7 dias</button>
+                            <button type="button" onclick="setTrialDaysPreset(15)" class="px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border hover:border-purple-400 text-neutral-200 text-[11px] font-bold">15 dias</button>
+                            <button type="button" onclick="setTrialDaysPreset(30)" class="px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border hover:border-brand-yellow text-neutral-200 text-[11px] font-bold">30 dias (1 mês)</button>
+                            <button type="button" onclick="setTrialDaysPreset(60)" class="px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border hover:border-brand-yellow text-neutral-200 text-[11px] font-bold">60 dias</button>
+                            <button type="button" onclick="setTrialDaysPreset(90)" class="px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border hover:border-brand-yellow text-neutral-200 text-[11px] font-bold">90 dias</button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                            <div class="md:col-span-2">
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Observação do Teste / Acordo (Opcional)</label>
+                                <input type="text" id="trial-obs-input" maxlength="250" placeholder="Ex: Teste experimental de 7 dias liberado para conhecer o Banco de Talentos e o Pedrox" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white focus:outline-none focus:border-brand-yellow">
+                            </div>
+                            <button type="submit" id="btn-apply-trial" class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs sm:text-sm">
+                                <i class="fa-solid fa-check mr-1.5"></i>Aplicar Período / Plano Agora
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Tabela de Empresas, Testes Experimentais e Planos -->
+                    <div class="bg-brand-black border border-brand-border rounded-2xl p-4 space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h5 class="font-display font-bold text-sm text-white"><i class="fa-solid fa-building-circle-check text-purple-400 mr-1.5"></i>Empresas Cadastradas — Testes Experimentais & Planos Atuais</h5>
+                            <input type="text" id="trial-list-search" oninput="renderTrialsAndPlansTab()" placeholder="Filtrar empresa ou CNPJ..." class="px-3.5 py-2 rounded-xl bg-brand-card border border-brand-border text-xs text-white focus:outline-none focus:border-brand-yellow">
+                        </div>
+                        <div class="overflow-x-auto border border-brand-border rounded-xl">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-brand-card/90 text-[10px] uppercase tracking-wider text-neutral-400 border-b border-brand-border">
+                                        <th class="py-3 px-3">Empresa & CNPJ</th>
+                                        <th class="py-3 px-3">Plano Atual</th>
+                                        <th class="py-3 px-3">Modalidade</th>
+                                        <th class="py-3 px-3">Tempo Restante / Validade</th>
+                                        <th class="py-3 px-3 text-right">Ações Rápidas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trial-companies-tbody" class="divide-y divide-brand-border/60 text-xs"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
