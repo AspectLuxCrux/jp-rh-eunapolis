@@ -6,6 +6,8 @@ import {
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
+  verifyPasswordResetCode,
+  confirmPasswordReset,
   EmailAuthProvider,
   reauthenticateWithCredential,
   updatePassword
@@ -47,7 +49,26 @@ export const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+auth.languageCode = "pt-BR";
 export const db = getFirestore(app);
+
+export const PRIMARY_HOSTING_URL = "https://jp-rh-eunapolis.web.app";
+
+export function getPasswordResetActionSettings() {
+  const host = typeof window !== "undefined" ? window.location.hostname : "";
+  const isAuthorizedOrigin =
+    host === "jp-rh-eunapolis.web.app" ||
+    host === "jp-rh-eunapolis.firebaseapp.com" ||
+    host === "localhost" ||
+    host === "127.0.0.1";
+  const baseUrl = isAuthorizedOrigin
+    ? `${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, "")}`
+    : PRIMARY_HOSTING_URL;
+  return {
+    url: `${baseUrl}/trocar-senha.html?status=senha-atualizada`,
+    handleCodeInApp: false
+  };
+}
 
 let aiInstance = null;
 try {
@@ -65,6 +86,8 @@ export {
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
+  verifyPasswordResetCode,
+  confirmPasswordReset,
   EmailAuthProvider,
   reauthenticateWithCredential,
   updatePassword,

@@ -1,6 +1,7 @@
 import {
   ADMIN_EMAIL,
   WHATSAPP_JPRH,
+  getPasswordResetActionSettings,
   auth,
   db,
   signInWithEmailAndPassword,
@@ -293,12 +294,30 @@ window.togglePasswordVisibility = function (inputId, btnEl) {
   btnEl?.setAttribute("aria-label", isHidden ? "Ocultar senha" : "Mostrar senha");
 };
 
+window.getResetPageUrl = function (prefillEmail = "") {
+  const basePath = `${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, "")}`;
+  const qs = prefillEmail ? `?email=${encodeURIComponent(prefillEmail)}` : "";
+  return `${basePath}/trocar-senha.html${qs}`;
+};
+
+window.copyPasswordResetLink = async function (prefillEmail = "") {
+  const url = window.getResetPageUrl(prefillEmail);
+  try {
+    await navigator.clipboard.writeText(url);
+    window.showToast("Link da página de troca de senha copiado!");
+  } catch {
+    window.showToast(`Link de troca de senha: ${url}`, "info");
+  }
+};
+
 window.openPasswordResetModal = function (prefillEmail = "") {
   const modal = document.getElementById("modal-password-reset");
   if (!modal) return;
   const emailIn = document.getElementById("reset-email-input");
-  if (emailIn && prefillEmail) emailIn.value = prefillEmail;
-  else if (emailIn && state.user?.email) emailIn.value = state.user.email;
+  const resolvedEmail = prefillEmail || state.user?.email || "";
+  if (emailIn && resolvedEmail) emailIn.value = resolvedEmail;
+  const directLink = document.getElementById("modal-reset-page-link");
+  if (directLink) directLink.href = window.getResetPageUrl(resolvedEmail);
   window.switchResetMethod("email");
   document.getElementById("reset-phone-result")?.classList.add("hidden");
   modal.classList.remove("hidden");
@@ -333,8 +352,8 @@ window.handleSendPasswordResetEmail = async function (e) {
   btn.disabled = true;
   btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Enviando link...`;
   try {
-    await sendPasswordResetEmail(auth, email);
-    window.showToast(`Link oficial de troca de senha enviado para ${email}!`);
+    await sendPasswordResetEmail(auth, email, getPasswordResetActionSettings());
+    window.showToast(`Link oficial de troca de senha enviado para ${email}! Confira também o Spam.`);
     window.closePasswordResetModal();
   } catch (err) {
     window.showToast(mapAuthError(err), "error");
@@ -360,8 +379,8 @@ window.handleSendSecurityCode = async function (channel) {
   if (!state.user) return;
   if (channel === "email-link") {
     try {
-      await sendPasswordResetEmail(auth, state.user.email);
-      window.showToast(`Link oficial enviado para ${state.user.email}!`);
+      await sendPasswordResetEmail(auth, state.user.email, getPasswordResetActionSettings());
+      window.showToast(`Link oficial enviado para ${state.user.email}! Confira também o Spam.`);
     } catch (err) {
       window.showToast(mapAuthError(err), "error");
     }
@@ -3029,6 +3048,15 @@ window.deleteVitrineMember = async function (id) {
 // INIT
 // ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("mode") === "resetPassword" && urlParams.get("oobCode")) {
+    window.location.replace(`./trocar-senha.html${window.location.search}`);
+    return;
+  }
+
+  const secLinkEl = document.getElementById("sec-direct-reset-url");
+  if (secLinkEl) secLinkEl.textContent = window.getResetPageUrl();
+
   document.getElementById("talent-search")?.addEventListener("input", window.renderTalents);
   document.getElementById("talent-filter-area")?.addEventListener("change", window.renderTalents);
   document.getElementById("talent-filter-disp")?.addEventListener("change", window.renderTalents);
