@@ -765,9 +765,10 @@
                     <p class="text-neutral-400 text-sm mt-1">Cadastre-se com seu <strong class="text-white">CNPJ</strong> para assinar um dos <strong class="text-brand-yellow">4 Planos Empresariais</strong> e acompanhar avaliações feitas pela equipe JP RH + Pedrox.</p>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 p-1.5 bg-brand-black rounded-2xl border border-brand-border mb-6">
-                    <button type="button" id="comp-auth-tab-login" onclick="switchCompanyAuthMode('login')" class="py-2.5 px-4 rounded-xl font-bold text-sm bg-brand-yellow text-brand-black">Entrar</button>
-                    <button type="button" id="comp-auth-tab-register" onclick="switchCompanyAuthMode('register')" class="py-2.5 px-4 rounded-xl font-bold text-sm text-neutral-400 hover:text-white">Cadastrar com CNPJ</button>
+                <div class="grid grid-cols-3 gap-1.5 p-1.5 bg-brand-black rounded-2xl border border-brand-border mb-6">
+                    <button type="button" id="comp-auth-tab-login" onclick="switchCompanyAuthMode('login')" class="py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-brand-yellow text-brand-black">Entrar</button>
+                    <button type="button" id="comp-auth-tab-register" onclick="switchCompanyAuthMode('register')" class="py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-neutral-400 hover:text-white">Cadastrar CNPJ</button>
+                    <button type="button" id="comp-auth-tab-reset" onclick="switchCompanyAuthMode('reset')" class="py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-neutral-400 hover:text-white"><i class="fa-solid fa-key mr-1"></i>Trocar Senha</button>
                 </div>
 
                 <!-- Login Empresa com olhinho + Esqueci senha -->
@@ -779,7 +780,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
                             <label class="block text-xs font-bold uppercase tracking-wider text-neutral-300">Senha *</label>
-                            <button type="button" onclick="openPasswordResetModal(document.getElementById('comp-login-email').value)" class="text-[11px] font-semibold text-brand-yellow hover:underline">Esqueci / Trocar senha</button>
+                            <button type="button" onclick="switchCompanyAuthMode('reset', document.getElementById('comp-login-email').value)" class="text-[11px] font-semibold text-brand-yellow hover:underline">Esqueci / Trocar senha</button>
                         </div>
                         <div class="relative">
                             <input type="password" id="comp-login-password" required placeholder="••••••••" class="w-full pl-4 pr-11 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow">
@@ -788,6 +789,62 @@
                     </div>
                     <button type="submit" id="btn-company-login" class="w-full py-3.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm">Entrar no Portal da Empresa</button>
                 </form>
+
+                <!-- Trocar Senha Inline (Clientes/Empresas) — Passo 1 E-mail + Passo 2 Código no próprio site -->
+                <div id="form-company-reset" class="hidden space-y-4">
+                    <form onsubmit="handleInlineSendResetCode(event, 'comp')" class="bg-brand-black/80 border border-brand-border rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-brand-yellow text-brand-black font-extrabold text-xs flex items-center justify-center">1</span>
+                            <h4 class="font-bold text-sm text-white">Enviar código de redefinição no E-mail</h4>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">E-mail cadastrado da Empresa *</label>
+                            <input type="email" id="comp-reset-email" required placeholder="empresa@dominio.com.br" class="w-full px-3.5 py-3 rounded-xl bg-brand-card border border-brand-border text-white text-xs sm:text-sm focus:outline-none focus:border-brand-yellow">
+                        </div>
+                        <button type="submit" id="btn-comp-send-code" class="w-full py-3 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs sm:text-sm">
+                            <i class="fa-solid fa-paper-plane mr-1.5"></i>Enviar Código / Link no E-mail
+                        </button>
+                        <div id="comp-reset-sent-info" class="hidden bg-emerald-500/10 border border-emerald-500/35 rounded-xl p-3 text-[11px] text-emerald-200 leading-relaxed">
+                            <strong class="text-emerald-400 block mb-0.5"><i class="fa-solid fa-circle-check mr-1"></i>Enviado! Confira Caixa de Entrada e Spam.</strong>
+                            Clique no link do e-mail <strong>ou</strong> cole o link/código no Passo 2 abaixo para trocar a senha aqui mesmo!
+                        </div>
+                    </form>
+
+                    <form onsubmit="handleInlineConfirmReset(event, 'comp')" class="bg-brand-black/80 border border-brand-yellow/30 rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500 text-brand-black font-extrabold text-xs flex items-center justify-center">2</span>
+                            <h4 class="font-bold text-sm text-white">Trocar a senha aqui mesmo no site</h4>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Cole o código ou link recebido no e-mail *</label>
+                            <input type="text" id="comp-reset-code" required placeholder="Cole o link do e-mail ou código (oobCode)" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-white text-xs focus:outline-none focus:border-brand-yellow">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Nova Senha (mín. 6) *</label>
+                                <div class="relative">
+                                    <input type="password" id="comp-reset-newpass" required minlength="6" placeholder="••••••••" class="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-brand-card border border-brand-border text-white text-xs focus:outline-none focus:border-brand-yellow">
+                                    <button type="button" onclick="togglePasswordVisibility('comp-reset-newpass', this)" aria-label="Mostrar senha" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1"><i class="fa-solid fa-eye text-xs"></i></button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Confirmar Nova Senha *</label>
+                                <div class="relative">
+                                    <input type="password" id="comp-reset-confirmpass" required minlength="6" placeholder="••••••••" class="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-brand-card border border-brand-border text-white text-xs focus:outline-none focus:border-brand-yellow">
+                                    <button type="button" onclick="togglePasswordVisibility('comp-reset-confirmpass', this)" aria-label="Mostrar senha" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1"><i class="fa-solid fa-eye text-xs"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" id="btn-comp-confirm-reset" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm">
+                            <i class="fa-solid fa-key mr-1.5"></i>Confirmar e Trocar Senha Agora
+                        </button>
+                    </form>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-neutral-400 px-1">
+                        <button type="button" onclick="openPasswordResetModal(document.getElementById('comp-reset-email').value); switchResetMethod('phone');" class="text-emerald-400 hover:underline font-semibold"><i class="fa-brands fa-whatsapp mr-1"></i>Prefiro código por Telefone/WhatsApp</button>
+                        <a href="./redefinir-senha/" class="text-brand-yellow hover:underline font-semibold"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>Abrir página /redefinir-senha</a>
+                    </div>
+                </div>
 
                 <!-- Cadastro Empresa com CNPJ + olhinho -->
                 <form id="form-company-register" onsubmit="handleCompanyRegister(event)" class="hidden space-y-4">
@@ -1031,9 +1088,10 @@
                     <p class="text-neutral-400 text-xs sm:text-sm mt-1">Acesso controlado por nível de permissão: Administrador (Financeiro) e Funcionários JP RH (Pedrox & Vendas).</p>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 p-1.5 bg-brand-black rounded-2xl border border-brand-border mb-5">
-                    <button type="button" id="team-auth-tab-login" onclick="switchTeamAuthMode('login')" class="py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-brand-yellow text-brand-black">Entrar</button>
-                    <button type="button" id="team-auth-tab-signup" onclick="switchTeamAuthMode('signup')" class="py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-neutral-400 hover:text-white">1º Acesso Funcionário</button>
+                <div class="grid grid-cols-3 gap-1.5 p-1.5 bg-brand-black rounded-2xl border border-brand-border mb-5">
+                    <button type="button" id="team-auth-tab-login" onclick="switchTeamAuthMode('login')" class="py-2.5 px-2.5 rounded-xl font-bold text-xs bg-brand-yellow text-brand-black">Entrar</button>
+                    <button type="button" id="team-auth-tab-signup" onclick="switchTeamAuthMode('signup')" class="py-2.5 px-2.5 rounded-xl font-bold text-xs text-neutral-400 hover:text-white">1º Acesso</button>
+                    <button type="button" id="team-auth-tab-reset" onclick="switchTeamAuthMode('reset')" class="py-2.5 px-2.5 rounded-xl font-bold text-xs text-neutral-400 hover:text-white"><i class="fa-solid fa-key mr-1"></i>Trocar Senha</button>
                 </div>
 
                 <form id="form-team-login" onsubmit="handleAdminLogin(event)" class="space-y-4">
@@ -1044,7 +1102,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
                             <label class="block text-xs font-bold uppercase tracking-wider text-neutral-300">Senha *</label>
-                            <button type="button" onclick="openPasswordResetModal(document.getElementById('admin-email-input').value)" class="text-[11px] font-semibold text-brand-yellow hover:underline">Esqueci / Trocar senha</button>
+                            <button type="button" onclick="switchTeamAuthMode('reset', document.getElementById('admin-email-input').value)" class="text-[11px] font-semibold text-brand-yellow hover:underline">Esqueci / Trocar senha</button>
                         </div>
                         <div class="relative">
                             <input type="password" id="admin-password-input" required placeholder="••••••••" class="w-full pl-4 pr-11 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow">
@@ -1053,6 +1111,62 @@
                     </div>
                     <button type="submit" id="btn-team-login" class="w-full py-3.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm">Entrar no Painel JP RH</button>
                 </form>
+
+                <!-- Trocar Senha Inline (Equipe / Funcionários / Admin) -->
+                <div id="form-team-reset" class="hidden space-y-4">
+                    <form onsubmit="handleInlineSendResetCode(event, 'team')" class="bg-brand-black/80 border border-brand-border rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-brand-yellow text-brand-black font-extrabold text-xs flex items-center justify-center">1</span>
+                            <h4 class="font-bold text-sm text-white">Enviar código de redefinição no E-mail</h4>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Seu E-mail da Equipe / Diretoria *</label>
+                            <input type="email" id="team-reset-email" required placeholder="seuemail@gmail.com" class="w-full px-3.5 py-3 rounded-xl bg-brand-card border border-brand-border text-white text-xs sm:text-sm focus:outline-none focus:border-brand-yellow">
+                        </div>
+                        <button type="submit" id="btn-team-send-code" class="w-full py-3 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs sm:text-sm">
+                            <i class="fa-solid fa-paper-plane mr-1.5"></i>Enviar Código / Link no E-mail
+                        </button>
+                        <div id="team-reset-sent-info" class="hidden bg-emerald-500/10 border border-emerald-500/35 rounded-xl p-3 text-[11px] text-emerald-200 leading-relaxed">
+                            <strong class="text-emerald-400 block mb-0.5"><i class="fa-solid fa-circle-check mr-1"></i>Enviado! Confira Caixa de Entrada e Spam.</strong>
+                            Clique no link do e-mail <strong>ou</strong> cole o link/código no Passo 2 abaixo para trocar a senha aqui mesmo!
+                        </div>
+                    </form>
+
+                    <form onsubmit="handleInlineConfirmReset(event, 'team')" class="bg-brand-black/80 border border-brand-yellow/30 rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500 text-brand-black font-extrabold text-xs flex items-center justify-center">2</span>
+                            <h4 class="font-bold text-sm text-white">Trocar a senha aqui mesmo no site</h4>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Cole o código ou link recebido no e-mail *</label>
+                            <input type="text" id="team-reset-code" required placeholder="Cole o link do e-mail ou código (oobCode)" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-white text-xs focus:outline-none focus:border-brand-yellow">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Nova Senha (mín. 6) *</label>
+                                <div class="relative">
+                                    <input type="password" id="team-reset-newpass" required minlength="6" placeholder="••••••••" class="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-brand-card border border-brand-border text-white text-xs focus:outline-none focus:border-brand-yellow">
+                                    <button type="button" onclick="togglePasswordVisibility('team-reset-newpass', this)" aria-label="Mostrar senha" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1"><i class="fa-solid fa-eye text-xs"></i></button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Confirmar Nova Senha *</label>
+                                <div class="relative">
+                                    <input type="password" id="team-reset-confirmpass" required minlength="6" placeholder="••••••••" class="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-brand-card border border-brand-border text-white text-xs focus:outline-none focus:border-brand-yellow">
+                                    <button type="button" onclick="togglePasswordVisibility('team-reset-confirmpass', this)" aria-label="Mostrar senha" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1"><i class="fa-solid fa-eye text-xs"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" id="btn-team-confirm-reset" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm">
+                            <i class="fa-solid fa-key mr-1.5"></i>Confirmar e Trocar Senha Agora
+                        </button>
+                    </form>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-neutral-400 px-1">
+                        <button type="button" onclick="openPasswordResetModal(document.getElementById('team-reset-email').value); switchResetMethod('phone');" class="text-emerald-400 hover:underline font-semibold"><i class="fa-brands fa-whatsapp mr-1"></i>Código por Telefone/WhatsApp</button>
+                        <a href="./redefinir-senha/" class="text-brand-yellow hover:underline font-semibold"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>Abrir /redefinir-senha</a>
+                    </div>
+                </div>
 
                 <form id="form-team-signup" onsubmit="handleStaffFirstAccess(event)" class="hidden space-y-4">
                     <div class="bg-brand-black/70 border border-brand-border rounded-xl p-3 text-xs text-neutral-400">
@@ -1460,7 +1574,7 @@
                                 <code id="sec-direct-reset-url" class="text-[11px] text-neutral-300 break-all block"></code>
                                 <div class="flex flex-wrap gap-2 pt-1">
                                     <button type="button" onclick="copyPasswordResetLink()" class="px-3 py-1.5 rounded-lg bg-brand-yellow text-brand-black font-extrabold text-[11px]"><i class="fa-regular fa-copy mr-1"></i>Copiar Link</button>
-                                    <a href="./trocar-senha.html" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-brand-black border border-brand-border hover:border-brand-yellow text-neutral-200 hover:text-brand-yellow font-bold text-[11px]"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>Abrir Página</a>
+                                    <a href="./redefinir-senha/" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-brand-black border border-brand-border hover:border-brand-yellow text-neutral-200 hover:text-brand-yellow font-bold text-[11px]"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>Abrir Página</a>
                                 </div>
                             </div>
 
@@ -1565,8 +1679,8 @@
             </form>
 
             <div class="mt-5 pt-4 border-t border-brand-border flex items-center justify-between gap-2 text-xs">
-                <a id="modal-reset-page-link" href="./trocar-senha.html" class="text-brand-yellow hover:underline font-bold flex items-center gap-1.5">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i><span>Abrir página de Trocar Senha</span>
+                <a id="modal-reset-page-link" href="./redefinir-senha/" class="text-brand-yellow hover:underline font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i><span>Abrir página /redefinir-senha</span>
                 </a>
                 <button type="button" onclick="copyPasswordResetLink()" class="px-3 py-1.5 rounded-lg bg-brand-black border border-brand-border hover:border-brand-yellow text-neutral-300 hover:text-brand-yellow font-bold text-[11px]">
                     <i class="fa-regular fa-copy mr-1"></i>Copiar Link

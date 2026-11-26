@@ -158,6 +158,50 @@ window.handlePageSendEmailLink = async function (e) {
   }
 };
 
+function extractOobCode(rawInput) {
+  const val = (rawInput || "").trim();
+  if (!val) return "";
+  try {
+    if (val.includes("oobCode=")) {
+      const parsed = new URL(val.startsWith("http") ? val : `https://dummy.local/?${val.replace(/^\?/, "")}`);
+      return (parsed.searchParams.get("oobCode") || "").trim();
+    }
+  } catch {
+    const match = val.match(/[?&]oobCode=([^&\s]+)/);
+    if (match) return decodeURIComponent(match[1]).trim();
+  }
+  return val;
+}
+
+window.handlePageCodeReset = async function (e) {
+  e.preventDefault();
+  const raw = document.getElementById("page-oob-input")?.value || "";
+  const code = extractOobCode(raw);
+  const newPass = document.getElementById("page-code-new-pass")?.value || "";
+  const confirmPass = document.getElementById("page-code-confirm-pass")?.value || "";
+
+  if (!code) return showToast("Cole o link ou código recebido no seu e-mail.", "error");
+  if (newPass.length < 6) return showToast("A nova senha precisa ter no mínimo 6 caracteres.", "error");
+  if (newPass !== confirmPass) return showToast("As duas senhas precisam ser iguais.", "error");
+
+  const btn = document.getElementById("btn-page-code-reset");
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Validando e salvando...`;
+  try {
+    await verifyPasswordResetCode(auth, code);
+    await confirmPasswordReset(auth, code, newPass);
+    document.getElementById("form-page-code-reset")?.reset();
+    hideAllViews();
+    document.getElementById("view-oob-success")?.classList.remove("hidden");
+    showToast("Nova senha salva com sucesso!");
+  } catch (err) {
+    showToast(mapResetError(err), "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-check-double mr-1.5"></i>Confirmar e Salvar Nova Senha Agora`;
+  }
+};
+
 window.handlePagePhoneReset = function (e) {
   e.preventDefault();
   const email = document.getElementById("page-phone-email").value.trim().toLowerCase();

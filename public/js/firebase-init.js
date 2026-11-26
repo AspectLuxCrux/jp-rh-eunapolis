@@ -62,10 +62,10 @@ export function getPasswordResetActionSettings() {
     host === "localhost" ||
     host === "127.0.0.1";
   const baseUrl = isAuthorizedOrigin
-    ? `${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, "")}`
+    ? window.location.origin
     : PRIMARY_HOSTING_URL;
   return {
-    url: `${baseUrl}/trocar-senha.html?status=senha-atualizada`,
+    url: `${baseUrl}/redefinir-senha?status=senha-atualizada`,
     handleCodeInApp: false
   };
 }

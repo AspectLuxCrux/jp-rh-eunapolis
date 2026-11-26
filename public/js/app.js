@@ -9,6 +9,8 @@ import {
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
+  verifyPasswordResetCode,
+  confirmPasswordReset,
   EmailAuthProvider,
   reauthenticateWithCredential,
   updatePassword,
@@ -297,7 +299,87 @@ window.togglePasswordVisibility = function (inputId, btnEl) {
 window.getResetPageUrl = function (prefillEmail = "") {
   const basePath = `${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, "")}`;
   const qs = prefillEmail ? `?email=${encodeURIComponent(prefillEmail)}` : "";
-  return `${basePath}/trocar-senha.html${qs}`;
+  return `${basePath}/redefinir-senha/${qs}`;
+};
+
+function extractOobCodeFromInput(rawInput) {
+  const val = (rawInput || "").trim();
+  if (!val) return "";
+  try {
+    if (val.includes("oobCode=")) {
+      const parsed = new URL(val.startsWith("http") ? val : `https://dummy.local/?${val.replace(/^\?/, "")}`);
+      return (parsed.searchParams.get("oobCode") || "").trim();
+    }
+  } catch {
+    const match = val.match(/[?&]oobCode=([^&\s]+)/);
+    if (match) return decodeURIComponent(match[1]).trim();
+  }
+  return val;
+}
+
+window.handleInlineSendResetCode = async function (e, scope) {
+  e.preventDefault();
+  const emailEl = document.getElementById(`${scope}-reset-email`);
+  const btnEl = document.getElementById(`btn-${scope}-send-code`);
+  const infoEl = document.getElementById(`${scope}-reset-sent-info`);
+  const email = (emailEl?.value || "").trim().toLowerCase();
+  if (!email) return;
+
+  btnEl.disabled = true;
+  btnEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Enviando código...`;
+  try {
+    await sendPasswordResetEmail(auth, email, getPasswordResetActionSettings());
+    infoEl?.classList.remove("hidden");
+    window.showToast(`Código/link de troca de senha enviado para ${email}! Confira também o Spam.`);
+  } catch (err) {
+    window.showToast(mapAuthError(err), "error");
+  } finally {
+    btnEl.disabled = false;
+    btnEl.innerHTML = `<i class="fa-solid fa-paper-plane mr-1.5"></i>Enviar Código / Link no E-mail`;
+  }
+};
+
+window.handleInlineConfirmReset = async function (e, scope) {
+  e.preventDefault();
+  const rawCode = document.getElementById(`${scope}-reset-code`)?.value || "";
+  const code = extractOobCodeFromInput(rawCode);
+  const newPass = document.getElementById(`${scope}-reset-newpass`)?.value || "";
+  const confirmPass = document.getElementById(`${scope}-reset-confirmpass`)?.value || "";
+  const btnEl = document.getElementById(`btn-${scope}-confirm-reset`);
+
+  if (!code) return window.showToast("Cole o código ou link recebido no seu e-mail.", "error");
+  if (newPass.length < 6) return window.showToast("A nova senha precisa ter pelo menos 6 caracteres.", "error");
+  if (newPass !== confirmPass) return window.showToast("As duas senhas precisam ser iguais.", "error");
+
+  btnEl.disabled = true;
+  btnEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Confirmando nova senha...`;
+  try {
+    const accountEmail = await verifyPasswordResetCode(auth, code);
+    await confirmPasswordReset(auth, code, newPass);
+    document.getElementById(`${scope}-reset-code`).value = "";
+    document.getElementById(`${scope}-reset-newpass`).value = "";
+    document.getElementById(`${scope}-reset-confirmpass`).value = "";
+    window.showToast(`Senha atualizada com sucesso para ${accountEmail}! Agora é só entrar.`);
+    if (scope === "comp") {
+      const loginIn = document.getElementById("comp-login-email");
+      if (loginIn) loginIn.value = accountEmail;
+      window.switchCompanyAuthMode("login");
+    } else {
+      const loginIn = document.getElementById("admin-email-input");
+      if (loginIn) loginIn.value = accountEmail;
+      window.switchTeamAuthMode("login");
+    }
+  } catch (err) {
+    const c = err?.code || "";
+    if (c.includes("expired-action-code") || c.includes("invalid-action-code")) {
+      window.showToast("Código inválido ou expirado. Clique no Passo 1 para receber um novo código.", "error");
+    } else {
+      window.showToast(mapAuthError(err), "error");
+    }
+  } finally {
+    btnEl.disabled = false;
+    btnEl.innerHTML = `<i class="fa-solid fa-key mr-1.5"></i>Confirmar e Trocar Senha Agora`;
+  }
 };
 
 window.copyPasswordResetLink = async function (prefillEmail = "") {
@@ -1264,21 +1346,24 @@ window.closeCompanyModal = function () {
   document.getElementById("modal-company").classList.add("hidden");
 };
 
-window.switchCompanyAuthMode = function (mode) {
-  const loginBtn = document.getElementById("comp-auth-tab-login");
-  const regBtn = document.getElementById("comp-auth-tab-register");
-  const loginForm = document.getElementById("form-company-login");
-  const regForm = document.getElementById("form-company-register");
-  if (mode === "login") {
-    loginBtn.className = "py-2.5 px-4 rounded-xl font-bold text-sm bg-brand-yellow text-brand-black";
-    regBtn.className = "py-2.5 px-4 rounded-xl font-bold text-sm text-neutral-400 hover:text-white";
-    loginForm.classList.remove("hidden");
-    regForm.classList.add("hidden");
-  } else {
-    regBtn.className = "py-2.5 px-4 rounded-xl font-bold text-sm bg-brand-yellow text-brand-black";
-    loginBtn.className = "py-2.5 px-4 rounded-xl font-bold text-sm text-neutral-400 hover:text-white";
-    regForm.classList.remove("hidden");
-    loginForm.classList.add("hidden");
+window.switchCompanyAuthMode = function (mode, prefillEmail = "") {
+  const tabs = {
+    login: { btn: document.getElementById("comp-auth-tab-login"), pane: document.getElementById("form-company-login") },
+    register: { btn: document.getElementById("comp-auth-tab-register"), pane: document.getElementById("form-company-register") },
+    reset: { btn: document.getElementById("comp-auth-tab-reset"), pane: document.getElementById("form-company-reset") }
+  };
+  Object.entries(tabs).forEach(([key, { btn, pane }]) => {
+    const active = key === mode;
+    if (btn) {
+      btn.className = active
+        ? "py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-brand-yellow text-brand-black"
+        : "py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-neutral-400 hover:text-white";
+    }
+    if (pane) pane.classList.toggle("hidden", !active);
+  });
+  if (mode === "reset" && prefillEmail) {
+    const el = document.getElementById("comp-reset-email");
+    if (el) el.value = prefillEmail;
   }
 };
 
@@ -2016,21 +2101,24 @@ window.openAdminModal = function (preferredTab = null) {
 window.closeAdminModal = function () {
   document.getElementById("modal-admin").classList.add("hidden");
 };
-window.switchTeamAuthMode = function (mode) {
-  const bL = document.getElementById("team-auth-tab-login");
-  const bS = document.getElementById("team-auth-tab-signup");
-  const fL = document.getElementById("form-team-login");
-  const fS = document.getElementById("form-team-signup");
-  if (mode === "login") {
-    bL.className = "py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-brand-yellow text-brand-black";
-    bS.className = "py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-neutral-400 hover:text-white";
-    fL.classList.remove("hidden");
-    fS.classList.add("hidden");
-  } else {
-    bS.className = "py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-brand-yellow text-brand-black";
-    bL.className = "py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-neutral-400 hover:text-white";
-    fS.classList.remove("hidden");
-    fL.classList.add("hidden");
+window.switchTeamAuthMode = function (mode, prefillEmail = "") {
+  const tabs = {
+    login: { btn: document.getElementById("team-auth-tab-login"), pane: document.getElementById("form-team-login") },
+    signup: { btn: document.getElementById("team-auth-tab-signup"), pane: document.getElementById("form-team-signup") },
+    reset: { btn: document.getElementById("team-auth-tab-reset"), pane: document.getElementById("form-team-reset") }
+  };
+  Object.entries(tabs).forEach(([key, { btn, pane }]) => {
+    const active = key === mode;
+    if (btn) {
+      btn.className = active
+        ? "py-2.5 px-2.5 rounded-xl font-bold text-xs bg-brand-yellow text-brand-black"
+        : "py-2.5 px-2.5 rounded-xl font-bold text-xs text-neutral-400 hover:text-white";
+    }
+    if (pane) pane.classList.toggle("hidden", !active);
+  });
+  if (mode === "reset" && prefillEmail) {
+    const el = document.getElementById("team-reset-email");
+    if (el) el.value = prefillEmail;
   }
 };
 
@@ -3050,7 +3138,7 @@ window.deleteVitrineMember = async function (id) {
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("mode") === "resetPassword" && urlParams.get("oobCode")) {
-    window.location.replace(`./trocar-senha.html${window.location.search}`);
+    window.location.replace(`./redefinir-senha/${window.location.search}`);
     return;
   }
 
