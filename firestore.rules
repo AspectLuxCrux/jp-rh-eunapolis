@@ -1,0 +1,1002 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model — JP RH Eunápolis
+// ===============================================================
+//
+// This security rules file assumes the following Cloud Firestore
+// collections and document structures:
+//
+// 1. Collection: candidatos
+//    Document ID: auto-generated {candId}
+//    Purpose: Public LGPD-safe Talent Bank profiles (NO PII stored here).
+//    Fields:
+//      - codigo: string (required, 2..30 chars) - Public candidate code (e.g., "JP-452")
+//      - nomeProtegido: string (required, 2..100 chars) - Masked display name (e.g., "Maria S.")
+//      - cargo: string (required, 2..120 chars) - Desired role
+//      - area: string (required, 2..80 chars) - Professional area
+//      - experiencia: string (required, 1..80 chars) - Experience level/duration
+//      - bairro: string (required, 1..80 chars) - Neighborhood in Eunápolis
+//      - disponibilidade: string (required, 1..80 chars) - Availability
+//      - escolaridade: string (required, 1..80 chars) - Education level
+//      - habilidades: list (required, max 15 items) - Skills list
+//      - resumo: string (required, 0..1500 chars) - Professional summary
+//      - verificado: bool (required; must be false on public create)
+//      - destaque: bool (required; must be false on public create)
+//      - statusEntrevista: string (required, 2..40 chars; must be 'aguardando' on public create)
+//      - notaMedia: null | number (required key, 0..100; must be null on public create)
+//      - planoCandidato: null | string (optional, enum: 'gratuito' | 'pendente_vip' | 'vip'; cannot be 'vip' on public create)
+//      - createdAt: int (> 0) | timestamp (required, immutable)
+//
+// 2. Collection: candidatos_privado
+//    Document ID: {candId} (matches candidatos/{candId})
+//    Purpose: Restricted LGPD candidate PII, readable/editable ONLY by JP RH team.
+//    Fields:
+//      - nomeCompleto: string (required, 2..120 chars)
+//      - whatsapp: string (required, 8..30 chars)
+//      - email: string (required, 0..120 chars)
+//      - createdAt: int (> 0) | timestamp (required, immutable)
+//
+// 3. Collection: empresas
+//    Document ID: {uid} (Firebase Auth UID)
+//    Purpose: Partner company accounts & subscription status.
+//    Fields:
+//      - uid: string (required, 1..128 chars, immutable, matches doc ID)
+//      - email: string (required, valid email, 3..150 chars, immutable for owner)
+//      - razaoSocial: string (required, 2..150 chars)
+//      - nomeFantasia: string | null (optional, 0..150 chars)
+//      - cnpj: string (required, 14..20 chars, immutable for owner)
+//      - responsavel: string (required, 2..120 chars)
+//      - whatsapp: string (required, 8..30 chars)
+//      - plano: string (required, enum: 'gratuito' | 'pendente' | 'premium')
+//      - planoTier: string | null (optional, enum: 'gratuito' | 'start' | 'impulso' | 'lider' | 'vip', immutable for owner)
+//      - planoSolicitado: string | null (optional, enum: '' | 'start' | 'impulso' | 'lider' | 'vip')
+//      - planoValor: number | null (optional, 0..100000)
+//      - vendedorEmail: string | null (optional, 0..150 chars)
+//      - vendedorNome: string | null (optional, 0..120 chars)
+//      - premiumAte: null | int (> 0) | timestamp | string (8..40 chars) (required key, immutable for owner)
+//      - createdAt: int (> 0) | timestamp (required, immutable)
+//      - updatedAt: null | int (> 0) | timestamp (optional)
+//
+// 4. Collection: funcionarios
+//    Document ID: {emailLower} (employee's lowercase email)
+//    Purpose: Active JP RH staff authorization registry (Admin/Director-managed).
+//    Fields:
+//      - email: string (required, valid email, 3..150 chars, lowercase matches doc ID, immutable)
+//      - nome: string (required, 2..120 chars)
+//      - cargo: string (required, 2..80 chars)
+//      - ativo: bool (required)
+//      - nivel: string | null (optional, enum: 'funcionario' | 'diretor'; only Admin may set/modify 'diretor')
+//      - telefone: string | null (optional, 0..30 chars)
+//      - fotoUrl: string | null (optional, 0..300000 chars)
+//      - comissaoPercent: number | null (optional, 0..100)
+//      - metaMensal: number | null (optional, 0..1000000)
+//      - createdAt: int (> 0) | timestamp (required, immutable)
+//      - createdBy: string (required, 2..150 chars, immutable)
+//
+// 5. Collection: solicitacoes_vagas
+//    Document ID: auto-generated {reqId}
+//    Purpose: Job requirement requests submitted by Premium companies.
+//    Fields:
+//      - empresaUid: string (required, 1..128 chars, immutable)
+//      - empresaNome: string (required, 1..150 chars, immutable for owner)
+//      - empresaCnpj: string | null (optional, 0..20 chars, immutable for owner)
+//      - tituloVaga: string (required, 2..120 chars)
+//      - area: string (required, 2..80 chars)
+//      - requisitos: list (required, 1..20 items)
+//      - descricao: string (required, 0..2000 chars)
+//      - regime: string (required, 1..60 chars)
+//      - salario: string (required, 0..80 chars)
+//      - status: string (required, 2..40 chars; 'aberta' on company create, immutable for owner)
+//      - createdAt: int (> 0) | timestamp (required, immutable)
+//
+// 6. Collection: avaliacoes
+//    Document ID: auto-generated {evalId}
+//    Purpose: Structured candidate interviews conducted by JP RH staff + Pedrox AI.
+//    Fields:
+//      - candidatoId: string (required, 1..128 chars)
+//      - candidatoCodigo: string (required, 1..30 chars)
+//      - candidatoNomeProtegido: string (required, 1..100 chars)
+//      - candidatoCargo: string (required, 1..120 chars)
+//      - solicitacaoId: null | string (optional, 0..128 chars)
+//      - empresaUid: string (required, 1..128 chars; company UID or 'geral')
+//      - empresaNome: null | string (optional, 0..150 chars)
+//      - requisitosAvaliados: null | list (optional, max 30 items)
+//      - entrevistadorEmail: string (required, valid email, 3..150 chars)
+//      - entrevistadorNome: string (required, 1..120 chars)
+//      - perguntasPedrox: null | list (optional, max 30 items)
+//      - notaGeral: number (required, 0..100)
+//      - pontosFortes: null | list (max 20) | string (0..2000 chars) (optional)
+//      - pontosAtencao: null | list (max 20) | string (0..2000 chars) (optional)
+//      - parecerPedrox: string (required, 0..5000 chars)
+//      - recomendacao: string (required, 1..100 chars)
+//      - visivelParaEmpresa: bool (required)
+//      - geradoComIA: bool (required)
+//      - createdAt: int (> 0) | timestamp (required, immutable)
+//
+// 7. Collection: financeiro
+//    Document ID: auto-generated {txId}
+//    Purpose: Admin-exclusive financial ledger (with restricted company/candidate Pix notice create).
+//    Fields:
+//      - tipo: string (required, enum: 'entrada' | 'saida')
+//      - categoria: string (required, 2..80 chars)
+//      - descricao: string (required, 0..500 chars)
+//      - valor: number (required, > 0 && <= 10000000)
+//      - status: string (required, enum: 'pendente' | 'pago' | 'confirmado' | 'recebido' | 'cancelado' | 'atrasado')
+//      - empresaUid: null | string (optional, 0..128 chars)
+//      - empresaNome: null | string (optional, 0..150 chars)
+//      - empresaCnpj: null | string (optional, 0..20 chars)
+//      - planoTier: null | string (optional, 0..40 chars)
+//      - candidatoId: null | string (optional, 0..128 chars)
+//      - candidatoCodigo: null | string (optional, 0..30 chars)
+//      - vendedorEmail: null | string (optional, 0..150 chars)
+//      - vendedorNome: null | string (optional, 0..120 chars)
+//      - metodo: string (required, 1..40 chars)
+//      - competencia: null | string (optional, 0..30 chars)
+//      - createdAt: int (> 0) | timestamp (required, immutable)
+//      - paidAt: null | int (> 0) | timestamp (optional)
+//
+// 8. Collection: configuracoes
+//    Document ID: {docId} (e.g., 'financeiro' for public Pix settings)
+//    Purpose: Publicly readable app configuration managed exclusively by Admin.
+//
+// 9. Collection: equipe_vitrine
+//    Document ID: auto-generated {memberId}
+//    Purpose: Public JP RH team showcase with photos (NO login emails / NO PII).
+//    Fields:
+//      - nome: string (required, 2..120 chars)
+//      - cargo: string (required, 2..100 chars)
+//      - bio: string | null (optional, 0..500 chars)
+//      - fotoUrl: string | null (optional, 0..300000 chars)
+//      - ativo: bool (required)
+//      - ordem: int | null (optional, 0..999)
+//      - destaque: bool | null (optional)
+//      - createdAt: int (> 0) | timestamp (required, immutable)
+//
+// 10. Collection: vendas_equipe
+//     Document ID: auto-generated {saleId}
+//     Purpose: Employee plan sales & commission tracking (Admin + own staff).
+//     Fields:
+//       - vendedorEmail: string (required, valid lowercase email, 3..150 chars)
+//       - vendedorNome: string (required, 2..120 chars)
+//       - empresaUid: string | null (optional, 0..128 chars)
+//       - empresaNome: string (required, 2..150 chars)
+//       - empresaCnpj: string | null (optional, 0..20 chars)
+//       - planoTier: string (required, enum: 'start' | 'impulso' | 'lider' | 'vip')
+//       - planoNome: string (required, 2..80 chars)
+//       - valor: number (required, > 0 && <= 100000)
+//       - comissaoPercent: number (required, 0..100)
+//       - comissaoValor: number (required, 0..100000)
+//       - status: string (required, enum: 'pendente' | 'aprovada' | 'cancelada')
+//       - observacoes: string | null (optional, 0..500 chars)
+//       - competencia: string | null (optional, 0..30 chars)
+//       - createdAt: int (> 0) | timestamp (required, immutable)
+//       - approvedAt: null | int (> 0) | timestamp (optional)
+//
+// 11. Collection: empresas_contratando
+//     Document ID: auto-generated {itemId}
+//     Purpose: Public/VIP hiring companies job listing (NO PII stored here).
+//     Fields:
+//       - empresaUid: string | null (optional, 0..128 chars)
+//       - empresaNome: string (required, 2..150 chars)
+//       - tituloVaga: string (required, 2..120 chars)
+//       - area: string (required, 2..80 chars)
+//       - regime: string | null (optional, 0..80 chars)
+//       - salario: string | null (optional, 0..80 chars)
+//       - requisitos: list | null (optional, max 20 items)
+//       - ativa: bool (required)
+//       - createdAt: int (> 0) | timestamp (required, immutable)
+//
+// 12. Collection: suporte_chats
+//     Document ID: {chatId} (company's Firebase Auth UID)
+//     Purpose: Premium subscriber support chat with Pedrox AI + JP RH sellers.
+//     Fields:
+//       - empresaUid: string (required, 1..128 chars, immutable)
+//       - empresaNome: string (required, 1..150 chars)
+//       - empresaCnpj: string | null (optional, 0..20 chars)
+//       - planoNome: string | null (optional, 0..80 chars)
+//       - status: string (required, enum: 'pedrox' | 'aguardando_humano' | 'em_atendimento' | 'resolvido')
+//       - atendenteNome: string | null (optional, 0..120 chars)
+//       - ultimaMensagem: string | null (optional, 0..500 chars)
+//       - createdAt: int (> 0) | timestamp (required, immutable)
+//       - updatedAt: int (> 0) | timestamp (required)
+//
+//     Subcollection: suporte_chats/{chatId}/mensagens/{msgId}
+//     Fields:
+//       - autorTipo: string (required, enum: 'empresa' | 'pedrox' | 'funcionario')
+//       - autorNome: string (required, 1..120 chars)
+//       - texto: string (required, 1..3000 chars)
+//       - createdAt: int (> 0) | timestamp (required, immutable)
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions — Authentication & Authorization
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function hasAuthEmail() {
+      return isAuthenticated() &&
+             'email' in request.auth.token &&
+             request.auth.token.email is string &&
+             request.auth.token.email.size() > 0;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function uidUnchanged() {
+      return !('uid' in request.resource.data) ||
+             request.resource.data.uid == request.auth.uid;
+    }
+
+    function uidNotModified() {
+      return !('uid' in request.resource.data) ||
+             request.resource.data.uid == resource.data.uid;
+    }
+
+    // Bootstrap Admin identity (Email/Password without mandatory email_verified)
+    function isAdmin() {
+      return hasAuthEmail() &&
+             request.auth.token.email.lower() == 'pedroleitejoao398@gmail.com';
+    }
+
+    // Active JP RH Staff member registered by Admin/Director in funcionarios/{emailLower}
+    function isStaff() {
+      return hasAuthEmail() &&
+             exists(/databases/$(database)/documents/funcionarios/$(request.auth.token.email.lower())) &&
+             get(/databases/$(database)/documents/funcionarios/$(request.auth.token.email.lower())).data.ativo == true;
+    }
+
+    // Admin OR Active Director-level JP RH Staff
+    function isDirector() {
+      return isAdmin() || (
+        hasAuthEmail() &&
+        exists(/databases/$(database)/documents/funcionarios/$(request.auth.token.email.lower())) &&
+        get(/databases/$(database)/documents/funcionarios/$(request.auth.token.email.lower())).data.ativo == true &&
+        'nivel' in get(/databases/$(database)/documents/funcionarios/$(request.auth.token.email.lower())).data &&
+        get(/databases/$(database)/documents/funcionarios/$(request.auth.token.email.lower())).data.nivel == 'diretor'
+      );
+    }
+
+    // Admin OR Active JP RH Staff
+    function isJprhTeam() {
+      return isAdmin() || isStaff();
+    }
+
+    // Authenticated company with active Premium subscription
+    function isActivePremiumCompany() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/empresas/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/empresas/$(request.auth.uid)).data.plano == 'premium';
+    }
+
+    // ===============================================================
+    // Helper Functions — Data Validation Primitives
+    // ===============================================================
+
+    function hasOnlyAllowedFields(data, fields) {
+      return data.keys().hasOnly(fields);
+    }
+
+    function hasRequiredFields(data, fields) {
+      return data.keys().hasAll(fields);
+    }
+
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    function isValidString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    function isOptionalString(data, field, minLen, maxLen) {
+      return !(field in data) || data[field] == null ||
+             isValidString(data[field], minLen, maxLen);
+    }
+
+    function isOptionalNumber(data, field, minVal, maxVal) {
+      return !(field in data) || data[field] == null ||
+             (data[field] is number && data[field] >= minVal && data[field] <= maxVal);
+    }
+
+    function isValidEmail(email) {
+      return email is string &&
+             email.size() >= 3 &&
+             email.size() <= 150 &&
+             email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidTimestampOrMillis(val) {
+      return (val is int && val > 0) || (val is timestamp);
+    }
+
+    function isOptionalTimestampOrMillis(data, field) {
+      return !(field in data) || data[field] == null || isValidTimestampOrMillis(data[field]);
+    }
+
+    function isValidList(val, minSize, maxSize) {
+      return val is list && val.size() >= minSize && val.size() <= maxSize;
+    }
+
+    function isOptionalList(data, field, maxSize) {
+      return !(field in data) || data[field] == null ||
+             (data[field] is list && data[field].size() <= maxSize);
+    }
+
+    function isOptionalListOrString(data, field, maxListSize, maxStrLen) {
+      return !(field in data) || data[field] == null ||
+             (data[field] is list && data[field].size() <= maxListSize) ||
+             (data[field] is string && data[field].size() <= maxStrLen);
+    }
+
+    // ===============================================================
+    // Domain Validators (Used in BOTH create and update rules)
+    // ===============================================================
+
+    function isValidCandidato(data) {
+      let allowedFields = [
+        'codigo', 'nomeProtegido', 'cargo', 'area', 'experiencia',
+        'bairro', 'disponibilidade', 'escolaridade', 'habilidades',
+        'resumo', 'verificado', 'destaque', 'statusEntrevista',
+        'notaMedia', 'planoCandidato', 'createdAt'
+      ];
+      let requiredFields = [
+        'codigo', 'nomeProtegido', 'cargo', 'area', 'experiencia',
+        'bairro', 'disponibilidade', 'escolaridade', 'habilidades',
+        'resumo', 'verificado', 'destaque', 'statusEntrevista',
+        'notaMedia', 'createdAt'
+      ];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, requiredFields) &&
+             isValidString(data.codigo, 2, 30) &&
+             isValidString(data.nomeProtegido, 2, 100) &&
+             isValidString(data.cargo, 2, 120) &&
+             isValidString(data.area, 2, 80) &&
+             isValidString(data.experiencia, 1, 80) &&
+             isValidString(data.bairro, 1, 80) &&
+             isValidString(data.disponibilidade, 1, 80) &&
+             isValidString(data.escolaridade, 1, 80) &&
+             isValidList(data.habilidades, 0, 15) &&
+             isValidString(data.resumo, 0, 1500) &&
+             data.verificado is bool &&
+             data.destaque is bool &&
+             isValidString(data.statusEntrevista, 2, 40) &&
+             (data.notaMedia == null || (data.notaMedia is number && data.notaMedia >= 0 && data.notaMedia <= 100)) &&
+             (!('planoCandidato' in data) || data.planoCandidato == null || (data.planoCandidato is string && data.planoCandidato in ['gratuito', 'pendente_vip', 'vip'])) &&
+             isValidTimestampOrMillis(data.createdAt);
+    }
+
+    function isValidCandidatoPrivado(data) {
+      let allowedFields = ['nomeCompleto', 'whatsapp', 'email', 'createdAt'];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, allowedFields) &&
+             isValidString(data.nomeCompleto, 2, 120) &&
+             isValidString(data.whatsapp, 8, 30) &&
+             isValidString(data.email, 0, 120) &&
+             isValidTimestampOrMillis(data.createdAt);
+    }
+
+    function isValidEmpresa(data) {
+      let allowedFields = [
+        'uid', 'email', 'razaoSocial', 'nomeFantasia', 'cnpj',
+        'responsavel', 'whatsapp', 'plano', 'planoTier', 'planoSolicitado',
+        'planoValor', 'vendedorEmail', 'vendedorNome', 'premiumAte',
+        'createdAt', 'updatedAt'
+      ];
+      let requiredFields = [
+        'uid', 'email', 'razaoSocial', 'cnpj', 'responsavel',
+        'whatsapp', 'plano', 'premiumAte', 'createdAt'
+      ];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, requiredFields) &&
+             isValidString(data.uid, 1, 128) &&
+             isValidEmail(data.email) &&
+             isValidString(data.razaoSocial, 2, 150) &&
+             isOptionalString(data, 'nomeFantasia', 0, 150) &&
+             isValidString(data.cnpj, 14, 20) &&
+             isValidString(data.responsavel, 2, 120) &&
+             isValidString(data.whatsapp, 8, 30) &&
+             data.plano is string &&
+             data.plano in ['gratuito', 'pendente', 'premium'] &&
+             (!('planoTier' in data) || data.planoTier == null || (data.planoTier is string && data.planoTier in ['gratuito', 'start', 'impulso', 'lider', 'vip'])) &&
+             (!('planoSolicitado' in data) || data.planoSolicitado == null || (data.planoSolicitado is string && data.planoSolicitado in ['', 'start', 'impulso', 'lider', 'vip'])) &&
+             isOptionalNumber(data, 'planoValor', 0, 100000) &&
+             isOptionalString(data, 'vendedorEmail', 0, 150) &&
+             isOptionalString(data, 'vendedorNome', 0, 120) &&
+             (data.premiumAte == null || isValidTimestampOrMillis(data.premiumAte) || isValidString(data.premiumAte, 8, 40)) &&
+             isValidTimestampOrMillis(data.createdAt) &&
+             isOptionalTimestampOrMillis(data, 'updatedAt');
+    }
+
+    function isValidFuncionario(data, emailLower) {
+      let allowedFields = [
+        'email', 'nome', 'cargo', 'ativo', 'nivel',
+        'telefone', 'fotoUrl', 'comissaoPercent', 'metaMensal',
+        'createdAt', 'createdBy'
+      ];
+      let requiredFields = ['email', 'nome', 'cargo', 'ativo', 'createdAt', 'createdBy'];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, requiredFields) &&
+             isValidEmail(data.email) &&
+             data.email.lower() == emailLower &&
+             isValidString(data.nome, 2, 120) &&
+             isValidString(data.cargo, 2, 80) &&
+             data.ativo is bool &&
+             (!('nivel' in data) || data.nivel == null || (data.nivel is string && data.nivel in ['funcionario', 'diretor'])) &&
+             isOptionalString(data, 'telefone', 0, 30) &&
+             isOptionalString(data, 'fotoUrl', 0, 300000) &&
+             isOptionalNumber(data, 'comissaoPercent', 0, 100) &&
+             isOptionalNumber(data, 'metaMensal', 0, 1000000) &&
+             isValidTimestampOrMillis(data.createdAt) &&
+             isValidString(data.createdBy, 2, 150);
+    }
+
+    function isValidSolicitacaoVaga(data) {
+      let allowedFields = [
+        'empresaUid', 'empresaNome', 'empresaCnpj', 'tituloVaga',
+        'area', 'requisitos', 'descricao', 'regime', 'salario',
+        'status', 'createdAt'
+      ];
+      let requiredFields = [
+        'empresaUid', 'empresaNome', 'tituloVaga', 'area',
+        'requisitos', 'descricao', 'regime', 'salario',
+        'status', 'createdAt'
+      ];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, requiredFields) &&
+             isValidString(data.empresaUid, 1, 128) &&
+             isValidString(data.empresaNome, 1, 150) &&
+             isOptionalString(data, 'empresaCnpj', 0, 20) &&
+             isValidString(data.tituloVaga, 2, 120) &&
+             isValidString(data.area, 2, 80) &&
+             isValidList(data.requisitos, 1, 20) &&
+             isValidString(data.descricao, 0, 2000) &&
+             isValidString(data.regime, 1, 60) &&
+             isValidString(data.salario, 0, 80) &&
+             isValidString(data.status, 2, 40) &&
+             isValidTimestampOrMillis(data.createdAt);
+    }
+
+    function isValidAvaliacao(data) {
+      let allowedFields = [
+        'candidatoId', 'candidatoCodigo', 'candidatoNomeProtegido',
+        'candidatoCargo', 'solicitacaoId', 'empresaUid', 'empresaNome',
+        'requisitosAvaliados', 'entrevistadorEmail', 'entrevistadorNome',
+        'perguntasPedrox', 'notaGeral', 'pontosFortes', 'pontosAtencao',
+        'parecerPedrox', 'recomendacao', 'visivelParaEmpresa',
+        'geradoComIA', 'createdAt'
+      ];
+      let requiredFields = [
+        'candidatoId', 'candidatoCodigo', 'candidatoNomeProtegido',
+        'candidatoCargo', 'empresaUid', 'entrevistadorEmail',
+        'entrevistadorNome', 'notaGeral', 'parecerPedrox',
+        'recomendacao', 'visivelParaEmpresa', 'geradoComIA', 'createdAt'
+      ];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, requiredFields) &&
+             isValidString(data.candidatoId, 1, 128) &&
+             isValidString(data.candidatoCodigo, 1, 30) &&
+             isValidString(data.candidatoNomeProtegido, 1, 100) &&
+             isValidString(data.candidatoCargo, 1, 120) &&
+             isOptionalString(data, 'solicitacaoId', 0, 128) &&
+             isValidString(data.empresaUid, 1, 128) &&
+             isOptionalString(data, 'empresaNome', 0, 150) &&
+             isOptionalList(data, 'requisitosAvaliados', 30) &&
+             isValidEmail(data.entrevistadorEmail) &&
+             isValidString(data.entrevistadorNome, 1, 120) &&
+             isOptionalList(data, 'perguntasPedrox', 30) &&
+             data.notaGeral is number && data.notaGeral >= 0 && data.notaGeral <= 100 &&
+             isOptionalListOrString(data, 'pontosFortes', 20, 2000) &&
+             isOptionalListOrString(data, 'pontosAtencao', 20, 2000) &&
+             isValidString(data.parecerPedrox, 0, 5000) &&
+             isValidString(data.recomendacao, 1, 100) &&
+             data.visivelParaEmpresa is bool &&
+             data.geradoComIA is bool &&
+             isValidTimestampOrMillis(data.createdAt);
+    }
+
+    function isValidFinanceiro(data) {
+      let allowedFields = [
+        'tipo', 'categoria', 'descricao', 'valor', 'status',
+        'empresaUid', 'empresaNome', 'empresaCnpj', 'planoTier',
+        'candidatoId', 'candidatoCodigo',
+        'vendedorEmail', 'vendedorNome', 'metodo',
+        'competencia', 'createdAt', 'paidAt'
+      ];
+      let requiredFields = [
+        'tipo', 'categoria', 'descricao', 'valor', 'status',
+        'metodo', 'createdAt'
+      ];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, requiredFields) &&
+             data.tipo in ['entrada', 'saida'] &&
+             isValidString(data.categoria, 2, 80) &&
+             isValidString(data.descricao, 0, 500) &&
+             data.valor is number && data.valor > 0 && data.valor <= 10000000 &&
+             data.status in ['pendente', 'pago', 'confirmado', 'recebido', 'cancelado', 'atrasado'] &&
+             isOptionalString(data, 'empresaUid', 0, 128) &&
+             isOptionalString(data, 'empresaNome', 0, 150) &&
+             isOptionalString(data, 'empresaCnpj', 0, 20) &&
+             isOptionalString(data, 'planoTier', 0, 40) &&
+             isOptionalString(data, 'candidatoId', 0, 128) &&
+             isOptionalString(data, 'candidatoCodigo', 0, 30) &&
+             isOptionalString(data, 'vendedorEmail', 0, 150) &&
+             isOptionalString(data, 'vendedorNome', 0, 120) &&
+             isValidString(data.metodo, 1, 40) &&
+             isOptionalString(data, 'competencia', 0, 30) &&
+             isValidTimestampOrMillis(data.createdAt) &&
+             isOptionalTimestampOrMillis(data, 'paidAt');
+    }
+
+    function isValidConfiguracao(data) {
+      return data is map &&
+             data.keys().size() > 0 &&
+             data.keys().size() <= 25 &&
+             isOptionalTimestampOrMillis(data, 'updatedAt') &&
+             (!('valorMensal' in data) || (data.valorMensal is number && data.valorMensal > 0 && data.valorMensal <= 100000)) &&
+             (!('valor' in data) || (data.valor is number && data.valor > 0 && data.valor <= 100000));
+    }
+
+    function isValidEquipeVitrine(data) {
+      let allowedFields = [
+        'nome', 'cargo', 'bio', 'fotoUrl', 'ativo',
+        'ordem', 'destaque', 'createdAt'
+      ];
+      let requiredFields = ['nome', 'cargo', 'ativo', 'createdAt'];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, requiredFields) &&
+             isValidString(data.nome, 2, 120) &&
+             isValidString(data.cargo, 2, 100) &&
+             isOptionalString(data, 'bio', 0, 500) &&
+             isOptionalString(data, 'fotoUrl', 0, 300000) &&
+             data.ativo is bool &&
+             (!('ordem' in data) || data.ordem == null || (data.ordem is int && data.ordem >= 0 && data.ordem <= 999)) &&
+             (!('destaque' in data) || data.destaque == null || data.destaque is bool) &&
+             isValidTimestampOrMillis(data.createdAt);
+    }
+
+    function isValidVendaEquipe(data) {
+      let allowedFields = [
+        'vendedorEmail', 'vendedorNome', 'empresaUid', 'empresaNome',
+        'empresaCnpj', 'planoTier', 'planoNome', 'valor', 'comissaoPercent',
+        'comissaoValor', 'status', 'observacoes', 'competencia',
+        'createdAt', 'approvedAt'
+      ];
+      let requiredFields = [
+        'vendedorEmail', 'vendedorNome', 'empresaNome', 'planoTier',
+        'planoNome', 'valor', 'comissaoPercent', 'comissaoValor',
+        'status', 'createdAt'
+      ];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, requiredFields) &&
+             isValidEmail(data.vendedorEmail) &&
+             data.vendedorEmail == data.vendedorEmail.lower() &&
+             isValidString(data.vendedorNome, 2, 120) &&
+             isOptionalString(data, 'empresaUid', 0, 128) &&
+             isValidString(data.empresaNome, 2, 150) &&
+             isOptionalString(data, 'empresaCnpj', 0, 20) &&
+             data.planoTier is string &&
+             data.planoTier in ['start', 'impulso', 'lider', 'vip'] &&
+             isValidString(data.planoNome, 2, 80) &&
+             data.valor is number && data.valor > 0 && data.valor <= 100000 &&
+             data.comissaoPercent is number && data.comissaoPercent >= 0 && data.comissaoPercent <= 100 &&
+             data.comissaoValor is number && data.comissaoValor >= 0 && data.comissaoValor <= 100000 &&
+             data.status is string &&
+             data.status in ['pendente', 'aprovada', 'cancelada'] &&
+             isOptionalString(data, 'observacoes', 0, 500) &&
+             isOptionalString(data, 'competencia', 0, 30) &&
+             isValidTimestampOrMillis(data.createdAt) &&
+             isOptionalTimestampOrMillis(data, 'approvedAt');
+    }
+
+    function isValidEmpresaContratando(data) {
+      let allowedFields = [
+        'empresaUid', 'empresaNome', 'tituloVaga', 'area',
+        'regime', 'salario', 'requisitos', 'ativa', 'createdAt'
+      ];
+      let requiredFields = [
+        'empresaNome', 'tituloVaga', 'area', 'ativa', 'createdAt'
+      ];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, requiredFields) &&
+             isOptionalString(data, 'empresaUid', 0, 128) &&
+             isValidString(data.empresaNome, 2, 150) &&
+             isValidString(data.tituloVaga, 2, 120) &&
+             isValidString(data.area, 2, 80) &&
+             isOptionalString(data, 'regime', 0, 80) &&
+             isOptionalString(data, 'salario', 0, 80) &&
+             isOptionalList(data, 'requisitos', 20) &&
+             data.ativa is bool &&
+             isValidTimestampOrMillis(data.createdAt);
+    }
+
+    function isValidSuporteChat(data) {
+      let allowedFields = [
+        'empresaUid', 'empresaNome', 'empresaCnpj', 'planoNome',
+        'status', 'atendenteNome', 'ultimaMensagem', 'createdAt', 'updatedAt'
+      ];
+      let requiredFields = [
+        'empresaUid', 'empresaNome', 'status', 'createdAt', 'updatedAt'
+      ];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, requiredFields) &&
+             isValidString(data.empresaUid, 1, 128) &&
+             isValidString(data.empresaNome, 1, 150) &&
+             isOptionalString(data, 'empresaCnpj', 0, 20) &&
+             isOptionalString(data, 'planoNome', 0, 80) &&
+             data.status is string &&
+             data.status in ['pedrox', 'aguardando_humano', 'em_atendimento', 'resolvido'] &&
+             isOptionalString(data, 'atendenteNome', 0, 120) &&
+             isOptionalString(data, 'ultimaMensagem', 0, 500) &&
+             isValidTimestampOrMillis(data.createdAt) &&
+             isValidTimestampOrMillis(data.updatedAt);
+    }
+
+    function isValidSuporteMsg(data) {
+      let allowedFields = ['autorTipo', 'autorNome', 'texto', 'createdAt'];
+      return hasOnlyAllowedFields(data, allowedFields) &&
+             hasRequiredFields(data, allowedFields) &&
+             data.autorTipo is string &&
+             data.autorTipo in ['empresa', 'pedrox', 'funcionario'] &&
+             isValidString(data.autorNome, 1, 120) &&
+             isValidString(data.texto, 1, 3000) &&
+             isValidTimestampOrMillis(data.createdAt);
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // 1. Public LGPD-safe Talent Bank
+    match /candidatos/{candId} {
+      allow read: if true;
+
+      allow create: if isValidCandidato(request.resource.data) &&
+                       (
+                         isJprhTeam() ||
+                         (
+                           request.resource.data.verificado == false &&
+                           request.resource.data.destaque == false &&
+                           request.resource.data.statusEntrevista == 'aguardando' &&
+                           request.resource.data.notaMedia == null &&
+                           (!('planoCandidato' in request.resource.data) || request.resource.data.planoCandidato == null || request.resource.data.planoCandidato in ['gratuito', 'pendente_vip'])
+                         )
+                       );
+
+      allow update: if isJprhTeam() &&
+                       isValidCandidato(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['createdAt']);
+
+      allow delete: if isJprhTeam();
+    }
+
+    // 2. Private Candidate Contact Details (LGPD-restricted to JP RH Team)
+    match /candidatos_privado/{candId} {
+      allow read: if isJprhTeam();
+
+      allow create: if isValidCandidatoPrivado(request.resource.data);
+
+      allow update: if isJprhTeam() &&
+                       isValidCandidatoPrivado(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['createdAt']);
+
+      allow delete: if isJprhTeam();
+    }
+
+    // 3. Partner Companies
+    match /empresas/{uid} {
+      allow read: if isJprhTeam() || isOwner(uid);
+
+      allow create: if isValidEmpresa(request.resource.data) &&
+                       request.resource.data.uid == uid &&
+                       (
+                         isAdmin() ||
+                         (
+                           isOwner(uid) &&
+                           hasAuthEmail() &&
+                           uidUnchanged() &&
+                           request.resource.data.email.lower() == request.auth.token.email.lower() &&
+                           request.resource.data.plano == 'gratuito' &&
+                           (!('planoTier' in request.resource.data) || request.resource.data.planoTier == null || request.resource.data.planoTier == 'gratuito') &&
+                           request.resource.data.premiumAte == null
+                         )
+                       );
+
+      allow update: if isValidEmpresa(request.resource.data) &&
+                       uidNotModified() &&
+                       (
+                         (
+                           isAdmin() &&
+                           areImmutableFieldsUnchanged(['uid', 'createdAt'])
+                         ) ||
+                         (
+                           isOwner(uid) &&
+                           request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                             'razaoSocial', 'nomeFantasia', 'responsavel',
+                             'whatsapp', 'updatedAt', 'plano',
+                             'planoSolicitado', 'planoValor',
+                             'vendedorEmail', 'vendedorNome'
+                           ]) &&
+                           areImmutableFieldsUnchanged(['uid', 'email', 'cnpj', 'premiumAte', 'planoTier', 'createdAt']) &&
+                           (
+                             request.resource.data.plano == resource.data.plano ||
+                             (resource.data.plano == 'gratuito' && request.resource.data.plano == 'pendente')
+                           )
+                         )
+                       );
+
+      allow delete: if isAdmin();
+    }
+
+    // 4. JP RH Staff Registry (Admin + Director with privilege guardrails)
+    match /funcionarios/{emailLower} {
+      allow read: if isDirector() ||
+                     (hasAuthEmail() && request.auth.token.email.lower() == emailLower);
+
+      allow create: if isDirector() &&
+                       isValidFuncionario(request.resource.data, emailLower) &&
+                       (
+                         isAdmin() ||
+                         (
+                           emailLower != 'pedroleitejoao398@gmail.com' &&
+                           (!('nivel' in request.resource.data) || request.resource.data.nivel == null || request.resource.data.nivel == 'funcionario')
+                         )
+                       );
+
+      allow update: if isDirector() &&
+                       isValidFuncionario(request.resource.data, emailLower) &&
+                       areImmutableFieldsUnchanged(['email', 'createdAt', 'createdBy']) &&
+                       (
+                         isAdmin() ||
+                         (
+                           emailLower != 'pedroleitejoao398@gmail.com' &&
+                           (!('nivel' in request.resource.data) || request.resource.data.nivel == null || request.resource.data.nivel == 'funcionario') &&
+                           (!('nivel' in resource.data) || resource.data.nivel != 'diretor')
+                         )
+                       );
+
+      allow delete: if isDirector() &&
+                       (
+                         isAdmin() ||
+                         (
+                           emailLower != 'pedroleitejoao398@gmail.com' &&
+                           (!('nivel' in resource.data) || resource.data.nivel != 'diretor')
+                         )
+                       );
+    }
+
+    // 5. Job Requirement Requests (Premium Companies -> JP RH Staff + Pedrox AI)
+    match /solicitacoes_vagas/{reqId} {
+      allow read: if isJprhTeam() ||
+                     (isAuthenticated() && resource.data.empresaUid == request.auth.uid);
+
+      allow create: if isValidSolicitacaoVaga(request.resource.data) &&
+                       (
+                         isAdmin() ||
+                         (
+                           isActivePremiumCompany() &&
+                           request.resource.data.empresaUid == request.auth.uid &&
+                           request.resource.data.status == 'aberta'
+                         )
+                       );
+
+      allow update: if isValidSolicitacaoVaga(request.resource.data) &&
+                       (
+                         (
+                           isJprhTeam() &&
+                           areImmutableFieldsUnchanged(['empresaUid', 'createdAt'])
+                         ) ||
+                         (
+                           isAuthenticated() &&
+                           resource.data.empresaUid == request.auth.uid &&
+                           request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                             'tituloVaga', 'area', 'requisitos',
+                             'descricao', 'regime', 'salario'
+                           ]) &&
+                           areImmutableFieldsUnchanged([
+                             'empresaUid', 'empresaNome', 'empresaCnpj',
+                             'status', 'createdAt'
+                           ])
+                         )
+                       );
+
+      allow delete: if isAdmin() ||
+                       (isAuthenticated() && resource.data.empresaUid == request.auth.uid);
+    }
+
+    // 6. Pedrox AI Candidate Evaluations
+    match /avaliacoes/{evalId} {
+      allow read: if isJprhTeam() ||
+                     (
+                       isActivePremiumCompany() &&
+                       resource.data.visivelParaEmpresa == true &&
+                       (
+                         resource.data.empresaUid == request.auth.uid ||
+                         resource.data.empresaUid == 'geral'
+                       )
+                     );
+
+      allow create: if isJprhTeam() &&
+                       isValidAvaliacao(request.resource.data);
+
+      allow update: if isJprhTeam() &&
+                       isValidAvaliacao(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['createdAt']);
+
+      allow delete: if isJprhTeam();
+    }
+
+    // 7. Financial Ledger (Admin Exclusive, plus restricted Company & Candidate VIP Pix Notice Create)
+    match /financeiro/{txId} {
+      allow read: if isAdmin();
+
+      allow create: if isValidFinanceiro(request.resource.data) &&
+                       (
+                         isAdmin() ||
+                         (
+                           isAuthenticated() &&
+                           'empresaUid' in request.resource.data &&
+                           request.resource.data.empresaUid == request.auth.uid &&
+                           request.resource.data.tipo == 'entrada' &&
+                           request.resource.data.categoria == 'Assinatura Premium' &&
+                           request.resource.data.valor in [50, 149, 269, 400] &&
+                           request.resource.data.status == 'pendente' &&
+                           (!('paidAt' in request.resource.data) || request.resource.data.paidAt == null)
+                         ) ||
+                         (
+                           request.resource.data.tipo == 'entrada' &&
+                           request.resource.data.categoria == 'Plano Candidato VIP' &&
+                           request.resource.data.valor == 20 &&
+                           request.resource.data.status == 'pendente' &&
+                           (!('paidAt' in request.resource.data) || request.resource.data.paidAt == null) &&
+                           'candidatoId' in request.resource.data &&
+                           request.resource.data.candidatoId is string &&
+                           request.resource.data.candidatoId.size() >= 1
+                         )
+                       );
+
+      allow update: if isAdmin() &&
+                       isValidFinanceiro(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['createdAt']);
+
+      allow delete: if isAdmin();
+    }
+
+    // 8. Public App / Pix Configuration (Admin-managed)
+    match /configuracoes/{docId} {
+      allow read: if true;
+
+      allow create: if isAdmin() &&
+                       isValidConfiguracao(request.resource.data);
+
+      allow update: if isAdmin() &&
+                       isValidConfiguracao(request.resource.data);
+
+      allow delete: if isAdmin();
+    }
+
+    // 9. Public JP RH Team Showcase with Photos (NO login emails / NO PII)
+    match /equipe_vitrine/{memberId} {
+      allow read: if true;
+
+      allow create: if isAdmin() &&
+                       isValidEquipeVitrine(request.resource.data);
+
+      allow update: if isAdmin() &&
+                       isValidEquipeVitrine(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['createdAt']);
+
+      allow delete: if isAdmin();
+    }
+
+    // 10. Employee Plan Sales & Commissions
+    match /vendas_equipe/{saleId} {
+      allow read: if isAdmin() ||
+                     (isStaff() && resource.data.vendedorEmail == request.auth.token.email.lower());
+
+      allow create: if isValidVendaEquipe(request.resource.data) &&
+                       (
+                         isAdmin() ||
+                         (
+                           isStaff() &&
+                           request.resource.data.vendedorEmail == request.auth.token.email.lower() &&
+                           request.resource.data.status == 'pendente' &&
+                           (!('approvedAt' in request.resource.data) || request.resource.data.approvedAt == null)
+                         )
+                       );
+
+      allow update: if isAdmin() &&
+                       isValidVendaEquipe(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['createdAt']);
+
+      allow delete: if isAdmin();
+    }
+
+    // 11. Public/VIP Hiring Companies Listing (NO PII)
+    match /empresas_contratando/{itemId} {
+      allow read: if true;
+
+      allow create: if isValidEmpresaContratando(request.resource.data) &&
+                       (
+                         isJprhTeam() ||
+                         (
+                           isActivePremiumCompany() &&
+                           'empresaUid' in request.resource.data &&
+                           request.resource.data.empresaUid == request.auth.uid
+                         )
+                       );
+
+      allow update: if isJprhTeam() &&
+                       isValidEmpresaContratando(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['createdAt']);
+
+      allow delete: if isJprhTeam();
+    }
+
+    // 12. Subscriber Support Chat (Pedrox AI + JP RH Sellers)
+    match /suporte_chats/{chatId} {
+      allow read: if isJprhTeam() ||
+                     (isActivePremiumCompany() && chatId == request.auth.uid);
+
+      allow create: if isValidSuporteChat(request.resource.data) &&
+                       (
+                         isJprhTeam() ||
+                         (
+                           isActivePremiumCompany() &&
+                           chatId == request.auth.uid &&
+                           request.resource.data.empresaUid == request.auth.uid
+                         )
+                       );
+
+      allow update: if isValidSuporteChat(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['empresaUid', 'createdAt']) &&
+                       (
+                         isJprhTeam() ||
+                         (
+                           isActivePremiumCompany() &&
+                           chatId == request.auth.uid &&
+                           resource.data.empresaUid == request.auth.uid
+                         )
+                       );
+
+      allow delete: if isAdmin();
+
+      match /mensagens/{msgId} {
+        allow read: if isJprhTeam() ||
+                       (isActivePremiumCompany() && chatId == request.auth.uid);
+
+        allow create: if isValidSuporteMsg(request.resource.data) &&
+                         (
+                           isJprhTeam() ||
+                           (
+                             isActivePremiumCompany() &&
+                             chatId == request.auth.uid &&
+                             request.resource.data.autorTipo in ['empresa', 'pedrox']
+                           )
+                         );
+
+        allow update: if isAdmin() &&
+                         isValidSuporteMsg(request.resource.data) &&
+                         areImmutableFieldsUnchanged(['createdAt']);
+
+        allow delete: if isAdmin();
+      }
+    }
+
+    // ===============================================================
+    // Default Deny — Block all unspecified collections & subcollections
+    // ===============================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

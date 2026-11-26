@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JP RH | Recursos Humanos, Gestão Empresarial & Liderança em Eunápolis - BA</title>
+    <meta name="description" content="JP RH: Agência de Recursos Humanos fundada por João Pedro Morais da Silva Leite em Eunápolis - BA. Planos empresariais, consultoria, formação de líderes, entrevistas com IA Pedrox e banco de talentos.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            black: '#09090B',
+                            dark: '#141417',
+                            card: '#1E1E22',
+                            border: '#2E2E34',
+                            yellow: '#FACC15',
+                            yellowHover: '#EAB308',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #09090B; color: #F5F5F5; overflow-x: hidden; }
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(250, 204, 21, 0.12) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .glass-header {
+            background: rgba(9, 9, 11, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #09090B; }
+        ::-webkit-scrollbar-thumb { background: #2E2E34; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FACC15; }
+        @keyframes slideInToast {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-enter { animation: slideInToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-yellow selection:text-brand-black">
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-24 right-6 z-[95] flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- =====================================================================
+         1. HEADER FIXO
+    ====================================================================== -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-header border-b border-brand-border transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="#inicio" class="flex items-center gap-3 group" aria-label="JP RH Recursos Humanos">
+                    <svg class="w-11 h-10 shrink-0 group-hover:scale-105 transition-transform" viewBox="0 0 120 105" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="jpGoldGrad" x1="10" y1="90" x2="105" y2="10" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#D97706"/>
+                                <stop offset="50%" stop-color="#FACC15"/>
+                                <stop offset="100%" stop-color="#FEF08A"/>
+                            </linearGradient>
+                            <linearGradient id="jpSilverGrad" x1="20" y1="85" x2="110" y2="15" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#6B7280"/>
+                                <stop offset="55%" stop-color="#D1D5DB"/>
+                                <stop offset="100%" stop-color="#F9FAFB"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M16 56C16 40 24 27 36 20" stroke="url(#jpGoldGrad)" stroke-width="3.5" stroke-linecap="round"/>
+                        <polygon points="34,15 44,17 38,26" fill="url(#jpGoldGrad)"/>
+                        <circle cx="20" cy="44" r="3" fill="#FACC15"/>
+                        <circle cx="28" cy="36" r="3.5" fill="#FACC15"/>
+                        <circle cx="26" cy="52" r="2.5" fill="#FACC15"/>
+                        <line x1="20" y1="44" x2="28" y2="36" stroke="#FACC15" stroke-width="1.8"/>
+                        <line x1="28" y1="36" x2="26" y2="52" stroke="#FACC15" stroke-width="1.8"/>
+                        <line x1="28" y1="36" x2="38" y2="32" stroke="#FACC15" stroke-width="1.8"/>
+                        <path d="M28 74C32 62 39 52 48 44" stroke="url(#jpGoldGrad)" stroke-width="5.5" stroke-linecap="round"/>
+                        <polygon points="43,39 56,37 52,50" fill="url(#jpGoldGrad)"/>
+                        <circle cx="62" cy="24" r="6" fill="url(#jpGoldGrad)"/>
+                        <path d="M53 52V38C53 34 56 32 61 32H66L77 25" stroke="url(#jpGoldGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="80" cy="18" r="5.5" fill="url(#jpSilverGrad)"/>
+                        <path d="M62 92V66C62 60 66 56 72 56H83C93 56 99 49 99 40C99 33 95 28 89 26" stroke="url(#jpSilverGrad)" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M16 64C16 79 27 88 41 85C52 82 61 72 72 60L98 31" stroke="url(#jpGoldGrad)" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M23 76C34 83 48 79 62 65L103 21" stroke="url(#jpSilverGrad)" stroke-width="7.5" stroke-linecap="round"/>
+                        <polygon points="94,14 114,11 109,31" fill="url(#jpSilverGrad)"/>
+                    </svg>
+                    <div class="flex flex-col">
+                        <div class="font-display font-extrabold text-2xl tracking-tight leading-none flex items-center gap-1">
+                            <span class="text-brand-yellow">JP</span><span class="text-neutral-200">RH</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.18em] text-neutral-400 font-medium mt-1">Recursos Humanos</span>
+                    </div>
+                </a>
+
+                <nav class="hidden xl:flex items-center gap-5 text-sm font-medium text-neutral-300">
+                    <a href="#inicio" class="hover:text-brand-yellow transition-colors">Início</a>
+                    <a href="#plano-premium" class="hover:text-brand-yellow transition-colors">Planos</a>
+                    <a href="#area-curriculos" class="hover:text-brand-yellow transition-colors">Enviar Currículo</a>
+                    <a href="#equipe-jprh" class="hover:text-brand-yellow transition-colors">Equipe</a>
+                    <a href="#banco-talentos" class="text-brand-yellow font-semibold flex items-center gap-1.5 hover:opacity-80">
+                        <i class="fa-solid fa-database text-xs"></i><span>Banco de Talentos</span>
+                    </a>
+                    <a href="#vagas" class="hover:text-brand-yellow transition-colors">Vagas</a>
+                </nav>
+
+                <div class="flex items-center gap-2.5">
+                    <button type="button" id="header-company-btn" onclick="openCompanyModal('plano')"
+                            class="hidden sm:inline-flex items-center gap-2 bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-brand-yellow/10">
+                        <i class="fa-solid fa-building"></i><span>Área da Empresa</span>
+                    </button>
+                    <button type="button" id="header-team-btn" onclick="openAdminModal()"
+                            class="hidden sm:inline-flex items-center gap-2 bg-brand-card hover:bg-neutral-800 text-neutral-200 border border-brand-border hover:border-brand-yellow/50 font-semibold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition-all">
+                        <i class="fa-solid fa-shield-halved text-brand-yellow"></i><span>Equipe JP RH</span>
+                    </button>
+                    <button id="mobile-menu-btn" aria-label="Abrir Menu" class="xl:hidden p-2.5 rounded-xl bg-brand-card border border-brand-border text-neutral-200 hover:text-brand-yellow">
+                        <i class="fa-solid fa-bars text-xl" id="mobile-menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden xl:hidden bg-brand-dark border-b border-brand-border px-4 pt-2 pb-6 space-y-2">
+            <a href="#inicio" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-neutral-200 hover:bg-brand-card hover:text-brand-yellow">Início</a>
+            <a href="#plano-premium" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-neutral-200 hover:bg-brand-card hover:text-brand-yellow">Planos para Empresas</a>
+            <a href="#sobre" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-neutral-200 hover:bg-brand-card hover:text-brand-yellow">O que é a JP RH</a>
+            <a href="#equipe-jprh" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-neutral-200 hover:bg-brand-card hover:text-brand-yellow">Nossa Equipe JP RH</a>
+            <a href="#banco-talentos" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-bold text-brand-yellow bg-brand-card/60">Banco de Talentos</a>
+            <a href="#vagas" class="mobile-link block px-4 py-2.5 rounded-xl text-sm font-medium text-neutral-200 hover:bg-brand-card hover:text-brand-yellow">Vagas em Destaque</a>
+            <div class="pt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 px-1">
+                <button type="button" id="mobile-company-btn" onclick="openCompanyModal('plano')" class="w-full bg-brand-yellow text-brand-black font-extrabold text-sm py-3 rounded-xl">Área da Empresa (Login / CNPJ)</button>
+                <button type="button" id="mobile-team-btn" onclick="openAdminModal()" class="w-full bg-brand-card border border-brand-border text-white font-bold text-sm py-3 rounded-xl">Equipe JP RH / Gestor</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- =====================================================================
+         2. HERO SECTION
+    ====================================================================== -->
+    <section id="inicio" class="relative pt-32 pb-20 lg:pt-44 lg:pb-28 bg-grid-pattern overflow-hidden">
+        <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-brand-yellow/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-card border border-brand-border text-xs sm:text-sm font-medium text-neutral-300 mb-8">
+                    <span class="w-2 h-2 rounded-full bg-brand-yellow animate-pulse"></span>
+                    <span>Eunápolis - BA • Gestão Empresarial, Entrevistas com IA Pedrox & RH</span>
+                </div>
+                <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12] mb-6">
+                    Transformamos <span class="text-brand-yellow">pessoas e empresas</span> em <span class="underline decoration-brand-yellow/60 decoration-4 underline-offset-8">Eunápolis</span> com gestão de alto impacto.
+                </h1>
+                <p class="text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed mb-10">
+                    Sua empresa escolhe o plano ideal, informa os requisitos da vaga e a equipe <strong class="text-white">JP RH</strong> conduz entrevistas estruturadas com a inteligência artificial <strong class="text-brand-yellow">Pedrox</strong>, entregando talentos avaliados e prontos para gerar resultado.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#plano-premium" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-bold text-base px-8 py-4 rounded-xl transition-all shadow-xl shadow-brand-yellow/15 hover:-translate-y-0.5">
+                        <i class="fa-solid fa-crown"></i><span>Conhecer os 4 Planos (a partir de R$ 50)</span>
+                    </a>
+                    <button type="button" onclick="openRegisterTalentModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brand-card hover:bg-neutral-800 text-white border border-brand-border hover:border-brand-yellow/50 font-semibold text-base px-8 py-4 rounded-xl transition-all hover:-translate-y-0.5">
+                        <i class="fa-solid fa-file-arrow-up text-brand-yellow"></i><span>Cadastrar Meu Currículo</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-3xl mx-auto mt-16 pt-10 border-t border-brand-border/80">
+                    <div>
+                        <p class="font-display font-extrabold text-2xl sm:text-3xl text-brand-yellow">Pedrox IA</p>
+                        <p class="text-xs sm:text-sm text-neutral-400 mt-1">Perguntas & avaliações sob medida</p>
+                    </div>
+                    <div>
+                        <p class="font-display font-extrabold text-2xl sm:text-3xl text-white" id="hero-talent-count">0</p>
+                        <p class="text-xs sm:text-sm text-neutral-400 mt-1">Currículos ativos em Eunápolis - BA</p>
+                    </div>
+                    <div class="col-span-2 md:col-span-1">
+                        <p class="font-display font-extrabold text-2xl sm:text-3xl text-brand-yellow">4 Planos</p>
+                        <p class="text-xs sm:text-sm text-neutral-400 mt-1">De R$ 50 a R$ 400/mês (VIP 360°)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         3. 4 PLANOS CRIATIVOS PARA EMPRESAS (START, IMPULSO, LÍDER, VIP 360°)
+    ====================================================================== -->
+    <section id="plano-premium" class="py-20 lg:py-28 bg-brand-dark border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-yellow/15 border border-brand-yellow/30 text-brand-yellow text-xs font-extrabold uppercase tracking-wider mb-4">
+                    <i class="fa-solid fa-crown"></i><span>Planos Corporativos JP RH • Login com CNPJ</span>
+                </div>
+                <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white leading-tight">
+                    Escolha o plano ideal para <span class="text-brand-yellow">contratar melhor e escalar sua empresa</span>
+                </h2>
+                <p class="text-neutral-400 text-sm sm:text-base mt-3">
+                    Do recrutamento inteligente com a IA <strong class="text-white">Pedrox</strong> à consultoria empresarial completa e formação de líderes e gerentes. Sem fidelidade.
+                </p>
+            </div>
+
+            <!-- 4 Planos renderizados dinamicamente por plans.js -->
+            <div id="public-plans-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6"></div>
+
+            <p class="text-center text-xs text-neutral-500 mt-8">
+                <i class="fa-solid fa-shield-halved text-brand-yellow mr-1"></i>
+                Em todos os planos, as entrevistas são conduzidas exclusivamente pela equipe JP RH com roteiro gerado pela IA Pedrox.
+            </p>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         4. O QUE É A JP RH & FUNDADOR
+    ====================================================================== -->
+    <section id="sobre" class="py-20 lg:py-28 bg-brand-black border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-5">
+                    <div class="relative bg-brand-card border border-brand-border rounded-3xl p-8 sm:p-10 overflow-hidden shadow-2xl">
+                        <div class="absolute -top-12 -right-12 w-40 h-40 bg-brand-yellow/15 rounded-full blur-2xl"></div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-brand-yellow/10 text-brand-yellow text-xs font-bold uppercase tracking-wider mb-6">Identidade & Liderança</div>
+                        <h3 class="font-display font-extrabold text-2xl sm:text-3xl text-white leading-snug mb-6">"Empresas fortes são construídas com processos claros, líderes preparados e pessoas certas."</h3>
+                        <div class="bg-brand-black/80 border border-brand-border rounded-2xl p-4 mb-6 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-brand-yellow text-brand-black font-display font-extrabold text-lg flex items-center justify-center shrink-0">JP</div>
+                            <div>
+                                <span class="text-[10px] uppercase tracking-widest text-brand-yellow font-bold block">Fundador & Diretor Executivo</span>
+                                <p class="font-display font-bold text-white text-sm sm:text-base leading-tight mt-0.5">João Pedro Morais da Silva Leite</p>
+                                <span class="text-xs text-neutral-400 block mt-0.5">Idealizador da JP RH — Eunápolis, BA</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3.5 border-t border-brand-border pt-5">
+                            <div class="flex items-start gap-3"><i class="fa-solid fa-circle-check text-brand-yellow mt-1"></i><p class="text-sm text-neutral-300"><strong class="text-white">Gestão Corporativa:</strong> Organização completa de equipes, metas e rotinas operacionais.</p></div>
+                            <div class="flex items-start gap-3"><i class="fa-solid fa-circle-check text-brand-yellow mt-1"></i><p class="text-sm text-neutral-300"><strong class="text-white">Formação de Líderes:</strong> Treinamentos práticos para gerentes e equipes comerciais.</p></div>
+                            <div class="flex items-start gap-3"><i class="fa-solid fa-circle-check text-brand-yellow mt-1"></i><p class="text-sm text-neutral-300"><strong class="text-white">Recrutamento com IA Pedrox:</strong> Entrevistas técnicas e comportamentais conduzidas pela JP RH.</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-7 space-y-6">
+                    <span class="text-brand-yellow font-bold text-xs uppercase tracking-widest">O que é a JP RH</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white leading-tight">Muito além de recrutamento: um ecossistema completo de Recursos Humanos e Gestão</h2>
+                    <p class="text-neutral-300 text-base sm:text-lg leading-relaxed">
+                        A <strong class="text-white">JP RH (Recursos Humanos)</strong>, idealizada e fundada por <strong class="text-brand-yellow">João Pedro Morais da Silva Leite</strong> em Eunápolis – BA, é especialista em estruturação empresarial, desenvolvimento de lideranças e gestão estratégica de pessoas.
+                    </p>
+                    <p class="text-neutral-400 text-base leading-relaxed">
+                        Atuamos como o braço direito do empresário: assumimos desde o <strong class="text-white">gerenciamento completo de equipes</strong> e <strong class="text-white">formação de líderes e gerentes</strong> até a condução profissional das entrevistas do nosso <strong class="text-white">Banco de Talentos</strong> com o apoio da IA <strong class="text-brand-yellow">Pedrox</strong>.
+                    </p>
+                    <div class="pt-4 flex flex-wrap gap-4">
+                        <a href="https://wa.me/5573981443993?text=Ol%C3%A1%20Jo%C3%A3o%20Pedro%20/%20JP%20RH!%20Gostaria%20de%20conhecer%20os%20planos%20e%20solu%C3%A7%C3%B5es%20da%20JP%20RH." target="_blank" class="inline-flex items-center gap-2 bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-bold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-brand-yellow/15">
+                            <i class="fa-brands fa-whatsapp text-lg"></i><span>Falar com João Pedro & Equipe</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         4B. NOSSA EQUIPE JP RH (FOTOS DOS FUNCIONÁRIOS NA PÁGINA DA EMPRESA)
+    ====================================================================== -->
+    <section id="equipe-jprh" class="py-20 lg:py-24 bg-brand-dark border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-brand-yellow font-bold text-xs uppercase tracking-widest">Quem Faz Acontecer</span>
+                <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white mt-2 mb-3">
+                    Conheça a <span class="text-brand-yellow">Equipe JP RH</span>
+                </h2>
+                <p class="text-neutral-400 text-sm sm:text-base">
+                    Nossos consultores, analistas de recrutamento e especialistas que entrevistam candidatos e atendem sua empresa em Eunápolis e região.
+                </p>
+            </div>
+
+            <div id="public-team-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+
+            <div id="public-team-empty" class="hidden max-w-xl mx-auto text-center bg-brand-card/60 border border-dashed border-brand-border rounded-3xl p-8">
+                <div class="w-16 h-16 rounded-2xl bg-brand-black border border-brand-yellow/40 flex items-center justify-center text-brand-yellow text-2xl mx-auto mb-4">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h3 class="font-display font-bold text-lg text-white">Vitrine da Equipe JP RH pronta para fotos!</h3>
+                <p class="text-xs text-neutral-400 mt-2 leading-relaxed">
+                    O Administrador pode adicionar as fotos, nomes e cargos da equipe JP RH na aba <strong>Equipe & Fotos</strong> dentro do Painel Gestor.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         4C. ÁREA DE CURRÍCULOS (GRÁTIS vs. PLANO CANDIDATO VIP R$ 20)
+    ====================================================================== -->
+    <section id="area-curriculos" class="py-20 lg:py-24 bg-brand-black border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            <div class="text-center max-w-3xl mx-auto">
+                <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-yellow/15 border border-brand-yellow/30 text-brand-yellow text-xs font-extrabold uppercase tracking-wider mb-4">
+                    <i class="fa-solid fa-file-circle-check"></i><span>Área do Candidato • Eunápolis - BA</span>
+                </span>
+                <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white">
+                    Cadastre seu currículo <span class="text-brand-yellow">de graça</span> ou passe na frente com o <span class="text-brand-yellow">Destaque VIP</span>
+                </h2>
+                <p class="text-neutral-400 text-sm sm:text-base mt-3">
+                    Enviar seu currículo na JP RH é <strong>100% gratuito</strong>. Mas se você quer sair na frente da concorrência, ficar no topo visível às empresas e ver quem está contratando agora, conheça o <strong>Plano Candidato VIP por apenas R$ 20</strong>.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Card Grátis -->
+                <div class="bg-brand-card border border-brand-border rounded-3xl p-7 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-neutral-800 text-neutral-300">Cadastro Padrão</span>
+                            <span class="font-display font-extrabold text-3xl text-white">GRÁTIS</span>
+                        </div>
+                        <h3 class="font-display font-extrabold text-2xl text-white mb-2">Currículo Gratuito JP RH</h3>
+                        <p class="text-xs text-neutral-400 mb-6">Você nunca paga para deixar seu currículo cadastrado na nossa base de Eunápolis.</p>
+                        <ul class="space-y-3 text-sm text-neutral-300 mb-8">
+                            <li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i><span>Cadastro 100% gratuito no Banco de Talentos JP RH</span></li>
+                            <li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i><span>Dados pessoais protegidos pela LGPD</span></li>
+                            <li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i><span>Participa da fila padrão de triagem e entrevistas JP RH</span></li>
+                            <li class="flex items-start gap-2.5 text-neutral-500"><i class="fa-solid fa-xmark mt-0.5"></i><span>Sem destaque no topo para empresas</span></li>
+                            <li class="flex items-start gap-2.5 text-neutral-500"><i class="fa-solid fa-xmark mt-0.5"></i><span>Sem visualização direta das empresas contratando agora</span></li>
+                        </ul>
+                    </div>
+                    <button type="button" onclick="openRegisterTalentModal(false)" class="w-full py-4 px-6 rounded-xl bg-brand-black hover:bg-neutral-900 border border-brand-border hover:border-brand-yellow text-white font-bold text-sm flex items-center justify-center gap-2 transition-all">
+                        <i class="fa-solid fa-file-arrow-up text-brand-yellow"></i><span>Cadastrar Currículo Gratuitamente</span>
+                    </button>
+                </div>
+
+                <!-- Card Candidato VIP R$ 20 -->
+                <div class="bg-gradient-to-br from-brand-card via-brand-card to-brand-black border-2 border-brand-yellow rounded-3xl p-7 sm:p-8 flex flex-col justify-between relative overflow-hidden shadow-2xl shadow-brand-yellow/10">
+                    <div class="absolute -top-12 -right-12 w-40 h-40 bg-brand-yellow/15 blur-3xl rounded-full pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-brand-yellow text-brand-black"><i class="fa-solid fa-crown mr-1"></i>Mais Chances de Contratação</span>
+                            <div class="text-right">
+                                <span class="font-display font-extrabold text-3xl text-brand-yellow">R$ 20</span>
+                                <span class="text-[11px] text-neutral-400 block">pagamento via Pix / Cartão</span>
+                            </div>
+                        </div>
+                        <h3 class="font-display font-extrabold text-2xl text-white mb-2">Candidato Destaque VIP</h3>
+                        <p class="text-xs text-neutral-300 mb-6">Por menos que um lanche, coloque seu currículo na frente de todos e acelere sua contratação!</p>
+                        <ul class="space-y-3 text-sm text-neutral-200 mb-8">
+                            <li class="flex items-start gap-2.5"><i class="fa-solid fa-crown text-brand-yellow mt-0.5"></i><span><strong class="text-white">Passe na frente da fila:</strong> seu perfil sobe automaticamente para o <strong>Topo do Banco de Talentos</strong></span></li>
+                            <li class="flex items-start gap-2.5"><i class="fa-solid fa-eye text-brand-yellow mt-0.5"></i><span><strong class="text-white">Fique visível em destaque para as empresas</strong> com selo dourado <strong>VIP Topo</strong></span></li>
+                            <li class="flex items-start gap-2.5"><i class="fa-solid fa-building-circle-check text-brand-yellow mt-0.5"></i><span><strong class="text-white">Veja as empresas que estão contratando agora</strong> em Eunápolis com vagas abertas</span></li>
+                            <li class="flex items-start gap-2.5"><i class="fa-solid fa-robot text-brand-yellow mt-0.5"></i><span><strong class="text-white">Prioridade na entrevista JP RH + Pedrox</strong> para receber sua nota de destaque antes dos concorrentes</span></li>
+                        </ul>
+                    </div>
+                    <div class="relative z-10 flex flex-col sm:flex-row gap-2.5">
+                        <button type="button" onclick="openRegisterTalentModal(true)" class="flex-1 py-4 px-5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-yellow/20">
+                            <i class="fa-solid fa-crown"></i><span>Cadastrar + Ativar VIP (R$ 20)</span>
+                        </button>
+                        <button type="button" onclick="openCandidateVipModal()" class="py-4 px-4 rounded-xl bg-brand-black border border-brand-yellow/50 text-brand-yellow hover:bg-neutral-900 font-bold text-xs">
+                            Já tenho código
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empresas Contratando Agora (Desbloqueado para Candidato VIP R$ 20) -->
+            <div class="bg-brand-card border border-brand-border rounded-3xl p-6 sm:p-8 space-y-5">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-brand-yellow flex items-center gap-1.5">
+                            <i class="fa-solid fa-fire"></i> Empresas Contratando Agora (<span id="hiring-companies-count">0</span> vagas ativas)
+                        </span>
+                        <h3 class="font-display font-extrabold text-xl text-white mt-1">Veja quem está contratando pela JP RH</h3>
+                    </div>
+                    <form onsubmit="handleUnlockCandidateVipArea(event)" class="flex gap-2 w-full md:w-auto">
+                        <input type="text" id="vip-unlock-code-input" placeholder="Seu código VIP (ex: JP-4821)" class="flex-1 md:w-56 px-3.5 py-2.5 rounded-xl bg-brand-black border border-brand-border text-xs text-white font-mono uppercase focus:outline-none focus:border-brand-yellow">
+                        <button type="submit" class="px-4 py-2.5 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs shrink-0">Desbloquear VIP</button>
+                    </form>
+                </div>
+                <div id="hiring-companies-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         5. BANCO DE TALENTOS
+    ====================================================================== -->
+    <section id="banco-talentos" class="py-20 lg:py-28 bg-brand-dark border-t border-brand-border relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-brand-yellow/10 border border-brand-yellow/30 text-brand-yellow text-xs font-bold uppercase tracking-wider mb-3">
+                        <i class="fa-solid fa-database"></i><span>Banco de Dados Real • Eunápolis - BA</span>
+                    </div>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white">Banco de Talentos <span class="text-brand-yellow">JP RH</span></h2>
+                    <p class="text-neutral-400 text-base sm:text-lg mt-2 max-w-2xl">
+                        Entrevistas conduzidas exclusivamente pela equipe JP RH com a IA <strong class="text-white">Pedrox</strong>. Empresas assinantes definem os requisitos e recebem o parecer completo no Portal da Empresa.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <button type="button" onclick="openRegisterTalentModal()" class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm transition-all shadow-lg shadow-brand-yellow/15">
+                        <i class="fa-solid fa-plus"></i><span>Cadastrar Currículo</span>
+                    </button>
+                    <button type="button" onclick="openCompanyModal('plano')" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-brand-card hover:bg-neutral-800 border border-brand-yellow/40 text-brand-yellow font-bold text-sm transition-all">
+                        <i class="fa-solid fa-crown"></i><span>Planos Empresas</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-5 sm:p-6 mb-8 shadow-xl">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div class="md:col-span-5 relative">
+                        <label for="talent-search" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">Buscar por Cargo ou Competência</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500"></i>
+                            <input type="text" id="talent-search" placeholder="Ex: Gerente, Vendedor, Caixa, Excel, CNH B..." class="w-full pl-11 pr-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-brand-yellow">
+                        </div>
+                    </div>
+                    <div class="md:col-span-3">
+                        <label for="talent-filter-area" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">Área de Atuação</label>
+                        <select id="talent-filter-area" class="w-full px-3.5 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow">
+                            <option value="todas">Todas as Áreas</option>
+                            <option value="Comércio & Vendas">Comércio & Vendas</option>
+                            <option value="Liderança & Gerência">Liderança & Gerência</option>
+                            <option value="Administrativo & Financeiro">Administrativo & Financeiro</option>
+                            <option value="Atendimento & Recepção">Atendimento & Recepção</option>
+                            <option value="Gastronomia & Hotelaria">Gastronomia & Hotelaria</option>
+                            <option value="Logística & Operacional">Logística & Operacional</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="talent-filter-disp" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">Disponibilidade</label>
+                        <select id="talent-filter-disp" class="w-full px-3.5 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow">
+                            <option value="todas">Todas</option>
+                            <option value="Imediata">Imediata</option>
+                            <option value="Aviso Prévio">Aviso Prévio</option>
+                            <option value="Freelance / Extra">Freelance / Extra</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="talent-filter-bairro" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">Bairro</label>
+                        <select id="talent-filter-bairro" class="w-full px-3.5 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow">
+                            <option value="todos">Todos os Bairros</option>
+                            <option value="Centro">Centro</option>
+                            <option value="Gusmão">Gusmão</option>
+                            <option value="Pequi">Pequi</option>
+                            <option value="Dinah Borges">Dinah Borges</option>
+                            <option value="Centauro">Centauro</option>
+                            <option value="Juca Rosa">Juca Rosa</option>
+                            <option value="Outros Bairros">Outros Bairros</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-brand-border/70 text-xs">
+                    <div class="flex items-center gap-2 text-neutral-300">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span>Exibindo <strong id="talents-showing-count" class="text-brand-yellow font-bold">0</strong> currículos cadastrados</span>
+                    </div>
+                    <button type="button" onclick="resetTalentFilters()" class="text-neutral-400 hover:text-brand-yellow font-semibold flex items-center gap-1.5"><i class="fa-solid fa-rotate-left"></i><span>Limpar filtros</span></button>
+                </div>
+            </div>
+
+            <div id="talents-loading" class="text-center py-16">
+                <div class="inline-block w-10 h-10 border-4 border-brand-border border-t-brand-yellow rounded-full animate-spin mb-4"></div>
+                <p class="text-neutral-400 text-sm">Conectando ao Banco de Talentos JP RH...</p>
+            </div>
+            <div id="talents-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <div id="talents-empty" class="hidden text-center py-16 bg-brand-card/50 border border-brand-border rounded-2xl p-8">
+                <div class="w-14 h-14 rounded-2xl bg-brand-black border border-brand-border flex items-center justify-center text-brand-yellow text-2xl mx-auto mb-4"><i class="fa-solid fa-database"></i></div>
+                <h3 class="font-display font-bold text-xl text-white mb-2">Nenhum currículo cadastrado no momento</h3>
+                <p class="text-neutral-400 text-sm max-w-md mx-auto mb-6">O Banco de Talentos está pronto para receber profissionais reais de Eunápolis e região.</p>
+                <button type="button" onclick="openRegisterTalentModal()" class="px-5 py-2.5 rounded-xl bg-brand-yellow text-brand-black text-sm font-bold">Cadastrar meu Currículo</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         6. VITRINE DE VAGAS
+    ====================================================================== -->
+    <section id="vagas" class="py-20 lg:py-28 bg-brand-dark border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <span class="text-brand-yellow font-bold text-xs uppercase tracking-widest">Oportunidades Reais</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white mt-2">Vagas em Destaque em Eunápolis</h2>
+                </div>
+                <p class="text-neutral-400 text-sm sm:text-base max-w-md">Filtre por área de interesse e candidate-se diretamente pelo nosso canal rápido.</p>
+            </div>
+            <div class="flex flex-wrap gap-2.5 mb-10" id="job-filters">
+                <button onclick="filterJobs('todas')" data-filter="todas" class="filter-btn active px-4 py-2.5 rounded-xl text-sm font-bold bg-brand-yellow text-brand-black">Todas as Áreas</button>
+                <button onclick="filterJobs('Comércio/Varejo')" data-filter="Comércio/Varejo" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-semibold bg-brand-card text-neutral-300 border border-brand-border">Comércio / Varejo</button>
+                <button onclick="filterJobs('Liderança/Gerência')" data-filter="Liderança/Gerência" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-semibold bg-brand-card text-neutral-300 border border-brand-border">Liderança / Gerência</button>
+                <button onclick="filterJobs('Atendimento/Recepção')" data-filter="Atendimento/Recepção" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-semibold bg-brand-card text-neutral-300 border border-brand-border">Atendimento / Recepção</button>
+                <button onclick="filterJobs('Administrativo/Logística')" data-filter="Administrativo/Logística" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-semibold bg-brand-card text-neutral-300 border border-brand-border">Administrativo / Logística</button>
+            </div>
+            <div id="jobs-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         7. FORMULÁRIO CONTATO WHATSAPP
+    ====================================================================== -->
+    <section id="contato" class="py-20 lg:py-28 bg-brand-black border-t border-brand-border">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-brand-card border border-brand-border rounded-3xl p-6 sm:p-10 lg:p-12 shadow-2xl">
+                <div class="text-center max-w-2xl mx-auto mb-8">
+                    <span class="text-brand-yellow font-bold text-xs uppercase tracking-widest">Atendimento Imediato</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white mt-2 mb-3">Inicie seu atendimento agora</h2>
+                    <p class="text-neutral-400 text-sm sm:text-base">Solicite atendimento empresarial, consultoria, formação de líderes ou encaminhe seu currículo para o WhatsApp da <strong class="text-brand-yellow">JP RH</strong>.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3 max-w-md mx-auto mb-8 p-1.5 bg-brand-black rounded-2xl border border-brand-border">
+                    <button type="button" id="form-toggle-empresa" onclick="setFormMode('empresa')" class="py-3 px-4 rounded-xl font-bold text-sm bg-brand-yellow text-brand-black flex items-center justify-center gap-2"><i class="fa-solid fa-building"></i><span>Sou Empresa</span></button>
+                    <button type="button" id="form-toggle-candidato" onclick="setFormMode('candidato')" class="py-3 px-4 rounded-xl font-bold text-sm text-neutral-400 hover:text-white flex items-center justify-center gap-2"><i class="fa-solid fa-user"></i><span>Sou Candidato</span></button>
+                </div>
+
+                <form id="form-empresa" onsubmit="handleEmpresaSubmit(event)" class="space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div><label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2">Nome da Empresa *</label><input type="text" id="emp-nome-empresa" required placeholder="Ex: Grupo Comercial Eunápolis" class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white focus:outline-none focus:border-brand-yellow"></div>
+                        <div><label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2">Seu Nome e Cargo *</label><input type="text" id="emp-responsavel" required placeholder="Ex: Carlos Silva - Proprietário" class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white focus:outline-none focus:border-brand-yellow"></div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2">Plano / Solução *</label>
+                            <select id="emp-servico" class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white focus:outline-none focus:border-brand-yellow">
+                                <option value="Plano VIP 360° (R$ 400/mês) — Consultoria + Líderes + Talentos">Plano VIP 360° (R$ 400/mês)</option>
+                                <option value="Plano Líder (R$ 269/mês) — Treinamentos + RH">Plano Líder (R$ 269/mês)</option>
+                                <option value="Plano Impulso (R$ 149/mês) — Vagas Ilimitadas 48h">Plano Impulso (R$ 149/mês)</option>
+                                <option value="Plano Start (R$ 50/mês) — Entrevistas Pedrox">Plano Start (R$ 50/mês)</option>
+                                <option value="Gerenciamento Completo da Empresa">Gerenciamento Completo da Empresa</option>
+                            </select>
+                        </div>
+                        <div><label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2">Demanda Principal *</label><input type="text" id="emp-cargo" required placeholder="Ex: Consultoria, vaga de gerente, treinamento..." class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white focus:outline-none focus:border-brand-yellow"></div>
+                    </div>
+                    <div><label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2">Detalhes (Opcional)</label><textarea id="emp-detalhes" rows="3" class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white focus:outline-none focus:border-brand-yellow"></textarea></div>
+                    <button type="submit" class="w-full py-4 px-6 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-base flex items-center justify-center gap-3 shadow-lg shadow-brand-yellow/20"><i class="fa-brands fa-whatsapp text-xl"></i><span>Solicitar Atendimento no WhatsApp</span></button>
+                </form>
+
+                <form id="form-candidato" onsubmit="handleCandidatoSubmit(event)" class="hidden space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div><label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2">Seu Nome Completo *</label><input type="text" id="cand-nome" required class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white focus:outline-none focus:border-brand-yellow"></div>
+                        <div><label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2">Bairro / Cidade *</label><input type="text" id="cand-bairro" required class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white focus:outline-none focus:border-brand-yellow"></div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div><label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2">Vaga / Área *</label><input type="text" id="cand-vaga" required class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white focus:outline-none focus:border-brand-yellow"></div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2">Solicitação *</label>
+                            <select id="cand-servico" class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white">
+                                <option value="Candidatura a Vaga / Enviar Currículo">Candidatar-me a uma vaga</option>
+                                <option value="Cadastro no Banco de Talentos">Cadastrar no Banco de Talentos</option>
+                                <option value="Cursos & Qualificação">Inscrição em Cursos</option>
+                                <option value="Currículo Profissional">Fazer Currículo Profissional</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div><label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2">Experiência (Opcional)</label><textarea id="cand-experiencia" rows="3" class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white focus:outline-none focus:border-brand-yellow"></textarea></div>
+                    <button type="submit" class="w-full py-4 px-6 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-base flex items-center justify-center gap-3"><i class="fa-brands fa-whatsapp text-xl"></i><span>Enviar no WhatsApp</span></button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         8. RODAPÉ
+    ====================================================================== -->
+    <footer class="bg-brand-dark border-t border-brand-border pt-16 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-brand-border">
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-yellow text-brand-black font-display font-extrabold text-lg flex items-center justify-center">JP</div>
+                        <div>
+                            <div class="font-display font-extrabold text-2xl leading-none flex items-center gap-1"><span class="text-brand-yellow">JP</span><span class="text-neutral-200">RH</span></div>
+                            <span class="text-[10px] uppercase tracking-[0.18em] text-neutral-400 block mt-1">Recursos Humanos & Gestão Empresarial</span>
+                        </div>
+                    </div>
+                    <p class="text-neutral-400 text-sm max-w-md leading-relaxed">Planos empresariais, consultoria, formação de líderes, recrutamento com IA Pedrox e banco de talentos em Eunápolis - BA.</p>
+                    <p class="text-xs text-neutral-300 font-medium">Fundador: <strong class="text-brand-yellow">João Pedro Morais da Silva Leite</strong></p>
+                </div>
+                <div>
+                    <h4 class="font-display font-bold text-white text-sm uppercase tracking-wider mb-4">Acessos</h4>
+                    <ul class="space-y-2.5 text-sm text-neutral-400">
+                        <li><button type="button" onclick="openCompanyModal('plano')" class="hover:text-brand-yellow">Portal da Empresa (CNPJ)</button></li>
+                        <li><button type="button" onclick="openRegisterTalentModal()" class="hover:text-brand-yellow">Cadastrar Currículo</button></li>
+                        <li><a href="#plano-premium" class="hover:text-brand-yellow">4 Planos Empresariais</a></li>
+                        <li><a href="#equipe-jprh" class="hover:text-brand-yellow">Nossa Equipe</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-display font-bold text-white text-sm uppercase tracking-wider mb-4">Atendimento</h4>
+                    <ul class="space-y-3 text-sm text-neutral-400">
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-location-dot text-brand-yellow mt-1"></i><span>Eunápolis - BA e Região</span></li>
+                        <li class="flex items-center gap-3"><i class="fa-brands fa-whatsapp text-brand-yellow text-base"></i><a href="https://wa.me/5573981443993" target="_blank" class="text-white font-semibold hover:text-brand-yellow">(73) 98144-3993</a></li>
+                        <li class="flex items-center gap-3"><i class="fa-regular fa-clock text-brand-yellow"></i><span>Seg a Sex: 08h às 18h</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
+                <p>&copy; <span id="current-year"></span> <strong class="text-neutral-300">JP RH — Recursos Humanos</strong>. Titularidade exclusiva de <strong class="text-neutral-300">João Pedro Morais da Silva Leite</strong> (Lei nº 9.610/98).</p>
+                <div class="flex items-center gap-4 shrink-0">
+                    <span>Eunápolis - Bahia</span><span>•</span>
+                    <button type="button" onclick="openAdminModal()" class="text-neutral-400 hover:text-brand-yellow flex items-center gap-1.5 font-semibold"><i class="fa-solid fa-lock text-[10px]"></i><span>Acesso Equipe & Gestor JP RH</span></button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botão Flutuante WhatsApp -->
+    <a href="https://wa.me/5573981443993?text=Ol%C3%A1%20JP%20RH!" target="_blank" aria-label="Falar no WhatsApp" class="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-brand-yellow hover:bg-brand-yellowHover text-brand-black flex items-center justify-center shadow-2xl shadow-brand-yellow/30 hover:scale-110 transition-transform">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </a>
+
+    <!-- =====================================================================
+         MODAL 1: FICHA DO CANDIDATO
+    ====================================================================== -->
+    <div id="modal-talent-detail" class="hidden fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-brand-card border border-brand-border rounded-3xl max-w-xl w-full p-6 sm:p-8 relative shadow-2xl my-8">
+            <button type="button" onclick="closeTalentDetailModal()" aria-label="Fechar" class="absolute top-5 right-5 w-9 h-9 rounded-xl bg-brand-black border border-brand-border text-neutral-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            <div id="modal-talent-detail-body"></div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 2: CADASTRO DE CURRÍCULO
+    ====================================================================== -->
+    <div id="modal-register-talent" class="hidden fixed inset-0 z-[65] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-brand-card border border-brand-border rounded-3xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl my-8">
+            <button type="button" onclick="closeRegisterTalentModal()" aria-label="Fechar" class="absolute top-5 right-5 w-9 h-9 rounded-xl bg-brand-black border border-brand-border text-neutral-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            <div class="mb-6">
+                <span class="text-brand-yellow font-bold text-xs uppercase tracking-widest">Cadastro Gratuito • LGPD</span>
+                <h3 class="font-display font-extrabold text-2xl sm:text-3xl text-white mt-1">Cadastrar Currículo na JP RH</h3>
+                <p class="text-neutral-400 text-sm mt-1">Seu nome completo e WhatsApp ficam protegidos no servidor, visíveis apenas para a equipe JP RH.</p>
+            </div>
+            <form id="form-register-talent" onsubmit="handleRegisterTalent(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Nome Completo *</label><input type="text" id="reg-nome" required class="w-full px-3.5 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow"></div>
+                    <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">WhatsApp *</label><input type="tel" id="reg-whatsapp" required placeholder="(73) 99999-9999" class="w-full px-3.5 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow"></div>
+                    <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">E-mail (Opcional)</label><input type="email" id="reg-email" class="w-full px-3.5 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow"></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Cargo Pretendido *</label><input type="text" id="reg-cargo" required class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow"></div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Área *</label>
+                        <select id="reg-area" required class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white">
+                            <option value="Comércio & Vendas">Comércio & Vendas</option>
+                            <option value="Liderança & Gerência">Liderança & Gerência</option>
+                            <option value="Administrativo & Financeiro">Administrativo & Financeiro</option>
+                            <option value="Atendimento & Recepção">Atendimento & Recepção</option>
+                            <option value="Gastronomia & Hotelaria">Gastronomia & Hotelaria</option>
+                            <option value="Logística & Operacional">Logística & Operacional</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Experiência *</label>
+                        <select id="reg-experiencia-tempo" required class="w-full px-3.5 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white">
+                            <option value="Primeiro Emprego">Primeiro Emprego</option>
+                            <option value="Menos de 1 ano">Menos de 1 ano</option>
+                            <option value="1 a 2 anos">1 a 2 anos</option>
+                            <option value="3 a 5 anos">3 a 5 anos</option>
+                            <option value="Mais de 5 anos">Mais de 5 anos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Bairro *</label>
+                        <select id="reg-bairro" required class="w-full px-3.5 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white">
+                            <option value="Centro">Centro</option><option value="Gusmão">Gusmão</option><option value="Pequi">Pequi</option><option value="Dinah Borges">Dinah Borges</option><option value="Centauro">Centauro</option><option value="Juca Rosa">Juca Rosa</option><option value="Outros Bairros">Outros Bairros</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Disponibilidade *</label>
+                        <select id="reg-disponibilidade" required class="w-full px-3.5 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white">
+                            <option value="Imediata">Imediata</option><option value="Aviso Prévio">Aviso Prévio</option><option value="Freelance / Extra">Freelance / Extra</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Escolaridade *</label>
+                    <select id="reg-escolaridade" required class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white">
+                        <option value="Ensino Médio Completo">Ensino Médio Completo</option><option value="Ensino Superior Cursando">Ensino Superior Cursando</option><option value="Ensino Superior Completo">Ensino Superior Completo</option><option value="Curso Técnico">Curso Técnico</option><option value="Ensino Médio Incompleto">Ensino Médio Incompleto</option>
+                    </select>
+                </div>
+                <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Habilidades (separadas por vírgula) *</label><input type="text" id="reg-habilidades" required placeholder="Proatividade, Atendimento, Excel, Vendas" class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow"></div>
+                <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Resumo Profissional *</label><textarea id="reg-resumo" rows="3" required class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow"></textarea></div>
+                <label class="flex items-start gap-3 p-3.5 rounded-2xl bg-brand-yellow/10 border border-brand-yellow/40 cursor-pointer">
+                    <input type="checkbox" id="reg-want-vip" class="w-4 h-4 mt-0.5 accent-brand-yellow shrink-0">
+                    <span class="text-xs text-neutral-200 leading-relaxed">
+                        <strong class="text-brand-yellow">Quero ativar o Plano Candidato Destaque VIP (R$ 20)</strong> após salvar — subir para o topo do Banco de Talentos, ter prioridade na entrevista e ver empresas que estão contratando agora. <em class="text-neutral-400">(Desmarcado = 100% Gratuito)</em>
+                    </span>
+                </label>
+                <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                    <button type="submit" id="btn-submit-talent" class="flex-1 py-3.5 px-6 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-check"></i><span>Salvar Currículo no Banco de Talentos</span></button>
+                    <button type="button" onclick="closeRegisterTalentModal()" class="py-3.5 px-5 rounded-xl bg-brand-black border border-brand-border text-neutral-300 font-semibold text-sm">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 2B: PAGAMENTO CANDIDATO DESTAQUE VIP (R$ 20 QR CODE PIX + CARTÃO)
+    ====================================================================== -->
+    <div id="modal-candidate-vip" class="hidden fixed inset-0 z-[80] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-brand-card border-2 border-brand-yellow/60 rounded-3xl max-w-lg w-full p-6 sm:p-7 relative shadow-2xl my-8 space-y-5">
+            <button type="button" onclick="closeCandidateVipModal()" aria-label="Fechar" class="absolute top-5 right-5 w-9 h-9 rounded-xl bg-brand-black border border-brand-border text-neutral-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+
+            <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full bg-brand-yellow text-brand-black"><i class="fa-solid fa-crown mr-1"></i>Plano Candidato Destaque VIP</span>
+                <h3 class="font-display font-extrabold text-2xl text-white mt-2">Ative por apenas <span class="text-brand-yellow">R$ 20,00</span></h3>
+                <p class="text-xs text-neutral-400 mt-1">Aponte a câmera do app do seu banco para o QR Code abaixo ou copie o código Pix (valor R$ 20,00 já preenchido!).</p>
+            </div>
+
+            <div class="bg-brand-black border border-brand-border rounded-2xl p-4 flex flex-col items-center gap-3">
+                <img id="cand-vip-qr-img" src="" alt="QR Code Pix R$ 20" class="w-44 h-44 rounded-xl bg-white p-2">
+                <div class="w-full space-y-1.5">
+                    <label class="block text-[10px] font-bold uppercase text-neutral-400">Pix Copia e Cola (R$ 20,00):</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="cand-vip-brcode" readonly class="flex-1 px-3 py-2 rounded-xl bg-brand-card border border-brand-border text-[11px] font-mono text-brand-yellow truncate">
+                        <button type="button" onclick="copyPixPayloadById('cand-vip-brcode')" class="px-3.5 py-2 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs shrink-0"><i class="fa-regular fa-copy mr-1"></i>Copiar</button>
+                    </div>
+                </div>
+                <a id="cand-vip-card-btn" href="#" target="_blank" rel="noopener noreferrer" class="hidden w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs text-center">
+                    <i class="fa-solid fa-credit-card mr-1.5"></i>Ou Pagar R$ 20,00 no Cartão / Checkout Online
+                </a>
+            </div>
+
+            <form onsubmit="handleCandidateVipPixConfirm(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-neutral-300 mb-1">Código do seu Currículo *</label>
+                    <input type="text" id="cand-vip-code-input" required placeholder="Ex: JP-4821" class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm font-mono uppercase text-white focus:outline-none focus:border-brand-yellow">
+                </div>
+                <button type="submit" id="btn-cand-vip-confirm" class="w-full py-3.5 px-5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs sm:text-sm">
+                    <i class="fa-solid fa-check-double mr-2"></i>Já fiz o Pix de R$ 20,00 — Ativar Meu Destaque VIP
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 3: PORTAL DA EMPRESA (LOGIN COM OLHINHO + CNPJ + 4 PLANOS)
+    ====================================================================== -->
+    <div id="modal-company" class="hidden fixed inset-0 z-[70] bg-black/85 backdrop-blur-md flex items-start justify-center p-4 overflow-y-auto">
+        <div class="bg-brand-card border border-brand-border rounded-3xl max-w-4xl w-full p-6 sm:p-8 relative shadow-2xl my-8">
+            <button type="button" onclick="closeCompanyModal()" aria-label="Fechar" class="absolute top-5 right-5 w-9 h-9 rounded-xl bg-brand-black border border-brand-border text-neutral-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+
+            <div id="company-role-notice" class="hidden py-10 text-center space-y-4">
+                <i class="fa-solid fa-user-shield text-4xl text-brand-yellow"></i>
+                <h3 class="font-display font-extrabold text-2xl text-white">Você está logado como Equipe / Admin JP RH</h3>
+                <p class="text-sm text-neutral-400 max-w-md mx-auto">Para gerenciar o sistema, abra o Painel JP RH. Para testar como Empresa, saia da conta primeiro.</p>
+                <div class="flex justify-center gap-3">
+                    <button type="button" onclick="closeCompanyModal(); openAdminModal();" class="px-5 py-3 rounded-xl bg-brand-yellow text-brand-black font-bold text-sm">Abrir Painel JP RH</button>
+                    <button type="button" onclick="handleLogout()" class="px-5 py-3 rounded-xl bg-brand-black border border-brand-border text-neutral-300 font-semibold text-sm">Sair</button>
+                </div>
+            </div>
+
+            <div id="company-auth-view" class="max-w-xl mx-auto py-4">
+                <div class="text-center mb-6">
+                    <div class="w-14 h-14 rounded-2xl bg-brand-yellow/10 border border-brand-yellow/30 text-brand-yellow flex items-center justify-center text-2xl mx-auto mb-3"><i class="fa-solid fa-building-shield"></i></div>
+                    <h3 class="font-display font-extrabold text-2xl sm:text-3xl text-white">Portal da Empresa JP RH</h3>
+                    <p class="text-neutral-400 text-sm mt-1">Cadastre-se com seu <strong class="text-white">CNPJ</strong> para assinar um dos <strong class="text-brand-yellow">4 Planos Empresariais</strong> e acompanhar avaliações feitas pela equipe JP RH + Pedrox.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 p-1.5 bg-brand-black rounded-2xl border border-brand-border mb-6">
+                    <button type="button" id="comp-auth-tab-login" onclick="switchCompanyAuthMode('login')" class="py-2.5 px-4 rounded-xl font-bold text-sm bg-brand-yellow text-brand-black">Entrar</button>
+                    <button type="button" id="comp-auth-tab-register" onclick="switchCompanyAuthMode('register')" class="py-2.5 px-4 rounded-xl font-bold text-sm text-neutral-400 hover:text-white">Cadastrar com CNPJ</button>
+                </div>
+
+                <!-- Login Empresa com olhinho + Esqueci senha -->
+                <form id="form-company-login" onsubmit="handleCompanyLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-1.5">E-mail Corporativo *</label>
+                        <input type="email" id="comp-login-email" required placeholder="empresa@dominio.com.br" class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow">
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-neutral-300">Senha *</label>
+                            <button type="button" onclick="openPasswordResetModal(document.getElementById('comp-login-email').value)" class="text-[11px] font-semibold text-brand-yellow hover:underline">Esqueci / Trocar senha</button>
+                        </div>
+                        <div class="relative">
+                            <input type="password" id="comp-login-password" required placeholder="••••••••" class="w-full pl-4 pr-11 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow">
+                            <button type="button" onclick="togglePasswordVisibility('comp-login-password', this)" aria-label="Mostrar senha" class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1.5"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-company-login" class="w-full py-3.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm">Entrar no Portal da Empresa</button>
+                </form>
+
+                <!-- Cadastro Empresa com CNPJ + olhinho -->
+                <form id="form-company-register" onsubmit="handleCompanyRegister(event)" class="hidden space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">CNPJ *</label><input type="text" id="comp-reg-cnpj" required maxlength="18" placeholder="00.000.000/0001-00" class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-white text-sm font-mono focus:outline-none focus:border-brand-yellow"></div>
+                        <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Nome Fantasia *</label><input type="text" id="comp-reg-fantasia" required class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow"></div>
+                    </div>
+                    <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Razão Social *</label><input type="text" id="comp-reg-razao" required class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow"></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Responsável *</label><input type="text" id="comp-reg-responsavel" required class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow"></div>
+                        <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">WhatsApp *</label><input type="tel" id="comp-reg-whatsapp" required placeholder="(73) 99999-9999" class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow"></div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">E-mail de Acesso *</label><input type="email" id="comp-reg-email" required class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow"></div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Crie uma Senha (mín. 6) *</label>
+                            <div class="relative">
+                                <input type="password" id="comp-reg-password" required minlength="6" placeholder="••••••••" class="w-full pl-4 pr-11 py-3 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow">
+                                <button type="button" onclick="togglePasswordVisibility('comp-reg-password', this)" aria-label="Mostrar senha" class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1.5"><i class="fa-solid fa-eye"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-company-register" class="w-full py-3.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm">Cadastrar Empresa com CNPJ</button>
+                </form>
+            </div>
+
+            <!-- Dashboard Empresa Logada -->
+            <div id="company-dashboard-view" class="hidden space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-brand-border pr-10">
+                    <div>
+                        <div id="comp-dash-plan-badge" class="mb-1.5"></div>
+                        <h3 id="comp-dash-name" class="font-display font-extrabold text-2xl text-white">Empresa</h3>
+                        <p id="comp-dash-cnpj" class="text-xs text-neutral-400 font-mono mt-0.5"></p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="openPasswordResetModal()" class="px-3.5 py-2 rounded-xl bg-brand-black border border-brand-border text-neutral-300 hover:text-brand-yellow text-xs font-semibold"><i class="fa-solid fa-key mr-1"></i>Trocar Senha</button>
+                        <button type="button" onclick="handleLogout()" class="px-3.5 py-2 rounded-xl bg-brand-black border border-brand-border text-neutral-300 hover:text-white text-xs font-semibold"><i class="fa-solid fa-right-from-bracket mr-1"></i>Sair</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" id="comp-dash-tab-plano" onclick="switchCompanyDashTab('plano')" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-yellow text-brand-black"><i class="fa-solid fa-crown mr-1.5"></i>Meu Plano</button>
+                    <button type="button" id="comp-dash-tab-requisitos" onclick="switchCompanyDashTab('requisitos')" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-list-check mr-1.5"></i>Requisitos da Vaga</button>
+                    <button type="button" id="comp-dash-tab-avaliacoes" onclick="switchCompanyDashTab('avaliacoes')" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-clipboard-check mr-1.5"></i>Avaliações JP RH</button>
+                    <button type="button" id="comp-dash-tab-suporte" onclick="switchCompanyDashTab('suporte')" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-comments mr-1.5 text-brand-yellow"></i>Suporte & Chat</button>
+                </div>
+
+                <!-- PANE 1: ESCOLHA DOS 4 PLANOS + QR CODE PIX + CARTÃO -->
+                <div id="comp-dash-pane-plano" class="space-y-4">
+                    <div id="comp-upgrade-box" class="bg-brand-black border-2 border-brand-yellow/50 rounded-2xl p-5 sm:p-6 space-y-5">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-brand-yellow">1. Escolha seu Plano JP RH</span>
+                            <h4 class="font-display font-extrabold text-xl text-white mt-1"><span id="pix-display-plan-name">Plano Start</span> — <span id="pix-display-value" class="text-brand-yellow">R$ 50,00</span>/mês</h4>
+                        </div>
+                        <div id="comp-plan-selector" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">Foi atendido por algum consultor da JP RH? (Opcional — contabiliza venda da equipe)</label>
+                            <select id="comp-plan-seller-select" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white focus:outline-none focus:border-brand-yellow">
+                                <option value="">— Atendimento direto pelo site —</option>
+                            </select>
+                        </div>
+
+                        <div class="bg-brand-card border border-brand-border rounded-2xl p-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                            <div class="md:col-span-4 flex flex-col items-center">
+                                <img id="comp-pix-qr-img" src="" alt="QR Code Pix" class="w-40 h-40 rounded-xl bg-white p-2 shadow">
+                                <span class="text-[10px] text-neutral-400 mt-1.5 text-center">Escaneie no app do banco (valor exato!)</span>
+                            </div>
+                            <div class="md:col-span-8 space-y-3 text-xs">
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase text-neutral-400 mb-1">Pix Copia e Cola (valor já preenchido):</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="comp-pix-brcode" readonly class="flex-1 px-3 py-2 rounded-xl bg-brand-black border border-brand-border text-[11px] font-mono text-brand-yellow truncate">
+                                        <button type="button" onclick="copyPixPayloadById('comp-pix-brcode')" class="px-3 py-2 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs shrink-0"><i class="fa-regular fa-copy mr-1"></i>Copiar Código</button>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-brand-border/60">
+                                    <span class="text-neutral-400">Chave Pix:</span>
+                                    <div class="flex items-center gap-2">
+                                        <code id="pix-display-key" class="text-white font-bold">(73) 98144-3993</code>
+                                        <button type="button" onclick="copyPixKey()" class="px-2 py-0.5 rounded bg-brand-black border border-brand-border text-neutral-300 hover:border-brand-yellow text-[11px]">Copiar chave</button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between"><span class="text-neutral-400">Favorecido:</span><strong id="pix-display-holder" class="text-white">João Pedro Morais da Silva Leite</strong></div>
+                                <div class="flex items-center justify-between"><span class="text-neutral-400">Instituição:</span><span id="pix-display-bank" class="text-neutral-300">JP RH Eunápolis</span></div>
+                                <a id="comp-card-checkout-btn" href="#" target="_blank" rel="noopener noreferrer" class="hidden w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs text-center block">
+                                    <i class="fa-solid fa-credit-card mr-1.5"></i>Pagar com Cartão de Crédito / Checkout Online
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button type="button" id="btn-company-pix-confirm" onclick="handleCompanyNotifyPix()" class="flex-1 py-3.5 px-5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-check-double"></i><span>Já fiz o Pix — Solicitar Ativação</span>
+                            </button>
+                            <button type="button" onclick="sendPixReceiptWhatsApp()" class="py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-base"></i><span>Enviar Comprovante</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="comp-pending-box" class="hidden bg-amber-950/30 border border-amber-500/40 rounded-2xl p-6 space-y-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-hourglass-half text-2xl text-amber-400 mt-0.5"></i>
+                            <div>
+                                <h4 class="font-display font-bold text-lg text-white">Pagamento em verificação pelo Financeiro JP RH</h4>
+                                <p class="text-xs text-neutral-300 mt-1">Assim que confirmarmos seu Pix, seu plano será liberado automaticamente por 30 dias.</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="sendPixReceiptWhatsApp()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"><i class="fa-brands fa-whatsapp text-base"></i><span>Enviar Comprovante no WhatsApp</span></button>
+                    </div>
+
+                    <div id="comp-active-box" class="hidden bg-emerald-950/30 border border-emerald-500/40 rounded-2xl p-6 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl"><i class="fa-solid fa-crown"></i></div>
+                            <div>
+                                <h4 id="comp-active-plan-label" class="font-display font-extrabold text-lg text-white">Plano Ativo</h4>
+                                <p class="text-xs text-emerald-300">Válido até <strong id="comp-active-until">—</strong></p>
+                            </div>
+                        </div>
+                        <ul id="comp-active-benefits" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-neutral-200"></ul>
+                    </div>
+                </div>
+
+                <!-- PANE 2: REQUISITOS -->
+                <div id="comp-dash-pane-requisitos" class="hidden space-y-6">
+                    <div id="comp-req-locked" class="bg-brand-black border border-brand-border rounded-2xl p-8 text-center space-y-3">
+                        <i class="fa-solid fa-lock text-3xl text-brand-yellow"></i>
+                        <h4 class="font-display font-bold text-lg text-white">Recurso exclusivo para Empresas Assinantes</h4>
+                        <p class="text-xs text-neutral-400 max-w-md mx-auto">Ative um dos 4 planos (a partir de R$ 50/mês) para enviar requisitos de vagas e acionar nossa equipe + IA Pedrox.</p>
+                        <button type="button" onclick="switchCompanyDashTab('plano')" class="px-5 py-2.5 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs">Escolher Plano</button>
+                    </div>
+                    <div id="comp-req-unlocked" class="hidden space-y-6">
+                        <form id="form-company-request" onsubmit="handleCompanyCreateRequest(event)" class="bg-brand-black border border-brand-border rounded-2xl p-5 space-y-4">
+                            <div><h4 class="font-display font-bold text-base text-white">Nova Solicitação de Perfil / Requisitos</h4><p class="text-xs text-neutral-400 mt-0.5">A IA <strong class="text-brand-yellow">Pedrox</strong> criará perguntas sob medida para nossa equipe entrevistar candidatos.</p></div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div><label class="block text-[11px] font-bold uppercase text-neutral-300 mb-1">Cargo / Vaga *</label><input type="text" id="comp-req-titulo" required placeholder="Ex: Vendedor / Atendente" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white"></div>
+                                <div><label class="block text-[11px] font-bold uppercase text-neutral-300 mb-1">Área *</label><select id="comp-req-area" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white"><option value="Comércio & Vendas">Comércio & Vendas</option><option value="Liderança & Gerência">Liderança & Gerência</option><option value="Administrativo & Financeiro">Administrativo & Financeiro</option><option value="Atendimento & Recepção">Atendimento & Recepção</option><option value="Gastronomia & Hotelaria">Gastronomia & Hotelaria</option><option value="Logística & Operacional">Logística & Operacional</option></select></div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div><label class="block text-[11px] font-bold uppercase text-neutral-300 mb-1">Regime</label><input type="text" id="comp-req-regime" placeholder="CLT • Horário Comercial" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white"></div>
+                                <div><label class="block text-[11px] font-bold uppercase text-neutral-300 mb-1">Salário</label><input type="text" id="comp-req-salario" placeholder="Ex: R$ 1.800 + comissão" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white"></div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[11px] font-bold uppercase text-neutral-300">Requisitos Desejados *</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="comp-req-chip-input" placeholder="Ex: Proativo, experiência em atendimento..." class="flex-1 px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white">
+                                    <button type="button" onclick="addCompanyReqFromInput()" class="px-4 py-2.5 rounded-xl bg-brand-yellow text-brand-black font-bold text-xs">+ Adicionar</button>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 pt-1">
+                                    <button type="button" onclick="addCompanyReqChip('Proativo')" class="text-[11px] px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border text-neutral-300 hover:border-brand-yellow">+ Proativo</button>
+                                    <button type="button" onclick="addCompanyReqChip('Experiência em atendimento')" class="text-[11px] px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border text-neutral-300 hover:border-brand-yellow">+ Experiência em atendimento</button>
+                                    <button type="button" onclick="addCompanyReqChip('Boa comunicação')" class="text-[11px] px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border text-neutral-300 hover:border-brand-yellow">+ Boa comunicação</button>
+                                    <button type="button" onclick="addCompanyReqChip('Foco em vendas e metas')" class="text-[11px] px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border text-neutral-300 hover:border-brand-yellow">+ Vendas e metas</button>
+                                    <button type="button" onclick="addCompanyReqChip('Liderança de equipe')" class="text-[11px] px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border text-neutral-300 hover:border-brand-yellow">+ Liderança</button>
+                                </div>
+                                <div id="comp-req-chips-list" class="flex flex-wrap gap-2 pt-2"></div>
+                            </div>
+                            <div><label class="block text-[11px] font-bold uppercase text-neutral-300 mb-1">Observações</label><textarea id="comp-req-descricao" rows="2" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white"></textarea></div>
+                            <button type="submit" id="btn-comp-submit-req" class="w-full py-3.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-paper-plane"></i><span>Enviar Requisitos para Entrevista JP RH</span></button>
+                        </form>
+                        <div class="space-y-3"><h4 class="font-display font-bold text-sm uppercase text-neutral-400">Minhas Solicitações</h4><div id="comp-requests-list" class="space-y-3"></div></div>
+                    </div>
+                </div>
+
+                <!-- PANE 3: AVALIAÇÕES -->
+                <div id="comp-dash-pane-avaliacoes" class="hidden space-y-4">
+                    <div id="comp-eval-locked" class="bg-brand-black border border-brand-border rounded-2xl p-8 text-center space-y-3">
+                        <i class="fa-solid fa-lock text-3xl text-brand-yellow"></i>
+                        <h4 class="font-display font-bold text-lg text-white">Avaliações exclusivas para Empresas Assinantes</h4>
+                        <button type="button" onclick="switchCompanyDashTab('plano')" class="px-5 py-2.5 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs">Ver Planos</button>
+                    </div>
+                    <div id="comp-eval-unlocked" class="hidden space-y-4"><div id="comp-evaluations-list" class="space-y-4"></div></div>
+                </div>
+
+                <!-- PANE 4: SUPORTE & CHAT (PEDROX IA -> VENDEDORES JP RH) -->
+                <div id="comp-dash-pane-suporte" class="hidden space-y-4">
+                    <div id="comp-support-locked" class="bg-brand-black border border-brand-border rounded-2xl p-8 text-center space-y-3">
+                        <i class="fa-solid fa-headset text-3xl text-brand-yellow"></i>
+                        <h4 class="font-display font-bold text-lg text-white">Chat Exclusivo para Empresas Assinantes</h4>
+                        <p class="text-xs text-neutral-400 max-w-md mx-auto">Assine qualquer plano JP RH para tirar dúvidas ao vivo com a IA <strong>Pedrox</strong> e conversar direto com nossos vendedores e consultores.</p>
+                        <button type="button" onclick="switchCompanyDashTab('plano')" class="px-5 py-2.5 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs">Ver os 4 Planos</button>
+                    </div>
+
+                    <div id="comp-support-unlocked" class="hidden bg-brand-black border border-brand-border rounded-2xl p-4 sm:p-5 space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-brand-border">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-xl bg-brand-yellow text-brand-black flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
+                                <div>
+                                    <h4 class="font-display font-bold text-sm text-white">Atendimento JP RH (Pedrox + Vendedores)</h4>
+                                    <span id="comp-support-status-badge" class="text-[11px] font-bold text-brand-yellow">Pedrox IA Online</span>
+                                </div>
+                            </div>
+                            <button type="button" onclick="handleCompanyEscalateToHuman()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-headset"></i><span>Falar com Vendedor Humano</span>
+                            </button>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1.5">
+                            <button type="button" onclick="sendCompanySupportQuickMsg('Como envio os requisitos de uma vaga?')" class="text-[11px] px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border text-neutral-300 hover:border-brand-yellow">Como enviar requisitos?</button>
+                            <button type="button" onclick="sendCompanySupportQuickMsg('Onde vejo os candidatos avaliados pela JP RH?')" class="text-[11px] px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border text-neutral-300 hover:border-brand-yellow">Onde ver avaliações?</button>
+                            <button type="button" onclick="sendCompanySupportQuickMsg('Qual a diferença dos planos e como fazer upgrade para o VIP 360?')" class="text-[11px] px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border text-neutral-300 hover:border-brand-yellow">Upgrade para VIP 360°</button>
+                            <button type="button" onclick="sendCompanySupportQuickMsg('Quero falar com um vendedor humano')" class="text-[11px] px-2.5 py-1 rounded-lg bg-brand-card border border-brand-yellow/40 text-brand-yellow hover:bg-brand-yellow hover:text-black">Chamar Vendedor</button>
+                        </div>
+
+                        <div id="comp-support-messages" class="space-y-3 h-72 overflow-y-auto pr-1"></div>
+
+                        <form onsubmit="handleCompanySendSupportMessage(event)" class="flex gap-2 pt-2 border-t border-brand-border">
+                            <input type="text" id="comp-support-input" required placeholder="Digite sua dúvida sobre o site ou planos..." class="flex-1 px-4 py-3 rounded-xl bg-brand-card border border-brand-border text-xs sm:text-sm text-white focus:outline-none focus:border-brand-yellow">
+                            <button type="submit" id="btn-comp-support-send" class="px-5 py-3 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs sm:text-sm shrink-0"><i class="fa-solid fa-paper-plane"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 4: CENTRAL DA EQUIPE JP RH & PAINEL ADMIN (PROTEGIDA & ORGANIZADA)
+    ====================================================================== -->
+    <div id="modal-admin" class="hidden fixed inset-0 z-[75] bg-black/90 backdrop-blur-md flex items-start justify-center p-3 sm:p-5 overflow-y-auto">
+        <div class="bg-brand-card border border-brand-border rounded-3xl max-w-6xl w-full p-5 sm:p-8 relative shadow-2xl my-6">
+            <button type="button" onclick="closeAdminModal()" aria-label="Fechar" class="absolute top-5 right-5 w-9 h-9 rounded-xl bg-brand-black border border-brand-border text-neutral-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+
+            <div id="team-role-mismatch" class="hidden py-10 text-center space-y-4">
+                <i class="fa-solid fa-building text-4xl text-brand-yellow"></i>
+                <h3 class="font-display font-extrabold text-2xl text-white">Área Restrita à Equipe JP RH</h3>
+                <p class="text-sm text-neutral-400 max-w-md mx-auto">Você está conectado com uma conta de Empresa.</p>
+                <div class="flex justify-center gap-3">
+                    <button type="button" onclick="closeAdminModal(); openCompanyModal('plano');" class="px-5 py-3 rounded-xl bg-brand-yellow text-brand-black font-bold text-sm">Ir para Portal da Empresa</button>
+                    <button type="button" onclick="handleLogout()" class="px-5 py-3 rounded-xl bg-brand-black border border-brand-border text-neutral-300 font-semibold text-sm">Sair</button>
+                </div>
+            </div>
+
+            <!-- Login Seguro da Equipe & Admin (com OLHINHO + Esqueci/Trocar Senha) -->
+            <div id="admin-login-view" class="max-w-md mx-auto py-8">
+                <div class="text-center mb-6">
+                    <div class="w-14 h-14 rounded-2xl bg-brand-yellow/10 border border-brand-yellow/30 text-brand-yellow flex items-center justify-center text-2xl mx-auto mb-3"><i class="fa-solid fa-user-shield"></i></div>
+                    <span class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 mb-2"><i class="fa-solid fa-lock"></i> Ambiente Protegido JP RH</span>
+                    <h3 class="font-display font-extrabold text-2xl text-white">Central Equipe & Gestor</h3>
+                    <p class="text-neutral-400 text-xs sm:text-sm mt-1">Acesso controlado por nível de permissão: Administrador (Financeiro) e Funcionários JP RH (Pedrox & Vendas).</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 p-1.5 bg-brand-black rounded-2xl border border-brand-border mb-5">
+                    <button type="button" id="team-auth-tab-login" onclick="switchTeamAuthMode('login')" class="py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-brand-yellow text-brand-black">Entrar</button>
+                    <button type="button" id="team-auth-tab-signup" onclick="switchTeamAuthMode('signup')" class="py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-neutral-400 hover:text-white">1º Acesso Funcionário</button>
+                </div>
+
+                <form id="form-team-login" onsubmit="handleAdminLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-1.5">E-mail Corporativo / Admin *</label>
+                        <input type="email" id="admin-email-input" required placeholder="seuemail@gmail.com" class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow">
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-neutral-300">Senha *</label>
+                            <button type="button" onclick="openPasswordResetModal(document.getElementById('admin-email-input').value)" class="text-[11px] font-semibold text-brand-yellow hover:underline">Esqueci / Trocar senha</button>
+                        </div>
+                        <div class="relative">
+                            <input type="password" id="admin-password-input" required placeholder="••••••••" class="w-full pl-4 pr-11 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow">
+                            <button type="button" onclick="togglePasswordVisibility('admin-password-input', this)" aria-label="Mostrar senha" class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1.5"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-team-login" class="w-full py-3.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm">Entrar no Painel JP RH</button>
+                </form>
+
+                <form id="form-team-signup" onsubmit="handleStaffFirstAccess(event)" class="hidden space-y-4">
+                    <div class="bg-brand-black/70 border border-brand-border rounded-xl p-3 text-xs text-neutral-400">
+                        Use o e-mail previamente autorizado pelo Administrador na aba <strong class="text-white">Equipe & Fotos</strong>.
+                    </div>
+                    <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">E-mail Autorizado *</label><input type="email" id="staff-signup-email" required class="w-full px-4 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow"></div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Crie sua Senha (mín. 6) *</label>
+                        <div class="relative">
+                            <input type="password" id="staff-signup-password" required minlength="6" placeholder="••••••••" class="w-full pl-4 pr-11 py-3.5 rounded-xl bg-brand-black border border-brand-border text-white text-sm focus:outline-none focus:border-brand-yellow">
+                            <button type="button" onclick="togglePasswordVisibility('staff-signup-password', this)" aria-label="Mostrar senha" class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1.5"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-staff-signup" class="w-full py-3.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm">Ativar Acesso de Funcionário</button>
+                </form>
+            </div>
+
+            <!-- Dashboard Autenticado (Equipe JP RH / Admin) -->
+            <div id="admin-dashboard-view" class="hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-brand-border pr-10">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-brand-yellow text-xs font-bold uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-shield-check"></i><span id="team-header-role">Gestão Interna JP RH</span>
+                        </div>
+                        <h3 id="team-header-user" class="font-display font-extrabold text-2xl text-white">Painel JP RH</h3>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" onclick="openRegisterTalentModal()" class="px-3.5 py-2 rounded-xl bg-brand-yellow text-brand-black font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-plus"></i><span>Novo Currículo</span></button>
+                        <button type="button" onclick="handleLogout()" class="px-3.5 py-2 rounded-xl bg-brand-black border border-brand-border text-neutral-300 hover:text-white font-semibold text-xs"><i class="fa-solid fa-right-from-bracket mr-1"></i>Sair</button>
+                    </div>
+                </div>
+
+                <!-- Menu Organizado por Abas -->
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" id="team-tab-btn-pedrox" onclick="switchTeamTab('pedrox')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-yellow text-brand-black"><i class="fa-solid fa-robot mr-1.5"></i>Pedrox & Entrevistas</button>
+                    <button type="button" id="team-tab-btn-curriculos" onclick="switchTeamTab('curriculos')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-id-card mr-1.5"></i>Currículos</button>
+                    <button type="button" id="team-tab-btn-regularidade" onclick="switchTeamTab('regularidade')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-clipboard-check mr-1.5"></i>Regularidade</button>
+                    <button type="button" id="team-tab-btn-suporte" onclick="switchTeamTab('suporte')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border flex items-center gap-1.5"><i class="fa-solid fa-comments"></i><span>Suporte Clientes</span><span id="team-support-alert-badge" class="hidden px-1.5 py-0.5 rounded-full bg-amber-500 text-brand-black text-[10px] font-extrabold"></span></button>
+                    <button type="button" id="team-tab-btn-vendas" onclick="switchTeamTab('vendas')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-trophy mr-1.5"></i>Vendas</button>
+                    <button type="button" id="team-tab-btn-empresas" onclick="switchTeamTab('empresas')" class="admin-only-el hidden px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-building mr-1.5"></i>Empresas</button>
+                    <button type="button" id="team-tab-btn-financeiro" onclick="switchTeamTab('financeiro')" class="admin-only-el hidden px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-sack-dollar mr-1.5"></i>Financeiro</button>
+                    <button type="button" id="team-tab-btn-diretoria" onclick="switchTeamTab('diretoria')" class="director-only-el hidden px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-user-shield mr-1.5"></i>Diretoria (Acessos)</button>
+                    <button type="button" id="team-tab-btn-seguranca" onclick="switchTeamTab('seguranca')" class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-black text-neutral-300 border border-brand-border"><i class="fa-solid fa-key mr-1.5"></i>Segurança</button>
+                </div>
+
+                <!-- ABA 1: PEDROX & ENTREVISTAS -->
+                <div id="team-tab-pane-pedrox" class="space-y-6">
+                    <div class="bg-brand-black/60 border border-brand-border rounded-2xl p-4 space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-brand-yellow flex items-center gap-2"><i class="fa-solid fa-briefcase"></i> Solicitações de Requisitos das Empresas</h4>
+                        <div id="staff-requests-list" class="space-y-2.5"></div>
+                    </div>
+
+                    <div class="bg-brand-black border-2 border-brand-yellow/40 rounded-3xl p-5 sm:p-6 space-y-5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 rounded-2xl bg-brand-yellow text-brand-black flex items-center justify-center text-xl"><i class="fa-solid fa-robot"></i></div>
+                            <div>
+                                <h4 class="font-display font-extrabold text-xl text-white">Pedrox <span class="text-brand-yellow text-sm font-bold">• IA de Entrevistas JP RH</span></h4>
+                                <p class="text-xs text-neutral-400">Selecione o candidato e os requisitos da empresa para gerar perguntas e avaliar o candidato.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">1. Candidato *</label><select id="pedrox-candidate-select" onchange="onPedroxCandidateChange()" class="w-full px-3.5 py-3 rounded-xl bg-brand-card border border-brand-border text-sm text-white"><option value="">— Selecione um candidato —</option></select></div>
+                            <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">2. Puxar Solicitação de Empresa</label><select id="pedrox-request-select" onchange="onPedroxRequestChange()" class="w-full px-3.5 py-3 rounded-xl bg-brand-card border border-brand-border text-sm text-white"><option value="">— Digitar requisitos manualmente —</option></select></div>
+                        </div>
+                        <div id="pedrox-candidate-info" class="hidden bg-brand-card/70 border border-brand-border rounded-xl p-3.5"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Cargo *</label><input type="text" id="pedrox-cargo-input" placeholder="Ex: Vendedor" class="w-full px-3.5 py-3 rounded-xl bg-brand-card border border-brand-border text-sm text-white"></div>
+                            <div class="md:col-span-2"><label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Requisitos da Empresa *</label><input type="text" id="pedrox-requisitos-input" placeholder="Ex: Proativo, experiência em atendimento, metas" class="w-full px-3.5 py-3 rounded-xl bg-brand-card border border-brand-border text-sm text-white"></div>
+                        </div>
+                        <input type="text" id="pedrox-descricao-input" placeholder="Observações extras da vaga (opcional)..." class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white">
+                        <button type="button" id="btn-pedrox-generate" onclick="handlePedroxGenerateQuestions()" class="w-full py-3.5 px-6 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Gerar Perguntas com Pedrox</span></button>
+
+                        <form id="pedrox-questions-wrapper" onsubmit="handleSaveEvaluation(event)" class="hidden space-y-5 pt-4 border-t border-brand-border">
+                            <div class="flex flex-wrap items-center justify-between gap-3 bg-brand-card border border-brand-yellow/40 rounded-2xl p-4">
+                                <div><span id="pedrox-engine-badge" class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-brand-yellow uppercase"></span><p id="pedrox-strategy-summary" class="text-xs text-neutral-300 mt-1"></p></div>
+                                <div class="bg-brand-black border border-brand-border rounded-xl px-4 py-2 text-center"><span class="text-[10px] text-neutral-400 uppercase block">Média</span><strong class="font-display font-extrabold text-2xl text-brand-yellow"><span id="pedrox-avg-score">8.0</span>/10</strong></div>
+                            </div>
+                            <div id="pedrox-questions-list" class="space-y-3"></div>
+                            <div class="bg-brand-card/70 border border-brand-border rounded-2xl p-5 space-y-4">
+                                <div class="flex flex-wrap items-center justify-between gap-3">
+                                    <h5 class="font-display font-bold text-base text-white">Parecer Final</h5>
+                                    <button type="button" id="btn-pedrox-report" onclick="handlePedroxGenerateReport()" class="px-4 py-2 rounded-xl bg-brand-yellow/15 border border-brand-yellow/40 text-brand-yellow hover:bg-brand-yellow hover:text-brand-black font-bold text-xs flex items-center gap-2"><i class="fa-solid fa-robot"></i><span>Consolidar Parecer com Pedrox</span></button>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label class="block text-[11px] font-bold uppercase text-emerald-400 mb-1">Pontos Fortes</label><textarea id="pedrox-pontos-fortes" rows="2" class="w-full px-3 py-2 rounded-xl bg-brand-black border border-brand-border text-xs text-white"></textarea></div>
+                                    <div><label class="block text-[11px] font-bold uppercase text-amber-300 mb-1">Pontos de Atenção</label><textarea id="pedrox-pontos-atencao" rows="2" class="w-full px-3 py-2 rounded-xl bg-brand-black border border-brand-border text-xs text-white"></textarea></div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="md:col-span-2"><label class="block text-[11px] font-bold uppercase text-neutral-300 mb-1">Parecer Consolidado</label><textarea id="pedrox-parecer-final" rows="3" class="w-full px-3 py-2 rounded-xl bg-brand-black border border-brand-border text-xs text-white"></textarea></div>
+                                    <div class="space-y-3">
+                                        <div><label class="block text-[11px] font-bold uppercase text-neutral-300 mb-1">Recomendação</label><select id="pedrox-recomendacao" class="w-full px-3 py-2.5 rounded-xl bg-brand-black border border-brand-border text-xs text-white"><option value="Recomendado">Recomendado</option><option value="Recomendado com Ressalvas">Recomendado com Ressalvas</option><option value="Não Recomendado">Não Recomendado</option></select></div>
+                                        <label class="flex items-center gap-2 text-xs text-neutral-200 cursor-pointer"><input type="checkbox" id="pedrox-visivel-empresa" checked class="w-4 h-4 accent-brand-yellow"><span>Liberar para empresa</span></label>
+                                    </div>
+                                </div>
+                                <button type="submit" id="btn-save-evaluation" class="w-full py-3.5 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-brand-black font-extrabold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-floppy-disk"></i><span>Salvar Avaliação e Atualizar Candidato</span></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="space-y-3"><h4 class="text-xs font-bold uppercase text-neutral-400">Histórico de Avaliações</h4><div id="staff-evaluations-list" class="space-y-2.5"></div></div>
+                </div>
+
+                <!-- ABA 2: CURRÍCULOS -->
+                <div id="team-tab-pane-curriculos" class="hidden overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead><tr class="border-b border-brand-border text-[11px] uppercase text-neutral-400"><th class="py-3 px-3">Código / Nome</th><th class="py-3 px-3">Cargo</th><th class="py-3 px-3">WhatsApp (JP RH)</th><th class="py-3 px-3">Status</th><th class="py-3 px-3 text-right">Ações</th></tr></thead>
+                        <tbody id="admin-talents-tbody" class="divide-y divide-brand-border/60 text-sm"></tbody>
+                    </table>
+                </div>
+
+                <!-- ABA 2B: REGULARIDADE DOS PLANOS (PARA FUNCIONÁRIOS & DIRETORIA) -->
+                <div id="team-tab-pane-regularidade" class="hidden space-y-5">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="bg-brand-black border border-emerald-500/30 rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Regulares / Ativos</span><p id="reg-kpi-regular" class="font-display font-extrabold text-2xl text-emerald-400 mt-1">0</p></div>
+                        <div class="bg-brand-black border border-brand-yellow/40 rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Vencem em 5 dias</span><p id="reg-kpi-vencendo" class="font-display font-extrabold text-2xl text-brand-yellow mt-1">0</p></div>
+                        <div class="bg-brand-black border border-red-500/40 rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Irregulares / Vencidos</span><p id="reg-kpi-irregular" class="font-display font-extrabold text-2xl text-red-400 mt-1">0</p></div>
+                        <div class="bg-brand-black border border-amber-500/40 rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Pix Pendente</span><p id="reg-kpi-pendente" class="font-display font-extrabold text-2xl text-amber-300 mt-1">0</p></div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" data-filter="todos" onclick="setRegularidadeFilter('todos')" class="reg-filter-btn px-3 py-1.5 rounded-lg text-xs font-extrabold bg-brand-yellow text-brand-black">Todos</button>
+                        <button type="button" data-filter="irregular" onclick="setRegularidadeFilter('irregular')" class="reg-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-black border border-brand-border text-neutral-300">Irregulares / Vencidos</button>
+                        <button type="button" data-filter="vencendo" onclick="setRegularidadeFilter('vencendo')" class="reg-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-black border border-brand-border text-neutral-300">Vence em Breve</button>
+                        <button type="button" data-filter="pendente" onclick="setRegularidadeFilter('pendente')" class="reg-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-black border border-brand-border text-neutral-300">Pix Pendente</button>
+                        <button type="button" data-filter="regular" onclick="setRegularidadeFilter('regular')" class="reg-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-black border border-brand-border text-neutral-300">Regulares</button>
+                        <button type="button" data-filter="sem_plano" onclick="setRegularidadeFilter('sem_plano')" class="reg-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-black border border-brand-border text-neutral-300">Sem Plano</button>
+                    </div>
+
+                    <div class="overflow-x-auto bg-brand-black border border-brand-border rounded-2xl p-4">
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="border-b border-brand-border text-[11px] uppercase text-neutral-400"><th class="py-2.5 px-3">Empresa / CNPJ</th><th class="py-2.5 px-3">Plano / Responsável</th><th class="py-2.5 px-3">Situação</th><th class="py-2.5 px-3">Validade</th><th class="py-2.5 px-3 text-right">Ação Rápida</th></tr></thead>
+                            <tbody id="regularidade-tbody" class="divide-y divide-brand-border/60 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ABA 2C: SUPORTE CLIENTES (CONVERSAS TRANSFERIDAS PELO PEDROX) -->
+                <div id="team-tab-pane-suporte" class="hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                        <div class="lg:col-span-4 bg-brand-black/60 border border-brand-border rounded-2xl p-3 space-y-2 max-h-[480px] overflow-y-auto">
+                            <h4 class="text-xs font-bold uppercase text-brand-yellow px-1 pb-2 border-b border-brand-border">Empresas Assinantes</h4>
+                            <div id="team-support-list" class="space-y-2"></div>
+                        </div>
+                        <div class="lg:col-span-8 bg-brand-black border border-brand-border rounded-2xl p-4 flex flex-col min-h-[440px]">
+                            <div id="team-support-placeholder" class="flex-1 flex flex-col items-center justify-center text-center p-8 text-neutral-500">
+                                <i class="fa-solid fa-comments text-4xl text-brand-yellow/40 mb-3"></i>
+                                <p class="text-sm font-semibold text-neutral-300">Selecione uma conversa à esquerda</p>
+                                <p class="text-xs mt-1 max-w-sm">O Pedrox responde primeiro às dúvidas das empresas assinantes. Quando elas pedem ajuda humana, a conversa aparece em destaque aqui.</p>
+                            </div>
+                            <div id="team-support-active-pane" class="hidden flex-1 flex flex-col gap-3">
+                                <div id="team-support-chat-header" class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-brand-border"></div>
+                                <div id="team-support-messages" class="flex-1 space-y-2.5 max-h-72 overflow-y-auto pr-1"></div>
+                                <form onsubmit="handleTeamSendSupportReply(event)" class="flex gap-2 pt-2 border-t border-brand-border">
+                                    <input type="text" id="team-support-input" required placeholder="Responder empresa como vendedor/consultor JP RH..." class="flex-1 px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs sm:text-sm text-white focus:outline-none focus:border-brand-yellow">
+                                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs">Enviar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA 3: VENDAS & COMISSÕES DA EQUIPE -->
+                <div id="team-tab-pane-vendas" class="hidden space-y-6">
+                    <!-- KPIs de Vendas -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Vendas Aprovadas (Mês)</span><p id="sales-kpi-count" class="font-display font-extrabold text-2xl text-white mt-1">0 plano(s)</p></div>
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Volume Vendido (Mês)</span><p id="sales-kpi-total" class="font-display font-extrabold text-2xl text-brand-yellow mt-1">R$ 0,00</p></div>
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Comissões do Mês</span><p id="sales-kpi-comm" class="font-display font-extrabold text-2xl text-emerald-400 mt-1">R$ 0,00</p></div>
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Aguardando Aprovação</span><p id="sales-kpi-pending" class="font-display font-extrabold text-2xl text-amber-300 mt-1">0 pendente(s)</p></div>
+                    </div>
+
+                    <!-- Meta mensal do funcionário -->
+                    <div id="staff-goal-box" class="hidden bg-brand-black border border-brand-yellow/40 rounded-2xl p-4 space-y-2">
+                        <div class="flex items-center justify-between text-xs"><span class="font-bold text-white uppercase tracking-wider">Sua Meta Mensal de Vendas</span><strong id="staff-goal-text" class="text-brand-yellow">R$ 0,00</strong></div>
+                        <div class="w-full h-2.5 bg-brand-card rounded-full overflow-hidden"><div id="staff-goal-bar" class="h-full bg-brand-yellow rounded-full transition-all" style="width:0%"></div></div>
+                    </div>
+
+                    <!-- Ranking dos Vendedores (Admin Only) -->
+                    <div class="admin-only-el hidden bg-brand-black/60 border border-brand-yellow/30 rounded-2xl p-5 space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-brand-yellow flex items-center gap-2"><i class="fa-solid fa-ranking-star"></i> Ranking de Vendas & Comissões por Funcionário</h4>
+                        <div id="admin-sales-ranking" class="space-y-2.5"></div>
+                    </div>
+
+                    <!-- Registrar Venda de Plano -->
+                    <form id="form-register-sale" onsubmit="handleRegisterEmployeeSale(event)" class="bg-brand-black border border-brand-border rounded-2xl p-5 space-y-4">
+                        <div>
+                            <h4 class="font-display font-bold text-base text-white flex items-center gap-2"><i class="fa-solid fa-handshake text-brand-yellow"></i> Registrar Venda de Plano Empresarial</h4>
+                            <p class="text-xs text-neutral-400 mt-0.5">Contabilize a venda de um dos 4 planos JP RH. Vendas lançadas por funcionários vão para aprovação do Administrador.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div class="admin-only-el hidden">
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Funcionário Vendedor</label>
+                                <select id="sale-seller-select" class="w-full px-3 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Empresa Cadastrada (Opcional)</label>
+                                <select id="sale-company-select" onchange="onSaleCompanySelectChange()" class="w-full px-3 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white"><option value="">— Digitar manualmente —</option></select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Plano Vendido *</label>
+                                <select id="sale-plan-select" required class="w-full px-3 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                                    <option value="start">Plano Start — R$ 50/mês</option>
+                                    <option value="impulso">Plano Impulso — R$ 149/mês</option>
+                                    <option value="lider">Plano Líder — R$ 269/mês</option>
+                                    <option value="vip">Plano VIP 360° — R$ 400/mês</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <input type="text" id="sale-company-name" required placeholder="Nome da Empresa Cliente *" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                            <input type="text" id="sale-company-cnpj" maxlength="18" placeholder="CNPJ da Empresa (opcional)" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white font-mono">
+                            <input type="text" id="sale-obs" placeholder="Observações / Comprovante (opcional)" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                        </div>
+                        <button type="submit" class="px-6 py-3 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs"><i class="fa-solid fa-check mr-1.5"></i>Registrar Venda de Plano</button>
+                    </form>
+
+                    <!-- Tabela de Vendas -->
+                    <div class="overflow-x-auto bg-brand-black border border-brand-border rounded-2xl p-4">
+                        <h4 class="text-xs font-bold uppercase text-neutral-400 mb-3">Histórico de Vendas dos Planos</h4>
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="border-b border-brand-border text-[11px] uppercase text-neutral-400"><th class="py-2.5 px-3">Data</th><th class="py-2.5 px-3">Vendedor / Empresa</th><th class="py-2.5 px-3">Plano</th><th class="py-2.5 px-3">Valor & Comissão</th><th class="py-2.5 px-3">Status</th><th class="py-2.5 px-3 text-right">Ações</th></tr></thead>
+                            <tbody id="sales-ledger-tbody" class="divide-y divide-brand-border/60 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ABA 4: EMPRESAS (ADMIN ONLY) -->
+                <div id="team-tab-pane-empresas" class="hidden overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead><tr class="border-b border-brand-border text-[11px] uppercase text-neutral-400"><th class="py-3 px-3">Empresa / CNPJ</th><th class="py-3 px-3">Contato</th><th class="py-3 px-3">Plano</th><th class="py-3 px-3">Validade</th><th class="py-3 px-3 text-right">Ativar Plano (30d)</th></tr></thead>
+                        <tbody id="admin-companies-tbody" class="divide-y divide-brand-border/60 text-sm"></tbody>
+                    </table>
+                </div>
+
+                <!-- ABA 5: FINANCEIRO (ADMIN EXCLUSIVO) -->
+                <div id="team-tab-pane-financeiro" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Recebido no Mês</span><p id="fin-kpi-month" class="font-display font-extrabold text-2xl text-emerald-400 mt-1">R$ 0,00</p></div>
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Pix Pendente</span><p id="fin-kpi-pending" class="font-display font-extrabold text-2xl text-amber-300 mt-1">R$ 0,00</p></div>
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Recorrência (MRR)</span><p id="fin-kpi-mrr" class="font-display font-extrabold text-lg text-brand-yellow mt-2">0 ativa(s)</p></div>
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Saldo Líquido</span><p id="fin-kpi-balance" class="font-display font-extrabold text-2xl text-white mt-1">R$ 0,00</p></div>
+                    </div>
+
+                    <div class="bg-brand-black/60 border border-amber-500/30 rounded-2xl p-4 space-y-3">
+                        <h4 class="text-xs font-bold uppercase text-amber-300 flex items-center gap-2"><i class="fa-solid fa-bell"></i> Pagamentos Pix Pendentes</h4>
+                        <div id="fin-pending-approvals" class="space-y-2.5"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <form onsubmit="handleSavePixConfig(event)" class="bg-brand-black border border-brand-border rounded-2xl p-5 space-y-3">
+                            <h4 class="font-display font-bold text-sm text-white flex items-center gap-2"><i class="fa-solid fa-qrcode text-brand-yellow"></i> Pix (QR Code Automático) + Links de Cartão</h4>
+                            <input type="text" id="cfg-pix-key" required placeholder="Chave Pix (Telefone, CPF, CNPJ, E-mail ou Aleatória)" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <input type="text" id="cfg-pix-holder" required placeholder="Nome do Titular" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                                <input type="text" id="cfg-pix-bank" placeholder="Banco" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                            </div>
+                            <details class="bg-brand-card/50 border border-brand-border rounded-xl p-3">
+                                <summary class="text-[11px] font-bold text-brand-yellow cursor-pointer"><i class="fa-solid fa-credit-card mr-1.5"></i>Links de Checkout por Cartão (Mercado Pago / Asaas / InfinitePay — opcional)</summary>
+                                <div class="space-y-2 mt-3">
+                                    <input type="url" id="cfg-card-cand-vip" placeholder="Link Cartão — Candidato VIP (R$ 20)" class="w-full px-3 py-2 rounded-lg bg-brand-black border border-brand-border text-[11px] text-white">
+                                    <input type="url" id="cfg-card-start" placeholder="Link Cartão — Plano Start (R$ 50)" class="w-full px-3 py-2 rounded-lg bg-brand-black border border-brand-border text-[11px] text-white">
+                                    <input type="url" id="cfg-card-impulso" placeholder="Link Cartão — Plano Impulso (R$ 149)" class="w-full px-3 py-2 rounded-lg bg-brand-black border border-brand-border text-[11px] text-white">
+                                    <input type="url" id="cfg-card-lider" placeholder="Link Cartão — Plano Líder (R$ 269)" class="w-full px-3 py-2 rounded-lg bg-brand-black border border-brand-border text-[11px] text-white">
+                                    <input type="url" id="cfg-card-vip" placeholder="Link Cartão — Plano VIP 360° (R$ 400)" class="w-full px-3 py-2 rounded-lg bg-brand-black border border-brand-border text-[11px] text-white">
+                                </div>
+                            </details>
+                            <button type="submit" class="w-full py-2.5 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs">Salvar Dados Pix & Links de Cartão</button>
+                        </form>
+
+                        <form id="form-fin-new" onsubmit="handleAdminAddFinanceTx(event)" class="bg-brand-black border border-brand-border rounded-2xl p-5 space-y-3">
+                            <h4 class="font-display font-bold text-sm text-white flex items-center gap-2"><i class="fa-solid fa-plus-circle text-brand-yellow"></i> Novo Lançamento Manual</h4>
+                            <div class="grid grid-cols-2 gap-3">
+                                <select id="fin-new-tipo" class="px-3 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white"><option value="entrada">+ Entrada</option><option value="saida">- Saída</option></select>
+                                <select id="fin-new-categoria" class="px-3 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white"><option value="Assinatura Premium">Plano Empresa</option><option value="Consultoria">Consultoria</option><option value="Treinamento">Cursos & Líderes</option><option value="Despesa">Despesa / Comissão</option><option value="Outros">Outros</option></select>
+                            </div>
+                            <input type="text" id="fin-new-descricao" required placeholder="Descrição" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                            <div class="grid grid-cols-3 gap-2.5">
+                                <input type="number" id="fin-new-valor" step="0.01" min="0.01" required placeholder="Valor R$" class="px-3 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                                <select id="fin-new-metodo" class="px-2.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white"><option value="Pix">Pix</option><option value="Transferência">Transferência</option><option value="Cartão">Cartão</option><option value="Dinheiro">Dinheiro</option></select>
+                                <select id="fin-new-status" class="px-2.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white"><option value="pago">Pago</option><option value="pendente">Pendente</option></select>
+                            </div>
+                            <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 text-brand-black font-extrabold text-xs">Adicionar Lançamento</button>
+                        </form>
+                    </div>
+
+                    <div class="overflow-x-auto bg-brand-black border border-brand-border rounded-2xl p-4">
+                        <h4 class="text-xs font-bold uppercase text-neutral-400 mb-3">Extrato Financeiro JP RH</h4>
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="border-b border-brand-border text-[11px] uppercase text-neutral-400"><th class="py-2.5 px-3">Data</th><th class="py-2.5 px-3">Descrição</th><th class="py-2.5 px-3">Tipo</th><th class="py-2.5 px-3">Valor</th><th class="py-2.5 px-3">Status</th><th class="py-2.5 px-3 text-right">Ações</th></tr></thead>
+                            <tbody id="fin-ledger-tbody" class="divide-y divide-brand-border/60 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ABA 6: DIRETORIA — CONTROLE DE ACESSOS & FOTOS DA EQUIPE -->
+                <div id="team-tab-pane-diretoria" class="hidden space-y-6">
+                    <!-- KPIs de Controle de Acesso -->
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Total na Equipe</span><p id="dir-kpi-total" class="font-display font-extrabold text-2xl text-white mt-1">0</p></div>
+                        <div class="bg-brand-black border border-emerald-500/30 rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Acessos Ativos</span><p id="dir-kpi-ativos" class="font-display font-extrabold text-2xl text-emerald-400 mt-1">0</p></div>
+                        <div class="bg-brand-black border border-red-500/30 rounded-2xl p-4"><span class="text-[11px] uppercase text-neutral-400">Acessos Tirados</span><p id="dir-kpi-revogados" class="font-display font-extrabold text-2xl text-red-400 mt-1">0</p></div>
+                    </div>
+
+                    <!-- Cadastrar Funcionário / Diretor -->
+                    <form id="form-staff-new" onsubmit="handleAdminAddStaff(event)" class="bg-brand-black border border-brand-yellow/40 rounded-2xl p-5 space-y-4">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-brand-yellow">Painel da Diretoria • Controle de Acessos</span>
+                            <h4 class="font-display font-bold text-base text-white mt-0.5">Adicionar Funcionário e Definir Permissão</h4>
+                            <p class="text-xs text-neutral-400 mt-0.5">Você pode conceder ou tirar o acesso de qualquer funcionário instantaneamente. Funcionários nunca têm acesso ao Financeiro.</p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                            <input type="text" id="staff-new-nome" required placeholder="Nome completo *" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white">
+                            <input type="email" id="staff-new-email" required placeholder="E-mail de acesso *" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white">
+                            <input type="text" id="staff-new-cargo" placeholder="Cargo (ex: Vendedor / RH)" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white">
+                            <select id="staff-new-nivel" class="admin-only-el px-3 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                                <option value="funcionario">Nível: Funcionário</option>
+                                <option value="diretor">Nível: Diretor (gere acessos)</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <input type="tel" id="staff-new-telefone" placeholder="Telefone / WhatsApp (DDD)" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white">
+                            <input type="number" id="staff-new-comissao" min="0" max="100" step="0.5" value="10" placeholder="Comissão (%)" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white">
+                            <input type="number" id="staff-new-meta" min="0" step="50" value="1000" placeholder="Meta Mensal (R$)" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-sm text-white">
+                        </div>
+                        <input type="text" id="staff-new-bio" placeholder="Mini bio para aparecer na seção Nossa Equipe do site (opcional)" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                        <div class="flex flex-wrap items-center gap-4">
+                            <label class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-card border border-brand-yellow/40 text-brand-yellow text-xs font-bold cursor-pointer hover:bg-neutral-800">
+                                <i class="fa-solid fa-camera"></i><span>Escolher Foto</span>
+                                <input type="file" accept="image/*" onchange="handleStaffPhotoUpload(this, 'staff')" class="hidden">
+                            </label>
+                            <img id="staff-photo-preview" src="" alt="Preview" class="hidden w-12 h-12 rounded-xl object-cover border border-brand-yellow">
+                            <label class="admin-only-el flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
+                                <input type="checkbox" id="staff-new-vitrine" checked class="w-4 h-4 accent-brand-yellow">
+                                <span>Exibir foto na seção "Nossa Equipe" do site</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="px-6 py-3 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs"><i class="fa-solid fa-user-plus mr-1.5"></i>Conceder Acesso ao Funcionário</button>
+                    </form>
+
+                    <!-- Lista de Funcionários com Botão Tirar/Liberar Acesso -->
+                    <div class="overflow-x-auto bg-brand-black border border-brand-border rounded-2xl p-4">
+                        <h4 class="text-xs font-bold uppercase text-neutral-400 mb-3">Gerenciar Acessos da Equipe (Adicionar / Tirar Acesso)</h4>
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="border-b border-brand-border text-[11px] uppercase text-neutral-400"><th class="py-2.5 px-3">Funcionário</th><th class="py-2.5 px-3">Cargo / Comissão</th><th class="py-2.5 px-3">Situação do Acesso</th><th class="py-2.5 px-3 text-right">Controle</th></tr></thead>
+                            <tbody id="admin-staff-tbody" class="divide-y divide-brand-border/60 text-sm"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Gerenciar Fotos da Vitrine Pública (Admin Only) -->
+                    <div class="admin-only-el grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <form id="form-vitrine-new" onsubmit="handleAdminAddVitrineMember(event)" class="bg-brand-black border border-brand-border rounded-2xl p-5 space-y-3">
+                            <h4 class="font-display font-bold text-sm text-white flex items-center gap-2"><i class="fa-solid fa-images text-brand-yellow"></i> Adicionar Foto na Página Pública ("Nossa Equipe")</h4>
+                            <p class="text-[11px] text-neutral-400">Use aqui também para publicar a foto oficial de João Pedro ou outros integrantes na vitrine pública.</p>
+                            <input type="text" id="vitrine-nome" required placeholder="Nome (ex: João Pedro Morais)" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <input type="text" id="vitrine-cargo" required placeholder="Cargo (ex: Fundador & Diretor)" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                                <input type="number" id="vitrine-ordem" value="1" min="0" max="999" placeholder="Ordem (1 = primeiro)" class="px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                            </div>
+                            <input type="text" id="vitrine-bio" placeholder="Frase ou especialidade curta..." class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                            <div class="flex flex-wrap items-center gap-3">
+                                <label class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-brand-card border border-brand-yellow/40 text-brand-yellow text-xs font-bold cursor-pointer">
+                                    <i class="fa-solid fa-upload"></i><span>Selecionar Foto</span>
+                                    <input type="file" accept="image/*" onchange="handleStaffPhotoUpload(this, 'vitrine')" class="hidden">
+                                </label>
+                                <img id="vitrine-photo-preview" src="" alt="Preview" class="hidden w-11 h-11 rounded-xl object-cover border border-brand-yellow">
+                                <label class="flex items-center gap-1.5 text-xs text-neutral-300"><input type="checkbox" id="vitrine-destaque" class="w-4 h-4 accent-brand-yellow"><span>Selo Liderança</span></label>
+                            </div>
+                            <button type="submit" class="w-full py-2.5 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs">Publicar na Vitrine da Empresa</button>
+                        </form>
+
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-5 space-y-3">
+                            <h4 class="font-display font-bold text-sm text-white">Fotos Publicadas no Site</h4>
+                            <div id="admin-vitrine-list" class="space-y-2.5 max-h-80 overflow-y-auto"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA 7: SEGURANÇA & TROCAR SENHA (COM CÓDIGO OPCIONAL E-MAIL OU TELEFONE) -->
+                <div id="team-tab-pane-seguranca" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Verificação Opcional por Código (Telefone/WhatsApp ou E-mail) -->
+                        <div class="bg-brand-black border border-brand-border rounded-2xl p-5 space-y-4">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-brand-yellow">Camada Extra de Proteção</span>
+                                <h4 class="font-display font-bold text-lg text-white mt-1">Código Opcional de Verificação</h4>
+                                <p class="text-xs text-neutral-400 mt-1">Antes de alterar sua senha, você pode solicitar um código de 6 dígitos para o seu <strong class="text-white">Telefone/WhatsApp</strong> ou <strong class="text-white">E-mail</strong> (<span id="sec-account-email" class="text-brand-yellow"></span>).</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-neutral-400 mb-1">Seu Telefone / WhatsApp (Opcional)</label>
+                                <input type="tel" id="sec-verify-phone" placeholder="(73) 99999-9999" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-card border border-brand-border text-xs text-white">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <button type="button" onclick="handleSendSecurityCode('whatsapp')" class="py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2"><i class="fa-brands fa-whatsapp text-base"></i><span>Código no Telefone</span></button>
+                                <button type="button" onclick="handleSendSecurityCode('email')" class="py-3 px-4 rounded-xl bg-brand-card border border-brand-yellow/40 text-brand-yellow hover:bg-neutral-800 font-bold text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-envelope"></i><span>Código no E-mail</span></button>
+                            </div>
+
+                            <button type="button" onclick="handleSendSecurityCode('email-link')" class="w-full py-2.5 px-4 rounded-xl bg-brand-card border border-brand-border text-neutral-300 hover:text-white text-xs font-semibold">
+                                <i class="fa-solid fa-paper-plane mr-1.5 text-brand-yellow"></i>Ou enviar link oficial do Firebase para meu E-mail
+                            </button>
+
+                            <div id="sec-code-confirm-box" class="hidden bg-brand-card border border-brand-yellow/40 rounded-xl p-3.5 space-y-2">
+                                <p id="sec-code-hint" class="text-xs text-neutral-300 leading-relaxed"></p>
+                                <input type="text" id="sec-code-input" maxlength="6" placeholder="Digite o código de 6 dígitos" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-black border border-brand-yellow text-center font-mono font-bold text-brand-yellow tracking-widest text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Trocar Senha Agora (com olhinho em todos os campos) -->
+                        <form id="form-sec-change-pass" onsubmit="handleLoggedInChangePassword(event)" class="bg-brand-black border border-brand-border rounded-2xl p-5 space-y-4">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400">Alteração Imediata</span>
+                                <h4 class="font-display font-bold text-lg text-white mt-1">Trocar Minha Senha</h4>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-neutral-300 mb-1">Senha Atual *</label>
+                                <div class="relative">
+                                    <input type="password" id="sec-current-pass" required placeholder="••••••••" class="w-full pl-4 pr-11 py-3 rounded-xl bg-brand-card border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow">
+                                    <button type="button" onclick="togglePasswordVisibility('sec-current-pass', this)" aria-label="Mostrar senha" class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1.5"><i class="fa-solid fa-eye"></i></button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-neutral-300 mb-1">Nova Senha (mín. 6 caracteres) *</label>
+                                <div class="relative">
+                                    <input type="password" id="sec-new-pass" required minlength="6" placeholder="••••••••" class="w-full pl-4 pr-11 py-3 rounded-xl bg-brand-card border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow">
+                                    <button type="button" onclick="togglePasswordVisibility('sec-new-pass', this)" aria-label="Mostrar senha" class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1.5"><i class="fa-solid fa-eye"></i></button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-neutral-300 mb-1">Confirmar Nova Senha *</label>
+                                <div class="relative">
+                                    <input type="password" id="sec-confirm-pass" required minlength="6" placeholder="••••••••" class="w-full pl-4 pr-11 py-3 rounded-xl bg-brand-card border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow">
+                                    <button type="button" onclick="togglePasswordVisibility('sec-confirm-pass', this)" aria-label="Mostrar senha" class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand-yellow p-1.5"><i class="fa-solid fa-eye"></i></button>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="btn-sec-change-pass" class="w-full py-3.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm">
+                                <i class="fa-solid fa-key mr-2"></i>Atualizar Minha Senha Agora
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 5: ESQUECI / TROCAR SENHA (OPÇÃO E-MAIL OU TELEFONE/WHATSAPP)
+    ====================================================================== -->
+    <div id="modal-password-reset" class="hidden fixed inset-0 z-[85] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-brand-card border border-brand-border rounded-3xl max-w-md w-full p-6 sm:p-7 relative shadow-2xl my-8">
+            <button type="button" onclick="closePasswordResetModal()" aria-label="Fechar" class="absolute top-5 right-5 w-9 h-9 rounded-xl bg-brand-black border border-brand-border text-neutral-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+
+            <div class="text-center mb-5">
+                <div class="w-12 h-12 rounded-2xl bg-brand-yellow/15 text-brand-yellow flex items-center justify-center text-xl mx-auto mb-3"><i class="fa-solid fa-key"></i></div>
+                <h3 class="font-display font-extrabold text-xl text-white">Recuperar / Trocar Senha</h3>
+                <p class="text-xs text-neutral-400 mt-1">Escolha receber a verificação por <strong class="text-white">E-mail</strong> ou por <strong class="text-white">Telefone / WhatsApp</strong>.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 p-1.5 bg-brand-black rounded-2xl border border-brand-border mb-5">
+                <button type="button" id="reset-tab-email" onclick="switchResetMethod('email')" class="py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-brand-yellow text-brand-black"><i class="fa-solid fa-envelope mr-1"></i>Por E-mail</button>
+                <button type="button" id="reset-tab-phone" onclick="switchResetMethod('phone')" class="py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-neutral-400 hover:text-white"><i class="fa-brands fa-whatsapp mr-1"></i>Por Telefone</button>
+            </div>
+
+            <!-- Reset por E-mail -->
+            <form id="reset-pane-email" onsubmit="handleSendPasswordResetEmail(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">E-mail Cadastrado *</label>
+                    <input type="email" id="reset-email-input" required placeholder="seu@email.com" class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow">
+                </div>
+                <button type="submit" id="btn-reset-email" class="w-full py-3.5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs sm:text-sm">
+                    <i class="fa-solid fa-envelope mr-2"></i>Enviar Link de Troca de Senha por E-mail
+                </button>
+            </form>
+
+            <!-- Reset por Telefone / WhatsApp -->
+            <form id="reset-pane-phone" onsubmit="handleSendPasswordResetPhone(event)" class="hidden space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">E-mail da Conta *</label>
+                    <input type="email" id="reset-phone-email" required placeholder="seu@email.com" class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-neutral-300 mb-1.5">Número de Telefone / WhatsApp *</label>
+                    <input type="tel" id="reset-phone-number" required placeholder="(73) 99999-9999" class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm text-white focus:outline-none focus:border-brand-yellow">
+                </div>
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm">
+                    <i class="fa-brands fa-whatsapp mr-2"></i>Gerar Código de Verificação por Telefone
+                </button>
+
+                <div id="reset-phone-result" class="hidden bg-brand-black border border-brand-yellow/40 rounded-2xl p-4 text-center space-y-3">
+                    <span class="text-[10px] uppercase tracking-widest text-neutral-400 block">Seu Código de Protocolo</span>
+                    <code id="reset-phone-code-display" class="font-mono font-extrabold text-2xl text-brand-yellow tracking-[0.25em] block">000000</code>
+                    <p class="text-[11px] text-neutral-400">Envie este código no WhatsApp oficial da JP RH para validar seu telefone e receber o link imediato de troca de senha.</p>
+                    <a id="reset-phone-wa-link" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs">
+                        <i class="fa-brands fa-whatsapp text-base"></i><span>Enviar Código no WhatsApp JP RH</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MÓDULO PRINCIPAL -->
+    <script type="module" src="./js/app.js"></script>
+
+    <!-- UI ESTÁTICA (VAGAS, FORMULÁRIOS WHATSAPP & MENU) -->
+    <script>
+        const WHATSAPP_NUMBER = "5573981443993";
+        const vagasData = [
+            { id: 1, titulo: "Gerente Comercial & Líder de Loja", area: "Liderança/Gerência", local: "Centro - Eunápolis", regime: "CLT + Premiação por Metas", requisitos: "Liderança de equipe de vendas, acompanhamento de indicadores e gestão de loja.", destaque: "Urgente" },
+            { id: 2, titulo: "Consultor(a) de Vendas / Loja", area: "Comércio/Varejo", local: "Centro - Eunápolis", regime: "CLT • Horário Comercial", requisitos: "Boa comunicação, proatividade e experiência com metas no varejo.", destaque: "Urgente" },
+            { id: 3, titulo: "Recepcionista / Atendimento ao Cliente", area: "Atendimento/Recepção", local: "Dinah Borges - Eunápolis", regime: "CLT • Segunda a Sábado", requisitos: "Simpatia, domínio básico de informática e organização.", destaque: "Nova" },
+            { id: 4, titulo: "Assistente Administrativo & Financeiro", area: "Administrativo/Logística", local: "Centro - Eunápolis", regime: "CLT • Segunda a Sexta", requisitos: "Excel intermediário, emissão de notas fiscais e rotinas de escritório.", destaque: "Destaque" },
+            { id: 5, titulo: "Operador(a) de Caixa", area: "Comércio/Varejo", local: "Pequi - Eunápolis", regime: "CLT • Escala 6x1", requisitos: "Atenção concentrada, agilidade e experiência anterior na função.", destaque: "Nova" },
+            { id: 6, titulo: "Conferente / Auxiliar de Estoque", area: "Administrativo/Logística", local: "BR-101 / Distrito Industrial", regime: "CLT • Horário Comercial", requisitos: "Organização, controle de entrada/saída de mercadorias e trabalho em equipe.", destaque: "Urgente" }
+        ];
+
+        function renderJobs(filter = 'todas') {
+            const grid = document.getElementById('jobs-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            const filtered = filter === 'todas' ? vagasData : vagasData.filter(v => v.area === filter);
+            filtered.forEach(vaga => {
+                const card = document.createElement('div');
+                card.className = "bg-brand-card border border-brand-border hover:border-brand-yellow/60 rounded-2xl p-6 flex flex-col justify-between transition-all hover:-translate-y-1";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-4">
+                            <span class="text-xs font-semibold px-3 py-1 rounded-lg bg-brand-black text-neutral-300 border border-brand-border">${vaga.area}</span>
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-brand-yellow/15 text-brand-yellow">${vaga.destaque}</span>
+                        </div>
+                        <h3 class="font-display font-bold text-xl text-white mb-2">${vaga.titulo}</h3>
+                        <div class="space-y-1.5 text-xs text-neutral-400 mb-4">
+                            <p><i class="fa-solid fa-location-dot text-brand-yellow w-4"></i> ${vaga.local}</p>
+                            <p><i class="fa-solid fa-briefcase text-brand-yellow w-4"></i> ${vaga.regime}</p>
+                        </div>
+                        <p class="text-sm text-neutral-300 leading-relaxed mb-6 border-t border-brand-border/70 pt-4">${vaga.requisitos}</p>
+                    </div>
+                    <button onclick="applyForJob('${vaga.titulo}')" class="w-full py-3 px-4 rounded-xl bg-brand-black hover:bg-brand-yellow text-white hover:text-brand-black border border-brand-border hover:border-brand-yellow font-bold text-sm transition-all flex items-center justify-center gap-2">
+                        <span>Candidatar-se</span><i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterJobs(area) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = btn.dataset.filter === area
+                    ? "filter-btn active px-4 py-2.5 rounded-xl text-sm font-bold bg-brand-yellow text-brand-black"
+                    : "filter-btn px-4 py-2.5 rounded-xl text-sm font-semibold bg-brand-card text-neutral-300 border border-brand-border hover:border-brand-yellow/50";
+            });
+            renderJobs(area);
+        }
+
+        function applyForJob(jobTitle) {
+            setFormMode('candidato');
+            document.getElementById('cand-vaga').value = jobTitle;
+            document.getElementById('contato').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => document.getElementById('cand-nome').focus(), 600);
+        }
+
+        function setFormMode(mode) {
+            const toggleEmp = document.getElementById('form-toggle-empresa');
+            const toggleCand = document.getElementById('form-toggle-candidato');
+            const formEmp = document.getElementById('form-empresa');
+            const formCand = document.getElementById('form-candidato');
+            if (mode === 'empresa') {
+                toggleEmp.className = "py-3 px-4 rounded-xl font-bold text-sm bg-brand-yellow text-brand-black flex items-center justify-center gap-2";
+                toggleCand.className = "py-3 px-4 rounded-xl font-bold text-sm text-neutral-400 hover:text-white flex items-center justify-center gap-2";
+                formEmp.classList.remove('hidden'); formCand.classList.add('hidden');
+            } else {
+                toggleCand.className = "py-3 px-4 rounded-xl font-bold text-sm bg-brand-yellow text-brand-black flex items-center justify-center gap-2";
+                toggleEmp.className = "py-3 px-4 rounded-xl font-bold text-sm text-neutral-400 hover:text-white flex items-center justify-center gap-2";
+                formCand.classList.remove('hidden'); formEmp.classList.add('hidden');
+            }
+        }
+
+        function handleEmpresaSubmit(e) {
+            e.preventDefault();
+            const empresa = document.getElementById('emp-nome-empresa').value.trim();
+            const responsavel = document.getElementById('emp-responsavel').value.trim();
+            const servico = document.getElementById('emp-servico').value;
+            const cargo = document.getElementById('emp-cargo').value.trim();
+            const detalhes = document.getElementById('emp-detalhes').value.trim();
+            let msg = `Olá *JP RH*! Gostaria de solicitar atendimento empresarial:\n\n*Empresa:* ${empresa}\n*Responsável:* ${responsavel}\n*Plano/Solução:* ${servico}\n*Demanda:* ${cargo}\n`;
+            if (detalhes) msg += `*Detalhes:* ${detalhes}\n`;
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+        }
+
+        function handleCandidatoSubmit(e) {
+            e.preventDefault();
+            const nome = document.getElementById('cand-nome').value.trim();
+            const bairro = document.getElementById('cand-bairro').value.trim();
+            const vaga = document.getElementById('cand-vaga').value.trim();
+            const servico = document.getElementById('cand-servico').value;
+            const experiencia = document.getElementById('cand-experiencia').value.trim();
+            let msg = `Olá *JP RH*! Vim pelo site como candidato(a):\n\n*Nome:* ${nome}\n*Localidade:* ${bairro}\n*Área/Vaga:* ${vaga}\n*Solicitação:* ${servico}\n`;
+            if (experiencia) msg += `*Resumo:* ${experiencia}\n`;
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+        }
+
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileIcon = document.getElementById('mobile-menu-icon');
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileIcon.classList.toggle('fa-bars', mobileMenu.classList.contains('hidden'));
+            mobileIcon.classList.toggle('fa-xmark', !mobileMenu.classList.contains('hidden'));
+        });
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileIcon.classList.add('fa-bars');
+                mobileIcon.classList.remove('fa-xmark');
+            });
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            renderJobs('todas');
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>

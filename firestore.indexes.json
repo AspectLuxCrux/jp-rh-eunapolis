@@ -1,0 +1,13 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "avaliacoes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "empresaUid", "order": "ASCENDING" },
+        { "fieldPath": "visivelParaEmpresa", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
