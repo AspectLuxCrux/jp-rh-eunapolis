@@ -73,6 +73,32 @@ export const COMPANY_PLANS = [
   }
 ];
 
+export const DEFAULT_PLAN_PRICES = {
+  start: 50,
+  impulso: 149,
+  lider: 269,
+  vip: 400,
+  candVip: 20
+};
+
+export function applyDynamicPlanPrices(cfg = {}) {
+  const map = {
+    start: Number(cfg.valorStart),
+    impulso: Number(cfg.valorImpulso),
+    lider: Number(cfg.valorLider),
+    vip: Number(cfg.valorVip)
+  };
+  COMPANY_PLANS.forEach((p) => {
+    const val = map[p.id];
+    p.valor = Number.isFinite(val) && val > 0 ? Math.round(val * 100) / 100 : DEFAULT_PLAN_PRICES[p.id];
+  });
+}
+
+export function getCandidateVipPrice(cfg = {}) {
+  const val = Number(cfg.valorCandVip);
+  return Number.isFinite(val) && val > 0 ? Math.round(val * 100) / 100 : DEFAULT_PLAN_PRICES.candVip;
+}
+
 export function getPlanById(id) {
   return COMPANY_PLANS.find((p) => p.id === id) || COMPANY_PLANS[0];
 }

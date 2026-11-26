@@ -25,7 +25,7 @@ import {
   query,
   where
 } from "./firebase-init.js";
-import { COMPANY_PLANS, getPlanById } from "./plans.js";
+import { COMPANY_PLANS, DEFAULT_PLAN_PRICES, applyDynamicPlanPrices, getCandidateVipPrice, getPlanById } from "./plans.js";
 import { generatePixPayload, getPixQrImageUrl } from "./pix-brcode.js";
 import { pedroxGenerateQuestions, pedroxGenerateEvaluation, pedroxSupportReply } from "./pedrox.js";
 
@@ -43,6 +43,11 @@ const state = {
     titularPix: "João Pedro Morais da Silva Leite",
     bancoPix: "JP RH Eunápolis",
     valorPremium: 50,
+    valorStart: 50,
+    valorImpulso: 149,
+    valorLider: 269,
+    valorVip: 400,
+    valorCandVip: 20,
     whatsappFinanceiro: WHATSAPP_JPRH,
     linkCartaoCandVip: "",
     linkCartaoStart: "",
@@ -634,7 +639,7 @@ function renderHiringCompaniesSection() {
             <p class="text-xs text-neutral-500 mt-0.5 blur-[4px] select-none">Empresa Parceira Confidencial • ${esc(job.salario || "Salário compatível")}</p>
           </div>
           <button type="button" onclick="openCandidateVipModal()" class="px-3.5 py-2 rounded-xl bg-brand-yellow/15 border border-brand-yellow/40 text-brand-yellow hover:bg-brand-yellow hover:text-brand-black font-bold text-xs flex items-center gap-1.5">
-            <i class="fa-solid fa-lock"></i><span>Desbloquear (VIP R$ 20)</span>
+            <i class="fa-solid fa-lock"></i><span>Desbloquear (VIP ${formatShortPrice(getCandidateVipPrice(state.pixConfig))})</span>
           </button>
         </div>`
       )
@@ -680,7 +685,7 @@ window.handleUnlockCandidateVipArea = function (e) {
   } else {
     state.pendingCandidateVip = { id: found.id, codigo: found.codigo, nomeProtegido: found.nomeProtegido };
     window.openCandidateVipModal();
-    window.showToast(`O código ${code} ainda está no plano gratuito. Ative o Destaque VIP de R$ 20 abaixo!`, "info");
+    window.showToast(`O código ${code} ainda está no plano gratuito. Ative o Destaque VIP de ${formatShortPrice(getCandidateVipPrice(state.pixConfig))} abaixo!`, "info");
   }
 };
 
@@ -705,12 +710,18 @@ window.closeCandidateVipModal = function () {
   document.getElementById("modal-candidate-vip")?.classList.add("hidden");
 };
 
+function formatShortPrice(val) {
+  const n = Number(val) || 0;
+  return Number.isInteger(n) ? `R$ ${n}` : `R$ ${n.toFixed(2).replace(".", ",")}`;
+}
+
 function renderCandidateVipPixBox() {
+  const vipPrice = getCandidateVipPrice(state.pixConfig);
   const payload = generatePixPayload({
     chavePix: state.pixConfig.chavePix,
     titular: state.pixConfig.titularPix,
-    valor: 20,
-    txid: `JPRHVIP20`
+    valor: vipPrice,
+    txid: `JPRHVIP${Math.round(vipPrice)}`
   });
   const qrImg = document.getElementById("cand-vip-qr-img");
   const codeEl = document.getElementById("cand-vip-brcode");
@@ -749,16 +760,19 @@ window.handleCandidateVipPixConfirm = async function (e) {
     return;
   }
 
+  const vipPrice = getCandidateVipPrice(state.pixConfig);
+  const vipMoney = formatMoney(vipPrice);
+  const vipShort = formatShortPrice(vipPrice);
   const btn = document.getElementById("btn-cand-vip-confirm");
   btn.disabled = true;
-  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Registrando Pix R$ 20...`;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Registrando Pix ${vipShort}...`;
   try {
     const now = Date.now();
     await addDoc(collection(db, "financeiro"), {
       tipo: "entrada",
       categoria: "Plano Candidato VIP",
-      descricao: `Candidato Destaque VIP R$ 20 — ${found.nomeProtegido || "Candidato"} (${found.codigo || code})`,
-      valor: 20,
+      descricao: `Candidato Destaque VIP ${vipShort} — ${found.nomeProtegido || "Candidato"} (${found.codigo || code})`,
+      valor: vipPrice,
       status: "pendente",
       empresaUid: "",
       empresaNome: "",
@@ -774,8 +788,8 @@ window.handleCandidateVipPixConfirm = async function (e) {
       paidAt: null
     });
 
-    const msg = `Olá *JP RH*! Acabei de fazer o Pix de *R$ 20,00* para ativar meu *Plano Candidato Destaque VIP*:\n\n*Código do Currículo:* ${found.codigo || code}\n*Nome:* ${found.nomeProtegido || ""}\n\n_(Enviando comprovante abaixo)_`;
-    window.showToast("Aviso de Pix de R$ 20 enviado ao Financeiro JP RH! Assim que aprovado, seu currículo sobe para o topo VIP.");
+    const msg = `Olá *JP RH*! Acabei de fazer o Pix de *${vipMoney}* para ativar meu *Plano Candidato Destaque VIP*:\n\n*Código do Currículo:* ${found.codigo || code}\n*Nome:* ${found.nomeProtegido || ""}\n\n_(Enviando comprovante abaixo)_`;
+    window.showToast(`Aviso de Pix de ${vipShort} enviado ao Financeiro JP RH! Assim que aprovado, seu currículo sobe para o topo VIP.`);
     window.open(`https://wa.me/${WHATSAPP_JPRH}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
     window.closeCandidateVipModal();
   } catch (err) {
@@ -783,7 +797,7 @@ window.handleCandidateVipPixConfirm = async function (e) {
     window.showToast("Erro ao registrar aviso do Pix. Tente novamente.", "error");
   } finally {
     btn.disabled = false;
-    btn.innerHTML = `<i class="fa-solid fa-check-double mr-2"></i>Já fiz o Pix de R$ 20,00 — Ativar Meu Destaque VIP`;
+    btn.innerHTML = `<i class="fa-solid fa-check-double mr-2"></i>Já fiz o Pix de <span class="js-cand-vip-full">${vipMoney}</span> — Ativar Meu Destaque VIP`;
   }
 };
 
@@ -1338,10 +1352,10 @@ window.handleRegisterTalent = async function (e) {
 
     state.pendingCandidateVip = { id: candRef.id, codigo: randomCode, nomeProtegido };
     if (wantVip) {
-      window.showToast(`Currículo salvo (${randomCode})! Agora conclua o Pix de R$ 20 para ativar seu Destaque VIP.`);
+      window.showToast(`Currículo salvo (${randomCode})! Agora conclua o Pix de ${formatShortPrice(getCandidateVipPrice(state.pixConfig))} para ativar seu Destaque VIP.`);
       window.openCandidateVipModal(state.pendingCandidateVip);
     } else {
-      window.showToast(`Currículo cadastrado GRATUITAMENTE! Seu código é ${randomCode}. Se quiser passar na frente da fila (R$ 20), clique em Destaque VIP.`);
+      window.showToast(`Currículo cadastrado GRATUITAMENTE! Seu código é ${randomCode}. Se quiser passar na frente da fila (${formatShortPrice(getCandidateVipPrice(state.pixConfig))}), clique em Destaque VIP.`);
     }
   } catch (error) {
     console.error("Erro ao cadastrar candidato:", error);
@@ -1544,6 +1558,75 @@ window.selectCompanyCheckoutPlan = function (planId) {
   renderCompanyPlanSelector();
 };
 
+function syncAllDynamicPricesUI() {
+  applyDynamicPlanPrices(state.pixConfig);
+  const candVip = getCandidateVipPrice(state.pixConfig);
+  const shortCand = formatShortPrice(candVip);
+  const fullCand = formatMoney(candVip);
+
+  document.querySelectorAll(".js-cand-vip-short").forEach((el) => { el.textContent = shortCand; });
+  document.querySelectorAll(".js-cand-vip-full").forEach((el) => { el.textContent = fullCand; });
+
+  // Atualiza selects de planos (Vendas, Teste & Planos e Formulário de Contato)
+  const saleSel = document.getElementById("sale-plan-select");
+  if (saleSel) {
+    const prev = saleSel.value;
+    saleSel.innerHTML = COMPANY_PLANS.map((p) => `<option value="${p.id}">${esc(p.nome)} — ${formatShortPrice(p.valor)}/mês</option>`).join("");
+    if (prev) saleSel.value = prev;
+  }
+
+  const trialSel = document.getElementById("trial-plan-select");
+  if (trialSel) {
+    const prev = trialSel.value;
+    trialSel.innerHTML =
+      COMPANY_PLANS.map((p) => `<option value="${p.id}">${esc(p.nome)} (${formatShortPrice(p.valor)}/mês)</option>`).join("") +
+      `<option value="gratuito">Remover Plano (Voltar p/ Gratuito)</option>`;
+    if (prev) trialSel.value = prev;
+  }
+
+  const empServico = document.getElementById("emp-servico");
+  if (empServico) {
+    COMPANY_PLANS.forEach((p) => {
+      const opt = Array.from(empServico.options).find((o) => o.value.startsWith(p.nome));
+      if (opt) opt.textContent = `${p.nome} (${formatShortPrice(p.valor)}/mês)`;
+    });
+  }
+
+  // Atualiza placeholders de cartão
+  const phMap = {
+    "cfg-card-cand-vip": `Link Cartão — Candidato VIP (${shortCand})`,
+    "cfg-card-start": `Link Cartão — Plano Start (${formatShortPrice(getPlanById("start").valor)})`,
+    "cfg-card-impulso": `Link Cartão — Plano Impulso (${formatShortPrice(getPlanById("impulso").valor)})`,
+    "cfg-card-lider": `Link Cartão — Plano Líder (${formatShortPrice(getPlanById("lider").valor)})`,
+    "cfg-card-vip": `Link Cartão — Plano VIP 360° (${formatShortPrice(getPlanById("vip").valor)})`
+  };
+  Object.entries(phMap).forEach(([id, txt]) => {
+    const el = document.getElementById(id);
+    if (el) el.placeholder = txt;
+  });
+
+  // Preenche inputs do Editor de Valores no Financeiro (Admin)
+  const priceInputs = [
+    ["cfg-price-start", getPlanById("start").valor],
+    ["cfg-price-impulso", getPlanById("impulso").valor],
+    ["cfg-price-lider", getPlanById("lider").valor],
+    ["cfg-price-vip", getPlanById("vip").valor],
+    ["cfg-price-cand-vip", candVip]
+  ];
+  priceInputs.forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && document.activeElement !== el) el.value = String(val);
+  });
+
+  // Re-renderiza cards, seletores, QR Codes e tabelas com os novos valores
+  renderPublicPlansGrid();
+  renderHiringCompaniesSection();
+  renderCompanyPlanSelector();
+  renderCandidateVipPixBox();
+  if (isDirectorRole()) renderTrialsAndPlansTab();
+  if (state.role === "admin") renderAdminCompaniesTable();
+}
+
 function renderPixConfigUI() {
   const keyEl = document.getElementById("pix-display-key");
   const holderEl = document.getElementById("pix-display-holder");
@@ -1566,6 +1649,8 @@ function renderPixConfigUI() {
     const el = document.getElementById(id);
     if (el && document.activeElement !== el) el.value = state.pixConfig[key] || "";
   });
+
+  syncAllDynamicPricesUI();
 }
 
 window.copyPixKey = function () {
@@ -2948,7 +3033,7 @@ window.adminApproveFinanceTx = async function (txId) {
       });
     }
   }
-  window.showToast(tx.candidatoId ? "Pix R$ 20 aprovado! Candidato promovido para Destaque VIP no topo!" : "Pagamento aprovado e plano liberado!");
+  window.showToast(tx.candidatoId ? `Pix ${formatShortPrice(tx.valor)} aprovado! Candidato promovido para Destaque VIP no topo!` : "Pagamento aprovado e plano liberado!");
 };
 
 window.adminCancelFinanceTx = async function (txId) {
@@ -2987,13 +3072,76 @@ window.handleAdminAddFinanceTx = async function (e) {
   window.showToast("Lançamento adicionado!");
 };
 
+window.handleSavePlanPrices = async function (e) {
+  e.preventDefault();
+  if (state.role !== "admin") return window.showToast("Apenas o Administrador pode alterar os valores dos planos.", "error");
+
+  const parsePrice = (id, fallback) => {
+    const v = Number(document.getElementById(id)?.value);
+    return Number.isFinite(v) && v >= 1 && v <= 100000 ? Math.round(v * 100) / 100 : fallback;
+  };
+
+  const valorStart = parsePrice("cfg-price-start", DEFAULT_PLAN_PRICES.start);
+  const valorImpulso = parsePrice("cfg-price-impulso", DEFAULT_PLAN_PRICES.impulso);
+  const valorLider = parsePrice("cfg-price-lider", DEFAULT_PLAN_PRICES.lider);
+  const valorVip = parsePrice("cfg-price-vip", DEFAULT_PLAN_PRICES.vip);
+  const valorCandVip = parsePrice("cfg-price-cand-vip", DEFAULT_PLAN_PRICES.candVip);
+
+  const btn = document.getElementById("btn-save-plan-prices");
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Salvando valores...`;
+
+  try {
+    const nextCfg = {
+      ...state.pixConfig,
+      valorPremium: valorStart,
+      valorStart,
+      valorImpulso,
+      valorLider,
+      valorVip,
+      valorCandVip,
+      updatedAt: Date.now()
+    };
+    await setDoc(doc(db, "configuracoes", "financeiro"), nextCfg);
+    state.pixConfig = nextCfg;
+    syncAllDynamicPricesUI();
+    window.showToast("Novos valores salvos e atualizados em todo o site e QR Codes Pix!");
+  } catch (err) {
+    window.showToast(err?.message || "Erro ao salvar novos valores.", "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-floppy-disk mr-2"></i>Salvar Novos Valores no Site Agora`;
+  }
+};
+
+window.resetDefaultPlanPrices = function () {
+  const map = {
+    "cfg-price-start": DEFAULT_PLAN_PRICES.start,
+    "cfg-price-impulso": DEFAULT_PLAN_PRICES.impulso,
+    "cfg-price-lider": DEFAULT_PLAN_PRICES.lider,
+    "cfg-price-vip": DEFAULT_PLAN_PRICES.vip,
+    "cfg-price-cand-vip": DEFAULT_PLAN_PRICES.candVip
+  };
+  Object.entries(map).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = String(val);
+  });
+  window.showToast("Valores padrão preenchidos. Clique em 'Salvar Novos Valores' para aplicar.", "info");
+};
+
 window.handleSavePixConfig = async function (e) {
   e.preventDefault();
   await setDoc(doc(db, "configuracoes", "financeiro"), {
+    ...state.pixConfig,
     chavePix: document.getElementById("cfg-pix-key").value.trim(),
     titularPix: document.getElementById("cfg-pix-holder").value.trim(),
     bancoPix: document.getElementById("cfg-pix-bank").value.trim() || "Pix JP RH",
-    valorPremium: 50,
+    valorPremium: getPlanById("start").valor,
+    valorStart: getPlanById("start").valor,
+    valorImpulso: getPlanById("impulso").valor,
+    valorLider: getPlanById("lider").valor,
+    valorVip: getPlanById("vip").valor,
+    valorCandVip: getCandidateVipPrice(state.pixConfig),
     whatsappFinanceiro: WHATSAPP_JPRH,
     linkCartaoCandVip: (document.getElementById("cfg-card-cand-vip")?.value || "").trim(),
     linkCartaoStart: (document.getElementById("cfg-card-start")?.value || "").trim(),

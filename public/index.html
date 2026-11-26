@@ -301,7 +301,7 @@
                     Cadastre seu currículo <span class="text-brand-yellow">de graça</span> ou passe na frente com o <span class="text-brand-yellow">Destaque VIP</span>
                 </h2>
                 <p class="text-neutral-400 text-sm sm:text-base mt-3">
-                    Enviar seu currículo na JP RH é <strong>100% gratuito</strong>. Mas se você quer sair na frente da concorrência, ficar no topo visível às empresas e ver quem está contratando agora, conheça o <strong>Plano Candidato VIP por apenas R$ 20</strong>.
+                    Enviar seu currículo na JP RH é <strong>100% gratuito</strong>. Mas se você quer sair na frente da concorrência, ficar no topo visível às empresas e ver quem está contratando agora, conheça o <strong>Plano Candidato VIP por apenas <span class="js-cand-vip-short">R$ 20</span></strong>.
                 </p>
             </div>
 
@@ -335,7 +335,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-brand-yellow text-brand-black"><i class="fa-solid fa-crown mr-1"></i>Mais Chances de Contratação</span>
                             <div class="text-right">
-                                <span class="font-display font-extrabold text-3xl text-brand-yellow">R$ 20</span>
+                                <span class="js-cand-vip-short font-display font-extrabold text-3xl text-brand-yellow">R$ 20</span>
                                 <span class="text-[11px] text-neutral-400 block">pagamento via Pix / Cartão</span>
                             </div>
                         </div>
@@ -350,7 +350,7 @@
                     </div>
                     <div class="relative z-10 flex flex-col sm:flex-row gap-2.5">
                         <button type="button" onclick="openRegisterTalentModal(true)" class="flex-1 py-4 px-5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-yellow/20">
-                            <i class="fa-solid fa-crown"></i><span>Cadastrar + Ativar VIP (R$ 20)</span>
+                            <i class="fa-solid fa-crown"></i><span>Cadastrar + Ativar VIP (<span class="js-cand-vip-short">R$ 20</span>)</span>
                         </button>
                         <button type="button" onclick="openCandidateVipModal()" class="py-4 px-4 rounded-xl bg-brand-black border border-brand-yellow/50 text-brand-yellow hover:bg-neutral-900 font-bold text-xs">
                             Já tenho código
@@ -681,7 +681,7 @@
                 <label class="flex items-start gap-3 p-3.5 rounded-2xl bg-brand-yellow/10 border border-brand-yellow/40 cursor-pointer">
                     <input type="checkbox" id="reg-want-vip" class="w-4 h-4 mt-0.5 accent-brand-yellow shrink-0">
                     <span class="text-xs text-neutral-200 leading-relaxed">
-                        <strong class="text-brand-yellow">Quero ativar o Plano Candidato Destaque VIP (R$ 20)</strong> após salvar — subir para o topo do Banco de Talentos, ter prioridade na entrevista e ver empresas que estão contratando agora. <em class="text-neutral-400">(Desmarcado = 100% Gratuito)</em>
+                        <strong class="text-brand-yellow">Quero ativar o Plano Candidato Destaque VIP (<span class="js-cand-vip-short">R$ 20</span>)</strong> após salvar — subir para o topo do Banco de Talentos, ter prioridade na entrevista e ver empresas que estão contratando agora. <em class="text-neutral-400">(Desmarcado = 100% Gratuito)</em>
                     </span>
                 </label>
                 <div class="pt-2 flex flex-col sm:flex-row gap-3">
@@ -701,21 +701,21 @@
 
             <div>
                 <span class="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full bg-brand-yellow text-brand-black"><i class="fa-solid fa-crown mr-1"></i>Plano Candidato Destaque VIP</span>
-                <h3 class="font-display font-extrabold text-2xl text-white mt-2">Ative por apenas <span class="text-brand-yellow">R$ 20,00</span></h3>
-                <p class="text-xs text-neutral-400 mt-1">Aponte a câmera do app do seu banco para o QR Code abaixo ou copie o código Pix (valor R$ 20,00 já preenchido!).</p>
+                <h3 class="font-display font-extrabold text-2xl text-white mt-2">Ative por apenas <span class="js-cand-vip-full text-brand-yellow">R$ 20,00</span></h3>
+                <p class="text-xs text-neutral-400 mt-1">Aponte a câmera do app do seu banco para o QR Code abaixo ou copie o código Pix (valor <span class="js-cand-vip-full font-bold text-neutral-200">R$ 20,00</span> já preenchido!).</p>
             </div>
 
             <div class="bg-brand-black border border-brand-border rounded-2xl p-4 flex flex-col items-center gap-3">
-                <img id="cand-vip-qr-img" src="" alt="QR Code Pix R$ 20" class="w-44 h-44 rounded-xl bg-white p-2">
+                <img id="cand-vip-qr-img" src="" alt="QR Code Pix Candidato VIP" class="w-44 h-44 rounded-xl bg-white p-2">
                 <div class="w-full space-y-1.5">
-                    <label class="block text-[10px] font-bold uppercase text-neutral-400">Pix Copia e Cola (R$ 20,00):</label>
+                    <label class="block text-[10px] font-bold uppercase text-neutral-400">Pix Copia e Cola (<span class="js-cand-vip-full">R$ 20,00</span>):</label>
                     <div class="flex gap-2">
                         <input type="text" id="cand-vip-brcode" readonly class="flex-1 px-3 py-2 rounded-xl bg-brand-card border border-brand-border text-[11px] font-mono text-brand-yellow truncate">
                         <button type="button" onclick="copyPixPayloadById('cand-vip-brcode')" class="px-3.5 py-2 rounded-xl bg-brand-yellow text-brand-black font-extrabold text-xs shrink-0"><i class="fa-regular fa-copy mr-1"></i>Copiar</button>
                     </div>
                 </div>
                 <a id="cand-vip-card-btn" href="#" target="_blank" rel="noopener noreferrer" class="hidden w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs text-center">
-                    <i class="fa-solid fa-credit-card mr-1.5"></i>Ou Pagar R$ 20,00 no Cartão / Checkout Online
+                    <i class="fa-solid fa-credit-card mr-1.5"></i>Ou Pagar <span class="js-cand-vip-full">R$ 20,00</span> no Cartão / Checkout Online
                 </a>
             </div>
 
@@ -725,7 +725,7 @@
                     <input type="text" id="cand-vip-code-input" required placeholder="Ex: JP-4821" class="w-full px-4 py-3 rounded-xl bg-brand-black border border-brand-border text-sm font-mono uppercase text-white focus:outline-none focus:border-brand-yellow">
                 </div>
                 <button type="submit" id="btn-cand-vip-confirm" class="w-full py-3.5 px-5 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs sm:text-sm">
-                    <i class="fa-solid fa-check-double mr-2"></i>Já fiz o Pix de R$ 20,00 — Ativar Meu Destaque VIP
+                    <i class="fa-solid fa-check-double mr-2"></i>Já fiz o Pix de <span class="js-cand-vip-full">R$ 20,00</span> — Ativar Meu Destaque VIP
                 </button>
             </form>
         </div>
@@ -1430,6 +1430,47 @@
                         <div id="fin-pending-approvals" class="space-y-2.5"></div>
                     </div>
 
+                    <!-- EDITOR DIRETO DE VALORES DOS PLANOS (EMPRESAS + CURRÍCULO VIP) -->
+                    <form id="form-plan-prices-config" onsubmit="handleSavePlanPrices(event)" class="bg-brand-black border-2 border-brand-yellow/40 rounded-2xl p-5 space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-brand-yellow"><i class="fa-solid fa-tags mr-1"></i>Alteração em Tempo Real no Site</span>
+                                <h4 class="font-display font-extrabold text-base text-white mt-0.5">Alterar Valores dos Planos de Empresas e Plano de Currículo</h4>
+                                <p class="text-xs text-neutral-400 mt-0.5">Ao salvar aqui, os novos preços atualizam automaticamente na <strong class="text-white">página inicial</strong>, nos <strong class="text-white">QR Codes Pix</strong>, na <strong class="text-white">aba Vendas</strong> e no <strong class="text-white">Portal da Empresa</strong>.</p>
+                            </div>
+                            <button type="button" onclick="resetDefaultPlanPrices()" class="px-3 py-1.5 rounded-xl bg-brand-card border border-brand-border hover:border-brand-yellow text-neutral-300 hover:text-brand-yellow text-[11px] font-bold">
+                                <i class="fa-solid fa-rotate-left mr-1"></i>Restaurar Padrão
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                            <div class="bg-brand-card/70 border border-brand-border rounded-xl p-3">
+                                <label class="block text-[10px] font-bold uppercase text-neutral-400 mb-1">Plano Start (R$/mês)</label>
+                                <input type="number" id="cfg-price-start" step="0.01" min="1" max="100000" required value="50" class="w-full px-3 py-2 rounded-lg bg-brand-black border border-brand-border text-sm font-extrabold text-brand-yellow focus:outline-none focus:border-brand-yellow">
+                            </div>
+                            <div class="bg-brand-card/70 border border-brand-border rounded-xl p-3">
+                                <label class="block text-[10px] font-bold uppercase text-neutral-400 mb-1">Plano Impulso (R$/mês)</label>
+                                <input type="number" id="cfg-price-impulso" step="0.01" min="1" max="100000" required value="149" class="w-full px-3 py-2 rounded-lg bg-brand-black border border-brand-border text-sm font-extrabold text-brand-yellow focus:outline-none focus:border-brand-yellow">
+                            </div>
+                            <div class="bg-brand-card/70 border border-brand-border rounded-xl p-3">
+                                <label class="block text-[10px] font-bold uppercase text-neutral-400 mb-1">Plano Líder (R$/mês)</label>
+                                <input type="number" id="cfg-price-lider" step="0.01" min="1" max="100000" required value="269" class="w-full px-3 py-2 rounded-lg bg-brand-black border border-brand-border text-sm font-extrabold text-brand-yellow focus:outline-none focus:border-brand-yellow">
+                            </div>
+                            <div class="bg-brand-card/70 border border-brand-yellow/40 rounded-xl p-3">
+                                <label class="block text-[10px] font-bold uppercase text-brand-yellow mb-1">Plano VIP 360° (R$/mês)</label>
+                                <input type="number" id="cfg-price-vip" step="0.01" min="1" max="100000" required value="400" class="w-full px-3 py-2 rounded-lg bg-brand-black border border-brand-yellow/50 text-sm font-extrabold text-brand-yellow focus:outline-none focus:border-brand-yellow">
+                            </div>
+                            <div class="bg-brand-card/70 border border-emerald-500/40 rounded-xl p-3">
+                                <label class="block text-[10px] font-bold uppercase text-emerald-400 mb-1">Currículo Destaque VIP (R$)</label>
+                                <input type="number" id="cfg-price-cand-vip" step="0.01" min="1" max="100000" required value="20" class="w-full px-3 py-2 rounded-lg bg-brand-black border border-emerald-500/50 text-sm font-extrabold text-emerald-400 focus:outline-none focus:border-brand-yellow">
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btn-save-plan-prices" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-brand-yellow hover:bg-brand-yellowHover text-brand-black font-extrabold text-xs sm:text-sm">
+                            <i class="fa-solid fa-floppy-disk mr-2"></i>Salvar Novos Valores no Site Agora
+                        </button>
+                    </form>
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                         <form onsubmit="handleSavePixConfig(event)" class="bg-brand-black border border-brand-border rounded-2xl p-5 space-y-3">
                             <h4 class="font-display font-bold text-sm text-white flex items-center gap-2"><i class="fa-solid fa-qrcode text-brand-yellow"></i> Pix (QR Code Automático) + Links de Cartão</h4>
@@ -1715,6 +1756,9 @@
                                 <h4 class="font-display font-extrabold text-lg text-white mt-0.5">Definir Período de Teste ou Plano da Empresa</h4>
                                 <p class="text-xs text-neutral-400 mt-0.5">Escolha a empresa, qual dos <strong class="text-brand-yellow">4 planos</strong> ela vai usar (Start, Impulso, Líder ou VIP 360°) e exatamente <strong class="text-white">quantos dias</strong> o acesso ficará liberado.</p>
                             </div>
+                            <button type="button" onclick="switchTeamTab('financeiro'); setTimeout(() => document.getElementById('form-plan-prices-config')?.scrollIntoView({behavior:'smooth', block:'center'}), 150);" class="admin-only-el hidden shrink-0 px-3.5 py-2 rounded-xl bg-brand-yellow/15 border border-brand-yellow/50 text-brand-yellow hover:bg-brand-yellow hover:text-brand-black font-extrabold text-xs">
+                                <i class="fa-solid fa-tags mr-1.5"></i>Alterar Valores dos Planos (R$)
+                            </button>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">

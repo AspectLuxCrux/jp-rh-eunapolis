@@ -145,8 +145,11 @@ rules_version = '2';
 //      - paidAt: null | int (> 0) | timestamp (optional)
 //
 // 8. Collection: configuracoes
-//    Document ID: {docId} (e.g., 'financeiro' for public Pix settings)
+//    Document ID: {docId} (e.g., 'financeiro' for public Pix, card links & dynamic plan prices)
 //    Purpose: Publicly readable app configuration managed exclusively by Admin.
+//    Optional Price Fields (each number > 0 && <= 100000):
+//      - valorStart, valorImpulso, valorLider, valorVip, valorCandVip, valorMensal, valor
+//      - updatedAt: null | int (> 0) | timestamp (optional)
 //
 // 9. Collection: equipe_vitrine
 //    Document ID: auto-generated {memberId}
@@ -556,13 +559,34 @@ service cloud.firestore {
              isOptionalTimestampOrMillis(data, 'paidAt');
     }
 
+    function isOptionalPositivePrice(data, field) {
+      return !(field in data) ||
+             (data[field] is number && data[field] > 0 && data[field] <= 100000);
+    }
+
+    function getConfiguredPrice(field, fallback) {
+      let cfgPath = /databases/$(database)/documents/configuracoes/financeiro;
+      return exists(cfgPath) &&
+             field in get(cfgPath).data &&
+             get(cfgPath).data[field] is number &&
+             get(cfgPath).data[field] > 0 &&
+             get(cfgPath).data[field] <= 100000
+             ? get(cfgPath).data[field]
+             : fallback;
+    }
+
     function isValidConfiguracao(data) {
       return data is map &&
              data.keys().size() > 0 &&
-             data.keys().size() <= 25 &&
+             data.keys().size() <= 30 &&
              isOptionalTimestampOrMillis(data, 'updatedAt') &&
-             (!('valorMensal' in data) || (data.valorMensal is number && data.valorMensal > 0 && data.valorMensal <= 100000)) &&
-             (!('valor' in data) || (data.valor is number && data.valor > 0 && data.valor <= 100000));
+             isOptionalPositivePrice(data, 'valorMensal') &&
+             isOptionalPositivePrice(data, 'valor') &&
+             isOptionalPositivePrice(data, 'valorStart') &&
+             isOptionalPositivePrice(data, 'valorImpulso') &&
+             isOptionalPositivePrice(data, 'valorLider') &&
+             isOptionalPositivePrice(data, 'valorVip') &&
+             isOptionalPositivePrice(data, 'valorCandVip');
     }
 
     function isValidEquipeVitrine(data) {
@@ -901,14 +925,19 @@ service cloud.firestore {
                            request.resource.data.empresaUid == request.auth.uid &&
                            request.resource.data.tipo == 'entrada' &&
                            request.resource.data.categoria == 'Assinatura Premium' &&
-                           request.resource.data.valor in [50, 149, 269, 400] &&
+                           request.resource.data.valor in [
+                             getConfiguredPrice('valorStart', 50),
+                             getConfiguredPrice('valorImpulso', 149),
+                             getConfiguredPrice('valorLider', 269),
+                             getConfiguredPrice('valorVip', 400)
+                           ] &&
                            request.resource.data.status == 'pendente' &&
                            (!('paidAt' in request.resource.data) || request.resource.data.paidAt == null)
                          ) ||
                          (
                            request.resource.data.tipo == 'entrada' &&
                            request.resource.data.categoria == 'Plano Candidato VIP' &&
-                           request.resource.data.valor == 20 &&
+                           request.resource.data.valor == getConfiguredPrice('valorCandVip', 20) &&
                            request.resource.data.status == 'pendente' &&
                            (!('paidAt' in request.resource.data) || request.resource.data.paidAt == null) &&
                            'candidatoId' in request.resource.data &&
